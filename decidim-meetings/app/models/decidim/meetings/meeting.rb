@@ -51,6 +51,9 @@ module Decidim
 
       scope :visible, -> { where("decidim_meetings_meetings.private_meeting != ? OR decidim_meetings_meetings.transparent = ?", true, true) }
 
+      scope :in_person, -> { where(  nil ) }
+      scope :online, -> {  where(  nil )  }
+
       scope :official_origin, lambda {
         where(decidim_author_type: "Decidim::Organization")
       }

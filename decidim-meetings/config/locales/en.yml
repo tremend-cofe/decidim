@@ -375,6 +375,11 @@ en:
             all: All
             past: Past
             upcoming: Upcoming
+          meeting_type: Meeting type
+          meeting_types_values:
+            all: All
+            in_person: In Person
+            on_line: Online
           origin: Origin
           origin_values:
             all: All
