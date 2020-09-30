@@ -67,8 +67,8 @@ module Decidim
           .where(decidim_user_group_id: nil)
       }
 
-      scope :in_person, -> { where(nil) }
-      scope :online, -> { where(nil) }
+      scope :in_person, -> { where(type_of_meeting: "in_person") }
+      scope :online, -> { where(type_of_meeting: "online") }
 
       searchable_fields({
                           scope_id: :decidim_scope_id,

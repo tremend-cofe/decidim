@@ -114,7 +114,7 @@ module Decidim
           scope_id: default_filter_scope_params,
           category_id: default_filter_category_params,
           origin: default_filter_origin_params,
-          meeting_type: %w(all online in_person)
+          meeting_type: %w(all) + Meeting::TYPE_OF_MEETING
         }
       end
 
