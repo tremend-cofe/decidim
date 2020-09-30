@@ -10,14 +10,13 @@ module Decidim
       include Decidim::HasAttachmentCollections
       include Decidim::HasComponent
       include Decidim::HasReference
-      include Decidim::ScopableComponent
+      include Decidim::ScopableResource
       include Decidim::HasCategory
       include Decidim::Followable
       include Decidim::Comments::Commentable
       include Decidim::Searchable
       include Decidim::Traceable
       include Decidim::Loggable
-      include Decidim::Hashtaggable
       include Decidim::Forms::HasQuestionnaire
       include Decidim::Paddable
       include Decidim::ActsAsAuthor
@@ -51,9 +50,6 @@ module Decidim
 
       scope :visible, -> { where("decidim_meetings_meetings.private_meeting != ? OR decidim_meetings_meetings.transparent = ?", true, true) }
 
-      scope :in_person, -> { where(nil) }
-      scope :online, -> { where(nil) }
-
       scope :official_origin, lambda {
         where(decidim_author_type: "Decidim::Organization")
       }
@@ -67,6 +63,9 @@ module Decidim
         where(decidim_author_type: "Decidim::UserBaseEntity")
           .where(decidim_user_group_id: nil)
       }
+
+      scope :in_person, -> { where(nil) }
+      scope :online, -> { where(nil) }
 
       searchable_fields({
                           scope_id: :decidim_scope_id,
