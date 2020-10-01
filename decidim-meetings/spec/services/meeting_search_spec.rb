@@ -33,6 +33,37 @@ module Decidim::Meetings
         )
       end
 
+      context "with meeting type" do
+        let!(:meeting3) do
+          create(
+            :meeting,
+            :in_person,
+            component: component,
+            start_time: 1.day.ago,
+            end_time: 2.days.from_now,
+            description: Decidim::Faker::Localized.literal("Curabitur arcu erat, accumsan id imperdiet et.")
+          )
+        end
+
+        context "when online" do
+          let(:params) { default_params.merge(meeting_type: "online") }
+
+          it "only returns the online meetings" do
+            expect(subject).to match_array [meeting1, meeting2]
+            expect(subject).not_to match_array [meeting3]
+          end
+        end
+
+        context "when in person" do
+          let(:params) { default_params.merge(meeting_type: "in_person") }
+
+          it "only returns one meeting" do
+            expect(subject).not_to match_array [meeting1, meeting2]
+            expect(subject).to match_array [meeting3]
+          end
+        end
+      end
+
       context "with date" do
         let(:params) { default_params.merge(date: date) }
         let!(:past_meeting) do

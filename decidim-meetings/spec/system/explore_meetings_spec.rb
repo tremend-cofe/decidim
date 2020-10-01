@@ -62,6 +62,44 @@ describe "Explore meetings", :slow, type: :system do
     end
 
     context "when filtering" do
+      context "when filtering by meeting type" do
+        let!(:in_person_meeting) { create(:meeting, :in_person, component: component, author: organization) }
+
+        context "with 'in_person' meeting type" do
+          it "lists the filtered meetings" do
+            visit_component
+
+            within ".meeting_type_check_boxes_tree_filter" do
+              uncheck "All"
+              check "In Person"
+            end
+
+            expect(page).to have_no_content("5 MEETINGS")
+            expect(page).to have_content("1 MEETING")
+            expect(page).to have_css(".card--meeting", count: 1)
+
+            within ".card--meeting" do
+              expect(page).to have_content("Official meeting")
+            end
+          end
+        end
+
+        context "with 'online' meeting type" do
+          it "lists the filtered meetings" do
+            visit_component
+
+            within ".meeting_type_check_boxes_tree_filter" do
+              uncheck "All"
+              check "Online"
+            end
+
+            expect(page).to have_no_content("6 MEETINGS")
+            expect(page).to have_content("5 MEETING")
+            expect(page).to have_css(".card--meeting", count: 5)
+          end
+        end
+      end
+
       context "when filtering by origin" do
         let!(:component) do
           create(:meeting_component,

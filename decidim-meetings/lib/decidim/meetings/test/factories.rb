@@ -47,6 +47,10 @@ FactoryBot.define do
       component.try(:organization)
     end
 
+    trait :in_person do
+      type_of_meeting { "in_person" }
+    end
+
     trait :official do
       author { component.organization if component }
     end
