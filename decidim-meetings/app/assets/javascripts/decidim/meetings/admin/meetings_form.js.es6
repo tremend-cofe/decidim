@@ -1,5 +1,6 @@
 ((exports) => {
   const { AutoLabelByPositionComponent, AutoButtonsByPositionComponent, createDynamicFields, createSortList } = exports.DecidimAdmin;
+  const { attachGeocoding } = window.Decidim;
 
   const wrapperSelector = ".meeting-services";
   const fieldSelector = ".meeting-service";
@@ -129,5 +130,6 @@
     toggleDependsOnSelect($meetingRegistrationType, $meetingRegistrationTerms, "on_this_platform");
     toggleDependsOnSelect($meetingRegistrationType, $meetingAvailableSlots, "on_this_platform");
     toggleDependsOnSelect($meetingRegistrationType, $meetingExternalRegistrationLink, "another_registration_system");
+    attachGeocoding($form.find("#meeting_address"));
   }
 })(window);

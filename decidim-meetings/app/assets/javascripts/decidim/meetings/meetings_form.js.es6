@@ -37,6 +37,8 @@
 
       toggleDependsOnSelect($meetingTypeOfMeeting, $meetingLocation, "in_person");
       toggleDependsOnSelect($meetingTypeOfMeeting, $meetingOnlineMeetingLink, "online");
+
+      attachGeocoding($("#meeting_address"));
     }
   })
 }(window));

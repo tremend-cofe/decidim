@@ -45,7 +45,7 @@ module Decidim
         validates :terms_and_conditions, presence: true
 
         validates :address, presence: true
-        validates :address, geocoding: true, if: -> { Decidim.geocoder.present? }
+        validates :address, geocoding: true, if: ->(form) { form.has_address? && !form.geocoded? }
         validates :start_time, presence: true, date: { before: :end_time }
         validates :end_time, presence: true, date: { after: :start_time }
 
@@ -114,6 +114,18 @@ module Decidim
               type
             ]
           end
+        end
+
+        def geocoding_enabled?
+          Decidim::Map.available?(:geocoding)
+        end
+
+        def has_address?
+          geocoding_enabled? && address.present?
+        end
+
+        def geocoded?
+          latitude.present? && longitude.present?
         end
       end
     end
