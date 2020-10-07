@@ -153,8 +153,7 @@ describe "User creates meeting", type: :system do
               fill_in :meeting_description, with: meeting_description
               fill_in :meeting_location, with: meeting_location
               fill_in :meeting_location_hints, with: meeting_location_hints
-<<<<<<< HEAD
-              fill_in :meeting_address, with: meeting_address
+              fill_in_geocoding :meeting_address, with: meeting_address
               fill_in :meeting_online_meeting_link, with: meeting_online_meeting_link
               fill_in :meeting_type_of_meeting, with: meeting_type_of_meeting
               fill_in :meeting_available_slots, with: meeting_available_slots
@@ -162,9 +161,6 @@ describe "User creates meeting", type: :system do
               fill_in :meeting_registration_type, with: meeting_registration_type
               fill_in :meeting_external_registration_system_link, with: meeting_external_registration_system_link
               fill_in :meeting_terms_and_conditions, with: meeting_terms_and_conditions
-=======
-              fill_in_geocoding :meeting_address, with: meeting_address
->>>>>>> develop
               fill_in :meeting_start_time, with: meeting_start_time.strftime(datetime_format)
               fill_in :meeting_end_time, with: meeting_end_time.strftime(datetime_format)
               select translated(category.name), from: :meeting_decidim_category_id
