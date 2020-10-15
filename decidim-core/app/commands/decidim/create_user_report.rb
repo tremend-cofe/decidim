@@ -27,9 +27,8 @@ module Decidim
         find_or_create_moderation!
         create_report!
         update_report_count!
+        send_notification_to_admins!
       end
-
-      send_email_to_moderators
 
       broadcast(:ok, report)
     end
@@ -55,10 +54,10 @@ module Decidim
       @moderation.update!(report_count: @moderation.report_count + 1)
     end
 
-    def send_email_to_moderators
-      # participatory_space_moderators.each do |moderator|
-      #   ReportedMailer.report(moderator, @report).deliver_later
-      # end
+    def send_notification_to_admins!
+      current_organization.admins.each do |admin|
+        Decidim::UserReportJob.perform_later(reportable, current_user, form.reason, admin)
+      end
     end
 
     def hideable?
