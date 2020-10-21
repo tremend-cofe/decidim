@@ -6,6 +6,7 @@ require "ransack"
 require "cells/rails"
 require "cells-erb"
 require "cell/partial"
+require "view_component/engine"
 
 module Decidim
   module Proposals
@@ -44,6 +45,10 @@ module Decidim
           resources :versions, only: [:show, :index]
         end
         root to: "proposals#index"
+      end
+
+      initializer "test" do |app|
+        app.config.view_component.render_monkey_patch_enabled = false
       end
 
       initializer "decidim_proposals.assets" do |app|
