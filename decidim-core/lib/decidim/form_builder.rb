@@ -8,6 +8,7 @@ module Decidim
   class FormBuilder < FoundationRailsHelper::FormBuilder
     include ActionView::Context
     include Decidim::TranslatableAttributes
+    include Decidim::Map::Autocomplete::FormBuilder
 
     # Public: generates a check boxes input from a collection and adds help
     # text and errors.
@@ -45,6 +46,14 @@ module Decidim
     end
     # rubocop:enable Metrics/ParameterLists
 
+    def create_language_selector(locales, tabs_id, name)
+      if Decidim.available_locales.count > 4
+        language_selector_select(locales, tabs_id, name)
+      else
+        language_tabs(locales, tabs_id, name)
+      end
+    end
+
     # Public: Generates an form field for each locale.
     #
     # type - The form field's type, like `text_area` or `text_input`
@@ -60,22 +69,10 @@ module Decidim
       label_tabs = content_tag(:div, class: "label--tabs") do
         field_label = label_i18n(name, options[:label] || label_for(name))
 
-        tabs_panels = "".html_safe
-        if options[:label] != false
-          tabs_panels = content_tag(:ul, class: "tabs tabs--lang", id: tabs_id, data: { tabs: true }) do
-            locales.each_with_index.inject("".html_safe) do |string, (locale, index)|
-              string + content_tag(:li, class: tab_element_class_for("title", index)) do
-                title = I18n.with_locale(locale) { I18n.t("name", scope: "locale") }
-                element_class = nil
-                element_class = "is-tab-error" if error?(name_with_locale(name, locale))
-                tab_content_id = sanitize_tabs_selector "#{tabs_id}-#{name}-panel-#{index}"
-                content_tag(:a, title, href: "##{tab_content_id}", class: element_class)
-              end
-            end
-          end
-        end
+        language_selector = "".html_safe
+        language_selector = create_language_selector(locales, tabs_id, name) if options[:label] != false
 
-        safe_join [field_label, tabs_panels]
+        safe_join [field_label, language_selector]
       end
 
       hashtaggable = options.delete(:hashtaggable)
@@ -285,13 +282,17 @@ module Decidim
     # - multiple    - Multiple mode, to allow multiple scopes selection.
     # - label       - Show label?
     # - checkboxes_on_top - Show checked picker values on top (default) or below the picker prompt (only for multiple pickers)
+    # - namespace   - prepend a custom name to the html element's DOM id.
     #
     # Also it should receive a block that returns a Hash with :url and :text for each selected scope (and for null scope for prompt)
     #
     # Returns a String.
     def scopes_picker(attribute, options = {})
-      id = "#{@object_name}_#{attribute}"
-      id = "#{self.options[:namespace]}_#{id}" if self.options.has_key?(:namespace)
+      id = if self.options.has_key?(:namespace)
+             "#{self.options[:namespace]}_#{sanitize_for_dom_selector(@object_name)}"
+           else
+             "#{sanitize_for_dom_selector(@object_name)}_#{attribute}"
+           end
 
       picker_options = {
         id: id,
@@ -348,7 +349,7 @@ module Decidim
 
     # Public: Override so checkboxes are rendered before the label.
     def check_box(attribute, options = {}, checked_value = "1", unchecked_value = "0")
-      custom_label(attribute, options[:label], options[:label_options], true) do
+      custom_label(attribute, options[:label], options[:label_options], field_before_label: true) do
         options.delete(:label)
         options.delete(:label_options)
         @template.check_box(@object_name, attribute, objectify_options(options), checked_value, unchecked_value)
@@ -360,7 +361,7 @@ module Decidim
     def date_field(attribute, options = {})
       value = object.send(attribute)
       data = { datepicker: "" }
-      data[:startdate] = I18n.localize(value, format: :decidim_short) if value.present? && value.is_a?(Date)
+      data[:startdate] = I18n.l(value, format: :decidim_short) if value.present? && value.is_a?(Date)
       datepicker_format = ruby_format_to_datepicker(I18n.t("date.formats.decidim_short"))
       data[:"date-format"] = datepicker_format
 
@@ -378,7 +379,7 @@ module Decidim
     def datetime_field(attribute, options = {})
       value = object.send(attribute)
       data = { datepicker: "", timepicker: "" }
-      data[:startdate] = I18n.localize(value, format: :decidim_short) if value.present? && value.is_a?(ActiveSupport::TimeWithZone)
+      data[:startdate] = I18n.l(value, format: :decidim_short) if value.present? && value.is_a?(ActiveSupport::TimeWithZone)
       datepicker_format = ruby_format_to_datepicker(I18n.t("time.formats.decidim_short"))
       data[:"date-format"] = datepicker_format
 
@@ -427,14 +428,12 @@ module Decidim
         template += @template.link_to file.file.filename, file.url, target: "_blank", rel: "noopener"
       end
 
-      if file_is_present?(file)
-        if options[:optional]
-          template += content_tag :div, class: "field" do
-            safe_join([
-                        @template.check_box(@object_name, "remove_#{attribute}"),
-                        label("remove_#{attribute}", I18n.t("remove_this_file", scope: "decidim.forms"))
-                      ])
-          end
+      if file_is_present?(file) && options[:optional]
+        template += content_tag :div, class: "field" do
+          safe_join([
+                      @template.check_box(@object_name, "remove_#{attribute}"),
+                      label("remove_#{attribute}", I18n.t("remove_this_file", scope: "decidim.forms"))
+                    ])
         end
       end
 
@@ -449,48 +448,32 @@ module Decidim
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity
 
-    def upload_help(attribute, _options = {})
-      file = object.send attribute
+    def upload_help(attribute, options = {})
+      humanizer = FileValidatorHumanizer.new(object, attribute)
+
+      help_scope = begin
+        if options[:help_i18n_scope].present?
+          options[:help_i18n_scope]
+        elsif humanizer.uploader.is_a?(Decidim::ImageUploader)
+          "decidim.forms.file_help.image"
+        else
+          "decidim.forms.file_help.file"
+        end
+      end
+
+      help_messages = begin
+        if options[:help_i18n_messages].present?
+          Array(options[:help_i18n_messages])
+        else
+          %w(message_1 message_2)
+        end
+      end
 
       content_tag(:div, class: "help-text") do
-        file_size_validator = object.singleton_class.validators_on(
-          attribute
-        ).find { |validator| validator.is_a?(::ActiveModel::Validations::FileSizeValidator) }
-        if file_size_validator
-          lte = file_size_validator.options[:less_than_or_equal_to]
-          max_file_size = lte.call(nil) if lte && lte.lambda?
-        end
-
-        help_scope = begin
-          if file.is_a?(Decidim::ImageUploader)
-            "decidim.forms.file_help.image"
-          else
-            "decidim.forms.file_help.file"
-          end
-        end
-        help_messages = %w(message_1 message_2)
-
         inner = "<p>#{I18n.t("explanation", scope: help_scope)}</p>".html_safe
         inner + content_tag(:ul) do
           messages = help_messages.each.map { |msg| I18n.t(msg, scope: help_scope) }
-
-          if max_file_size
-            file_size_mb = (((max_file_size / 1024 / 1024) * 100) / 100).round
-            messages << I18n.t(
-              "max_file_size",
-              megabytes: file_size_mb,
-              scope: "decidim.forms.file_validation"
-            )
-          end
-
-          if file.respond_to?(:extension_whitelist, true)
-            allowed_extensions = file.send(:extension_whitelist)
-            messages << I18n.t(
-              "allowed_file_extensions",
-              extensions: allowed_extensions.join(" "),
-              scope: "decidim.forms.file_validation"
-            )
-          end
+          messages += humanizer.messages
 
           messages.map { |msg| content_tag(:li, msg) }.join("\n").html_safe
         end.html_safe
@@ -578,6 +561,9 @@ module Decidim
       html + error_and_help_text(attribute, options.merge(help_text: help_text))
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity
+    # rubocop: disable Metrics/PerceivedComplexity
+
     # Private: Builds a Hash of options to be injected at the HTML output as
     # HTML5 validations.
     #
@@ -596,6 +582,8 @@ module Decidim
       validation_options[:maxlength] ||= max_length if max_length.to_i.positive?
       validation_options
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
+    # rubocop: enable Metrics/PerceivedComplexity
 
     # Private: Tries to find if an attribute is required in the form object.
     #
@@ -666,7 +654,7 @@ module Decidim
     # Returns a String.
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
-    def custom_label(attribute, text, options, field_before_label = false, show_required = true)
+    def custom_label(attribute, text, options, field_before_label: false, show_required: true)
       return block_given? ? yield.html_safe : "".html_safe if text == false
 
       text = default_label_text(object, attribute) if text.nil? || text == true
@@ -699,7 +687,7 @@ module Decidim
 
       options = { count: 1, default: defaults }
 
-      text = I18n.t(defaults.shift, options)
+      text = I18n.t(defaults.shift, **options)
       content_tag(:span, text, class: "form-error")
     end
 
@@ -818,6 +806,10 @@ module Decidim
       id.tr("[", "-").tr("]", "-")
     end
 
+    def sanitize_for_dom_selector(name)
+      name.to_s.parameterize.underscore
+    end
+
     def extension_whitelist_help(extension_whitelist)
       content_tag :p, class: "extensions-help help-text" do
         safe_join([
@@ -871,6 +863,36 @@ module Decidim
       return block unless input_size.changed?
 
       content_tag(:span, prefix + input + postfix, class: "row collapse")
+    end
+
+    def language_selector_select(locales, tabs_id, name)
+      content_tag(:div) do
+        content_tag(:select, id: tabs_id, class: "language-change") do
+          locales.each_with_index.inject("".html_safe) do |string, (locale, index)|
+            title = if error?(name_with_locale(name, locale))
+                      I18n.with_locale(locale) { I18n.t("name_with_error", scope: "locale") }
+                    else
+                      I18n.with_locale(locale) { I18n.t("name", scope: "locale") }
+                    end
+            tab_content_id = sanitize_tabs_selector "#{tabs_id}-#{name}-panel-#{index}"
+            string + content_tag(:option, title, value: "##{tab_content_id}")
+          end
+        end
+      end
+    end
+
+    def language_tabs(locales, tabs_id, name)
+      content_tag(:ul, class: "tabs tabs--lang", id: tabs_id, data: { tabs: true }) do
+        locales.each_with_index.inject("".html_safe) do |string, (locale, index)|
+          string + content_tag(:li, class: tab_element_class_for("title", index)) do
+            title = I18n.with_locale(locale) { I18n.t("name", scope: "locale") }
+            element_class = nil
+            element_class = "is-tab-error" if error?(name_with_locale(name, locale))
+            tab_content_id = sanitize_tabs_selector "#{tabs_id}-#{name}-panel-#{index}"
+            content_tag(:a, title, href: "##{tab_content_id}", class: element_class)
+          end
+        end
+      end
     end
   end
 end

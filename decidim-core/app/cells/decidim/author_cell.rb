@@ -18,6 +18,10 @@ module Decidim
 
     delegate :current_user, to: :controller, prefix: false
 
+    def author_name
+      options[:author_name_text] || model.name
+    end
+
     def show
       render
     end
@@ -51,7 +55,7 @@ module Decidim
     def withdraw_path
       return decidim.withdraw_amend_path(from_context.amendment) if from_context.emendation?
 
-      from_context_path + "/withdraw"
+      "#{from_context_path}/withdraw"
     end
 
     def creation_date?

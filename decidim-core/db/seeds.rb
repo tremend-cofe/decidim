@@ -26,7 +26,7 @@ if !Rails.env.production? || ENV["SEED"]
     smtp_settings: {
       from: Faker::Internet.email,
       user_name: Faker::Twitter.unique.screen_name,
-      encrypted_password: Decidim::AttributeEncryptor.encrypt(Faker::Internet.password(8)),
+      encrypted_password: Decidim::AttributeEncryptor.encrypt(Faker::Internet.password(min_length: 8)),
       address: ENV["DECIDIM_HOST"] || "localhost",
       port: ENV["DECIDIM_SMTP_PORT"] || "25"
     },
@@ -42,7 +42,8 @@ if !Rails.env.production? || ENV["SEED"]
     tos_version: Time.current,
     badges_enabled: true,
     user_groups_enabled: true,
-    send_welcome_notification: true
+    send_welcome_notification: true,
+    file_upload_settings: Decidim::OrganizationSettings.default(:upload)
   )
 
   if organization.top_scopes.none?
@@ -69,7 +70,7 @@ if !Rails.env.production? || ENV["SEED"]
       5.times do
         Decidim::Scope.create!(
           name: Decidim::Faker::Localized.literal(Faker::Address.unique.city),
-          code: parent.code + "-" + Faker::Address.unique.state_abbr,
+          code: "#{parent.code}-#{Faker::Address.unique.state_abbr}",
           scope_type: municipality,
           organization: organization,
           parent: parent
@@ -119,7 +120,7 @@ if !Rails.env.production? || ENV["SEED"]
     admin: true,
     tos_agreement: true,
     personal_url: Faker::Internet.url,
-    about: Faker::Lorem.paragraph(2),
+    about: Faker::Lorem.paragraph(sentence_count: 2),
     accepted_tos_version: organization.tos_version,
     admin_terms_accepted_at: Time.current
   )
@@ -136,7 +137,7 @@ if !Rails.env.production? || ENV["SEED"]
     organization: organization,
     tos_agreement: true,
     personal_url: Faker::Internet.url,
-    about: Faker::Lorem.paragraph(2),
+    about: Faker::Lorem.paragraph(sentence_count: 2),
     accepted_tos_version: organization.tos_version
   )
 
@@ -152,7 +153,7 @@ if !Rails.env.production? || ENV["SEED"]
     organization: organization,
     tos_agreement: true,
     personal_url: Faker::Internet.url,
-    about: Faker::Lorem.paragraph(2),
+    about: Faker::Lorem.paragraph(sentence_count: 2),
     accepted_tos_version: organization.tos_version
   )
 
@@ -172,7 +173,7 @@ if !Rails.env.production? || ENV["SEED"]
         email: Faker::Internet.email,
         confirmed_at: Time.current,
         extended_data: {
-          document_number: Faker::Number.number(10),
+          document_number: Faker::Number.number(digits: 10).to_s,
           phone: Faker::PhoneNumber.phone_number,
           verified_at: verified_at
         },
@@ -188,13 +189,13 @@ if !Rails.env.production? || ENV["SEED"]
   end
 
   Decidim::OAuthApplication.create!(
+    organization: organization,
     name: "Test OAuth application",
     organization_name: "Example organization",
     organization_url: "http://www.example.org",
-    organization_logo: File.new(File.join(seeds_root, "homepage_image.jpg")),
+    organization_logo: File.new(File.join(seeds_root, "homepage_image.jpg")), # Keep after organization
     redirect_uri: "https://www.example.org/oauth/decidim",
-    scopes: "public",
-    organization: organization
+    scopes: "public"
   )
 
   Decidim::System::CreateDefaultContentBlocks.call(organization)

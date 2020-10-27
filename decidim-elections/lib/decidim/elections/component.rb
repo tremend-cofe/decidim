@@ -77,7 +77,7 @@ Decidim.register_component(:elections) do |component|
           end,
           start_time: 3.weeks.from_now,
           end_time: 3.weeks.from_now + 4.hours,
-          published_at: Faker::Boolean.boolean(0.5) ? 1.week.ago : nil
+          published_at: Faker::Boolean.boolean(true_ratio: 0.5) ? 1.week.ago : nil
         },
         visibility: "all"
       )
@@ -92,14 +92,15 @@ Decidim.register_component(:elections) do |component|
             description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
               Decidim::Faker::Localized.paragraph(3)
             end,
-            max_selections: Faker::Number.between(0, 5),
-            weight: Faker::Number.number(1),
-            random_answers_order: Faker::Boolean.boolean(0.5)
+            max_selections: Faker::Number.between(from: 1, to: 5),
+            weight: Faker::Number.number(digits: 1),
+            random_answers_order: Faker::Boolean.boolean(true_ratio: 0.5),
+            min_selections: Faker::Number.between(from: 0, to: 1)
           },
           visibility: "all"
         )
 
-        Faker::Number.between(2, 5).times do
+        Faker::Number.between(from: 2, to: 5).times do
           answer = Decidim.traceability.create!(
             Decidim::Elections::Answer,
             admin_user,
@@ -109,7 +110,7 @@ Decidim.register_component(:elections) do |component|
               description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
                 Decidim::Faker::Localized.paragraph(3)
               end,
-              weight: Faker::Number.number(1)
+              weight: Faker::Number.number(digits: 1)
             },
             visibility: "all"
           )
@@ -117,11 +118,17 @@ Decidim.register_component(:elections) do |component|
           Decidim::Attachment.create!(
             title: Decidim::Faker::Localized.sentence(2),
             description: Decidim::Faker::Localized.sentence(5),
-            file: File.new(File.join(__dir__, "seeds", "city.jpeg")),
-            attached_to: answer
+            attached_to: answer,
+            file: File.new(File.join(__dir__, "seeds", "city.jpeg")) # Keep after attached_to
           )
         end
       end
     end
   end
 end
+
+Decidim.register_global_engine(
+  :decidim_elections_trustee_zone,
+  Decidim::Elections::TrusteeZoneEngine,
+  at: "/trustee"
+)

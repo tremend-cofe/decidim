@@ -43,6 +43,7 @@ FactoryBot.define do
         election.questions << build(:question, :yes_no, election: election, weight: 1)
         election.questions << build(:question, :candidates, election: election, weight: 3)
         election.questions << build(:question, :projects, election: election, weight: 2)
+        election.questions << build(:question, :nota, election: election, weight: 4)
       end
     end
   end
@@ -56,8 +57,9 @@ FactoryBot.define do
     election
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    min_selections { 1 }
     max_selections { 1 }
-    weight { Faker::Number.number(1) }
+    weight { Faker::Number.number(digits: 1) }
     random_answers_order { true }
 
     trait :complete do
@@ -85,12 +87,42 @@ FactoryBot.define do
       answers { 6 }
       more_information { true }
     end
+
+    trait :nota do
+      complete
+      max_selections { 4 }
+      answers { 8 }
+      min_selections { 0 }
+    end
   end
 
   factory :election_answer, class: "Decidim::Elections::Answer" do
     question
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
-    weight { Faker::Number.number(1) }
+    weight { Faker::Number.number(digits: 1) }
+  end
+
+  factory :trustee, class: "Decidim::Elections::Trustee" do
+    public_key { nil }
+    user
+
+    trait :considered do
+      after(:build) do |trustee, _evaluator|
+        trustee.trustees_participatory_spaces << build(:trustees_participatory_space)
+      end
+    end
+
+    trait :with_elections do
+      after(:build) do |trustee, _evaluator|
+        trustee.elections << build(:election)
+      end
+    end
+  end
+
+  factory :trustees_participatory_space, class: "Decidim::Elections::TrusteesParticipatorySpace" do
+    participatory_space { create(:participatory_process) }
+    considered { true }
+    trustee
   end
 end

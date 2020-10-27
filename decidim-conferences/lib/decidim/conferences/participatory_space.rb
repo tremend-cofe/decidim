@@ -55,7 +55,7 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
       conference = Decidim::Conference.create!(
         title: Decidim::Faker::Localized.sentence(5),
         slogan: Decidim::Faker::Localized.sentence(2),
-        slug: Faker::Internet.unique.slug(nil, "-"),
+        slug: Faker::Internet.unique.slug(words: nil, glue: "-"),
         hashtag: "##{Faker::Lorem.word}",
         short_description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
           Decidim::Faker::Localized.sentence(3)
@@ -63,11 +63,11 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
         description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
           Decidim::Faker::Localized.paragraph(3)
         end,
-        hero_image: File.new(File.join(seeds_root, "city.jpeg")),
-        banner_image: File.new(File.join(seeds_root, "city2.jpeg")),
+        organization: organization,
+        hero_image: File.new(File.join(seeds_root, "city.jpeg")), # Keep after organization
+        banner_image: File.new(File.join(seeds_root, "city2.jpeg")), # Keep after organization
         promoted: true,
         published_at: 2.weeks.ago,
-        organization: organization,
         objectives: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
           Decidim::Faker::Localized.paragraph(3)
         end,
@@ -113,23 +113,23 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(seeds_root, "Exampledocument.pdf")),
         attachment_collection: attachment_collection,
-        attached_to: conference
+        attached_to: conference,
+        file: File.new(File.join(seeds_root, "Exampledocument.pdf")) # Keep after attached_to
       )
 
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(seeds_root, "city.jpeg")),
-        attached_to: conference
+        attached_to: conference,
+        file: File.new(File.join(seeds_root, "city.jpeg")) # Keep after attached_to
       )
 
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(seeds_root, "Exampledocument.pdf")),
-        attached_to: conference
+        attached_to: conference,
+        file: File.new(File.join(seeds_root, "Exampledocument.pdf")) # Keep after attached_to
       )
 
       2.times do
@@ -161,11 +161,11 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
         4.times do
           Decidim::Conferences::Partner.create!(
             name: Faker::Name.name,
-            weight: Faker::Number.between(1, 10),
+            weight: Faker::Number.between(from: 1, to: 10),
             link: Faker::Internet.url,
             partner_type: type,
-            logo: File.new(File.join(seeds_root, "logo.png")),
-            conference: conference
+            conference: conference,
+            logo: File.new(File.join(seeds_root, "logo.png")) # Keep after conference
           )
         end
       end
@@ -175,7 +175,7 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
           title: Decidim::Faker::Localized.sentence(2),
           link: Faker::Internet.url,
           date: Date.current,
-          weight: Faker::Number.between(1, 10),
+          weight: Faker::Number.between(from: 1, to: 10),
           conference: conference
         )
       end
@@ -184,8 +184,8 @@ Decidim.register_participatory_space(:conferences) do |participatory_space|
         Decidim::Conferences::RegistrationType.create!(
           title: Decidim::Faker::Localized.sentence(2),
           description: Decidim::Faker::Localized.sentence(5),
-          weight: Faker::Number.between(1, 10),
-          price: Faker::Number.between(1, 300),
+          weight: Faker::Number.between(from: 1, to: 10),
+          price: Faker::Number.between(from: 1, to: 300),
           published_at: 2.weeks.ago,
           conference: conference
         )

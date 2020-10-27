@@ -4,17 +4,16 @@
 
 ## Upgrade Notes
 
-- **Bump Ruby to v2.6**
+- **Bump Ruby to v2.7**
 
-As per [\#6320](https://github.com/decidim/decidim/pull/6320) we've bumped the minimum Ruby version to 2.6.6.
+We've bumped the minimum Ruby version to 2.7.1, thanks to 2 PRs:
 
-- **Stable branches nomenclature changes**
+- [\#6320](https://github.com/decidim/decidim/pull/6320)
+- [\#6522](https://github.com/decidim/decidim/pull/6522)
 
-Since this release we're changing the branch nomenclature for stable branches. Until now we were using `x.y-stable`, now we will use `release/x.y-stable`.
-Legacy names for stable branches will be kept for a while but won't be created anymore, so new releases won't have the old `x.y-stable` nomenclature.
+- **Comments no longer use react**
 
-The plan is to keep new and old nomenclatures until the release of v0.25, so they will coexist until that release.
-When releasing v0.25 all stable branches with the nomenclature `x.y-stable` will be removed.
+As per [\#6498](https://github.com/decidim/decidim/pull/6498), the comments component is no longer implemented with the react component. In case you had customized the react component, it will still work as you would expect as the GraphQL API has not disappeared anywhere. You should, however, gradually migrate to the "new way" (Trailblazer cells) in order to ensure compatibility with future versions too.
 
 ### Added
 
@@ -22,14 +21,10 @@ When releasing v0.25 all stable branches with the nomenclature `x.y-stable` will
 
 ### Fixed
 
-- **decidim-comments**: Fix comments JS errors and delays [\#6193](https://github.com/decidim/decidim/pull/6193)
-- **decidim-elections**: Improve navigation consistency in the admin zone for elections questions and answers [\#6139](https://github.com/decidim/decidim/pull/6139)
-- **decidim-assemblies**, **decidim-core**, **decidim-dev**, **decidim-forms**, **decidim-participatory_processes**, **decidim-proposals**: Fix rubocop errors arising from capybara upgrade [\#6197](https://github.com/decidim/decidim/pull/6197)
-
 ### Removed
 
-- **decidim-proposals**: Remove legacy proposal endorsements. [\#5643](https://github.com/decidim/decidim/pull/5643)
+- **decidim-core**: Remove legacy 'show statistics' checkbox in Appearance. [\#6575](https://github.com/decidim/decidim/pull/6575)
 
 ## Previous versions
 
-Please check [release/0.22-stable](https://github.com/decidim/decidim/blob/release/0.22-stable/CHANGELOG.md) for previous changes.
+Please check [release/0.23-stable](https://github.com/decidim/decidim/blob/release/0.23-stable/CHANGELOG.md) for previous changes.

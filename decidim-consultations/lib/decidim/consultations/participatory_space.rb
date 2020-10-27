@@ -40,7 +40,7 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
 
     # Active consultation
     active_consultation_params = {
-      slug: Faker::Internet.unique.slug(nil, "-"),
+      slug: Faker::Internet.unique.slug(words: nil, glue: "-"),
       title: Decidim::Faker::Localized.sentence(3),
       subtitle: Decidim::Faker::Localized.sentence(3),
       description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
@@ -49,10 +49,10 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
       published_at: Time.now.utc,
       start_voting_date: Time.zone.today,
       end_voting_date: Time.zone.today + 1.month,
-      banner_image: File.new(File.join(seeds_root, "city2.jpeg")),
+      organization: organization,
+      banner_image: File.new(File.join(seeds_root, "city2.jpeg")), # Keep after organization
       introductory_video_url: "https://www.youtube.com/embed/zhMMW0TENNA",
-      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id,
-      organization: organization
+      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id
     }
 
     active_consultation = Decidim.traceability.perform_action!(
@@ -66,7 +66,7 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
     active_consultation.add_to_index_as_search_resource
 
     finished_consultation_params = {
-      slug: Faker::Internet.unique.slug(nil, "-"),
+      slug: Faker::Internet.unique.slug(words: nil, glue: "-"),
       title: Decidim::Faker::Localized.sentence(3),
       subtitle: Decidim::Faker::Localized.sentence(3),
       description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
@@ -76,10 +76,10 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
       results_published_at: Time.zone.today - 1.month,
       start_voting_date: Time.zone.today - 2.months,
       end_voting_date: Time.zone.today - 1.month,
-      banner_image: File.new(File.join(seeds_root, "city2.jpeg")),
+      organization: organization,
+      banner_image: File.new(File.join(seeds_root, "city2.jpeg")), # Keep after organization
       introductory_video_url: "https://www.youtube.com/embed/zhMMW0TENNA",
-      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id,
-      organization: organization
+      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id
     }
 
     finished_consultation = Decidim.traceability.perform_action!(
@@ -93,7 +93,7 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
     finished_consultation.add_to_index_as_search_resource
 
     upcoming_consultation_params = {
-      slug: Faker::Internet.unique.slug(nil, "-"),
+      slug: Faker::Internet.unique.slug(words: nil, glue: "-"),
       title: Decidim::Faker::Localized.sentence(3),
       subtitle: Decidim::Faker::Localized.sentence(3),
       description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
@@ -102,10 +102,10 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
       published_at: Time.zone.today + 1.month,
       start_voting_date: Time.zone.today + 1.month + 1.day,
       end_voting_date: Time.zone.today + 2.months,
-      banner_image: File.new(File.join(seeds_root, "city2.jpeg")),
+      organization: organization,
+      banner_image: File.new(File.join(seeds_root, "city2.jpeg")), # Keep after organization
       introductory_video_url: "https://www.youtube.com/embed/zhMMW0TENNA",
-      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id,
-      organization: organization
+      decidim_highlighted_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id
     }
 
     upcoming_consultation = Decidim.traceability.perform_action!(
@@ -122,7 +122,7 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
       4.times do
         params = {
           consultation: consultation,
-          slug: Faker::Internet.unique.slug(nil, "-"),
+          slug: Faker::Internet.unique.slug(words: nil, glue: "-"),
           decidim_scope_id: Decidim::Scope.reorder(Arel.sql("RANDOM()")).first.id,
           title: Decidim::Faker::Localized.sentence(3),
           subtitle: Decidim::Faker::Localized.sentence(3),
@@ -132,12 +132,12 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
           question_context: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
             Decidim::Faker::Localized.paragraph(3)
           end,
-          hero_image: File.new(File.join(seeds_root, "city.jpeg")),
-          banner_image: File.new(File.join(seeds_root, "city2.jpeg")),
+          organization: organization,
+          hero_image: File.new(File.join(seeds_root, "city.jpeg")), # Keep after organization
+          banner_image: File.new(File.join(seeds_root, "city2.jpeg")), # Keep after organization
           promoter_group: Decidim::Faker::Localized.sentence(3),
           participatory_scope: Decidim::Faker::Localized.sentence(3),
-          published_at: Time.now.utc,
-          organization: organization
+          published_at: Time.now.utc
         }
 
         question = Decidim.traceability.perform_action!(
@@ -161,15 +161,15 @@ Decidim.register_participatory_space(:consultations) do |participatory_space|
         Decidim::Attachment.create!(
           title: Decidim::Faker::Localized.sentence(2),
           description: Decidim::Faker::Localized.sentence(5),
-          file: File.new(File.join(seeds_root, "city.jpeg")),
-          attached_to: question
+          attached_to: question,
+          file: File.new(File.join(seeds_root, "city.jpeg")) # Keep after attached_to
         )
 
         Decidim::Attachment.create!(
           title: Decidim::Faker::Localized.sentence(2),
           description: Decidim::Faker::Localized.sentence(5),
-          file: File.new(File.join(seeds_root, "Exampledocument.pdf")),
-          attached_to: question
+          attached_to: question,
+          file: File.new(File.join(seeds_root, "Exampledocument.pdf")) # Keep after attached_to
         )
       end
     end

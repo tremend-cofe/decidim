@@ -7,7 +7,7 @@ module Decidim
       include Decidim::Resourceable
       include Decidim::Coauthorable
       include Decidim::HasComponent
-      include Decidim::ScopableComponent
+      include Decidim::ScopableResource
       include Decidim::HasReference
       include Decidim::HasCategory
       include Decidim::Reportable
@@ -19,7 +19,6 @@ module Decidim
       include Decidim::Loggable
       include Decidim::Fingerprintable
       include Decidim::DataPortability
-      include Decidim::Hashtaggable
       include Decidim::Proposals::ParticipatoryTextSection
       include Decidim::Amendable
       include Decidim::NewsletterParticipant
@@ -53,7 +52,7 @@ module Decidim
 
       validates :title, :body, presence: true
 
-      geocoded_by :address, http_headers: ->(proposal) { { "Referer" => proposal.component.organization.host } }
+      geocoded_by :address
 
       scope :answered, -> { where.not(answered_at: nil) }
       scope :not_answered, -> { where(answered_at: nil) }
@@ -70,33 +69,12 @@ module Decidim
       scope :drafts, -> { where(published_at: nil) }
       scope :except_drafts, -> { where.not(published_at: nil) }
       scope :published, -> { where.not(published_at: nil) }
-      scope :official_origin, lambda {
-        where.not(coauthorships_count: 0)
-             .joins(:coauthorships)
-             .where(decidim_coauthorships: { decidim_author_type: "Decidim::Organization" })
-      }
-      scope :citizens_origin, lambda {
-        where.not(coauthorships_count: 0)
-             .joins(:coauthorships)
-             .where.not(decidim_coauthorships: { decidim_author_type: "Decidim::Organization" })
-      }
-      scope :user_group_origin, lambda {
-        where.not(coauthorships_count: 0)
-             .joins(:coauthorships)
-             .where(decidim_coauthorships: { decidim_author_type: "Decidim::UserBaseEntity" })
-             .where.not(decidim_coauthorships: { decidim_user_group_id: nil })
-      }
-      scope :meeting_origin, lambda {
-        where.not(coauthorships_count: 0)
-             .joins(:coauthorships)
-             .where(decidim_coauthorships: { decidim_author_type: "Decidim::Meetings::Meeting" })
-      }
       scope :sort_by_valuation_assignments_count_asc, lambda {
-        order(sort_by_valuation_assignments_count_nulls_last_query + "ASC NULLS FIRST")
+        order("#{sort_by_valuation_assignments_count_nulls_last_query}ASC NULLS FIRST")
       }
 
       scope :sort_by_valuation_assignments_count_desc, lambda {
-        order(sort_by_valuation_assignments_count_nulls_last_query + "DESC NULLS LAST")
+        order("#{sort_by_valuation_assignments_count_nulls_last_query}DESC NULLS LAST")
       }
 
       def self.with_valuation_assigned_to(user, space)
@@ -111,8 +89,8 @@ module Decidim
       searchable_fields({
                           scope_id: :decidim_scope_id,
                           participatory_space: { component: :participatory_space },
-                          D: :search_body,
-                          A: :search_title,
+                          D: :body,
+                          A: :title,
                           datetime: :published_at
                         },
                         index_on_create: ->(proposal) { proposal.official? },
@@ -304,22 +282,9 @@ module Decidim
         published_at.nil?
       end
 
-      # method for sort_link by number of comments
-      ransacker :commentable_comments_count do
-        query = <<-SQL
-        (SELECT COUNT(decidim_comments_comments.id)
-         FROM decidim_comments_comments
-         WHERE decidim_comments_comments.decidim_commentable_id = decidim_proposals_proposals.id
-         AND decidim_comments_comments.decidim_commentable_type = 'Decidim::Proposals::Proposal'
-         GROUP BY decidim_comments_comments.decidim_commentable_id
-         )
-        SQL
-        Arel.sql(query)
-      end
-
       # Defines the base query so that ransack can actually sort by this value
       def self.sort_by_valuation_assignments_count_nulls_last_query
-        <<-SQL
+        <<-SQL.squish
         (
           SELECT COUNT(decidim_proposals_valuation_assignments.id)
           FROM decidim_proposals_valuation_assignments
@@ -331,7 +296,7 @@ module Decidim
 
       # method to filter by assigned valuator role ID
       def self.valuator_role_ids_has(value)
-        query = <<-SQL
+        query = <<-SQL.squish
         :value = any(
           (SELECT decidim_proposals_valuation_assignments.valuator_role_id
           FROM decidim_proposals_valuation_assignments
@@ -372,7 +337,7 @@ module Decidim
       end
 
       ransacker :is_emendation do |_parent|
-        query = <<-SQL
+        query = <<-SQL.squish
         (
           SELECT EXISTS (
             SELECT 1 FROM decidim_amendments

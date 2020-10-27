@@ -10,6 +10,7 @@ module Decidim
       include Decidim::ResourceHelper
       include Decidim::SanitizeHelper
       include Decidim::TranslatableAttributes
+      include ActionView::Helpers::DateHelper
 
       def debate
         __getobj__
@@ -46,20 +47,28 @@ module Decidim
         end
       end
 
-      def handle_locales(content, all_locales)
+      def handle_locales(content, all_locales, &block)
         if all_locales
-          content.each_with_object({}) do |(locale, string), parsed_content|
-            parsed_content[locale] = yield(string)
+          content.each_with_object({}) do |(key, value), parsed_content|
+            parsed_content[key] = if key == "machine_translations"
+                                    handle_locales(value, all_locales, &block)
+                                  else
+                                    block.call(value)
+                                  end
           end
         else
           yield(translated_attribute(content))
         end
       end
 
-      def last_comment_by
-        return unless comments_authors.any?
+      def last_comment_at
+        return unless debate.last_comment_at
 
-        comments.order("created_at DESC").first.normalized_author&.presenter
+        time_ago_in_words(debate.last_comment_at)
+      end
+
+      def last_comment_by
+        debate.last_comment_by&.presenter
       end
 
       def participants_count

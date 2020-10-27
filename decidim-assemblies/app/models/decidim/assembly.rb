@@ -24,7 +24,7 @@ module Decidim
     include Decidim::HasAttachmentCollections
     include Decidim::Participable
     include Decidim::Publicable
-    include Decidim::Scopable
+    include Decidim::ScopableParticipatorySpace
     include Decidim::Followable
     include Decidim::HasReference
     include Decidim::Traceable
@@ -32,6 +32,7 @@ module Decidim
     include Decidim::ParticipatorySpaceResourceable
     include Decidim::HasPrivateUsers
     include Decidim::Searchable
+    include Decidim::HasUploadValidations
     include Decidim::TranslatableResource
 
     SOCIAL_HANDLERS = [:twitter, :facebook, :instagram, :youtube, :github].freeze
@@ -66,9 +67,12 @@ module Decidim
     has_many :components, as: :participatory_space, dependent: :destroy
 
     has_many :children, foreign_key: "parent_id", class_name: "Decidim::Assembly", inverse_of: :parent, dependent: :destroy
-    belongs_to :parent, foreign_key: "parent_id", class_name: "Decidim::Assembly", inverse_of: :children, optional: true, counter_cache: :children_count
+    belongs_to :parent, class_name: "Decidim::Assembly", inverse_of: :children, optional: true, counter_cache: :children_count
 
+    validates_upload :hero_image
     mount_uploader :hero_image, Decidim::HeroImageUploader
+
+    validates_upload :banner_image
     mount_uploader :banner_image, Decidim::BannerImageUploader
 
     validates :slug, uniqueness: { scope: :organization }
@@ -163,6 +167,10 @@ module Decidim
       roles.where(role: role_name)
     end
 
+    def attachment_context
+      :admin
+    end
+
     private
 
     # When an assembly changes their parent, we need to update the parents_path attribute
@@ -207,9 +215,9 @@ module Decidim
     # rubocop:disable Rails/SkipsModelValidations
     def update_children_paths
       self.class.where(
-        ["#{self.class.table_name}.parents_path <@ :old_path AND #{self.class.table_name}.id != :id", old_path: parents_path_before_last_save, id: id]
+        ["#{self.class.table_name}.parents_path <@ :old_path AND #{self.class.table_name}.id != :id", { old_path: parents_path_before_last_save, id: id }]
       ).update_all(
-        ["parents_path = :new_path || subpath(parents_path, nlevel(:old_path))", new_path: parents_path, old_path: parents_path_before_last_save]
+        ["parents_path = :new_path || subpath(parents_path, nlevel(:old_path))", { new_path: parents_path, old_path: parents_path_before_last_save }]
       )
     end
     # rubocop:enable Rails/SkipsModelValidations

@@ -25,15 +25,12 @@ module Decidim
     # Fetches info about different versions, their processors and dimensions
     def dimensions_info
       if versions.any?
-        versions.map do |version, info|
-          [
-            version,
-            {
-              processor: info.processors[0][0],
-              dimensions: info.processors[0][1]
-            }
-          ]
-        end.to_h
+        versions.transform_values do |info|
+          {
+            processor: info.processors[0][0],
+            dimensions: info.processors[0][1]
+          }
+        end
       else
         processors.map do |info|
           [:default, { processor: info[0], dimensions: info[1] }]
@@ -44,7 +41,7 @@ module Decidim
     # Add a white list of extensions which are allowed to be uploaded.
     # For images you might use something like this:
     def extension_whitelist
-      %w(jpg jpeg gif png bmp ico)
+      Decidim.organization_settings(model).upload_allowed_file_extensions_image
     end
 
     # A simple check to avoid DoS with maliciously crafted images, or just to
@@ -60,7 +57,7 @@ module Decidim
 
     def validate_size
       manipulate! do |image|
-        validation_error!(I18n.t("carrierwave.errors.image_too_big")) if image.size > Decidim.maximum_attachment_size
+        validation_error!(I18n.t("carrierwave.errors.image_too_big")) if image.size > maximum_upload_size
         image
       end
     end
@@ -81,6 +78,10 @@ module Decidim
     def validation_error!(text)
       model.errors.add(mounted_as, text)
       raise CarrierWave::IntegrityError, text
+    end
+
+    def maximum_upload_size
+      Decidim.organization_settings(model).upload_maximum_file_size
     end
   end
 end

@@ -50,6 +50,8 @@ Decidim.register_component(:meetings) do |component|
   component.actions = %w(join)
 
   component.settings(:global) do |settings|
+    settings.attribute :scopes_enabled, type: :boolean, default: false
+    settings.attribute :scope_id, type: :scope
     settings.attribute :announcement, type: :text, translated: true, editor: true
     settings.attribute :default_registration_terms, type: :text, translated: true, editor: true
     settings.attribute :comments_enabled, type: :boolean, default: true
@@ -97,7 +99,7 @@ Decidim.register_component(:meetings) do |component|
     2.times do
       params = {
         component: component,
-        scope: Faker::Boolean.boolean(0.5) ? global : scopes.sample,
+        scope: Faker::Boolean.boolean(true_ratio: 0.5) ? global : scopes.sample,
         category: participatory_space.categories.sample,
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do
@@ -117,6 +119,13 @@ Decidim.register_component(:meetings) do |component|
           Decidim::Faker::Localized.paragraph(3)
         end
       }
+
+      _online_meeting = Decidim.traceability.create!(
+        Decidim::Meetings::Meeting,
+        admin_user,
+        params.merge(type_of_meeting: :online, online_meeting_url: "http://example.org"),
+        visibility: "all"
+      )
 
       meeting = Decidim.traceability.create!(
         Decidim::Meetings::Meeting,
@@ -158,7 +167,7 @@ Decidim.register_component(:meetings) do |component|
           tos_agreement: "1",
           confirmed_at: Time.current,
           personal_url: Faker::Internet.url,
-          about: Faker::Lorem.paragraph(2)
+          about: Faker::Lorem.paragraph(sentence_count: 2)
         )
 
         Decidim::Meetings::Registration.create!(
@@ -176,21 +185,21 @@ Decidim.register_component(:meetings) do |component|
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(__dir__, "seeds", "Exampledocument.pdf")),
         attachment_collection: attachment_collection,
-        attached_to: meeting
+        attached_to: meeting,
+        file: File.new(File.join(__dir__, "seeds", "Exampledocument.pdf")) # Keep after attached_to
       )
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(__dir__, "seeds", "city.jpeg")),
-        attached_to: meeting
+        attached_to: meeting,
+        file: File.new(File.join(__dir__, "seeds", "city.jpeg")) # Keep after attached_to
       )
       Decidim::Attachment.create!(
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.sentence(5),
-        file: File.new(File.join(__dir__, "seeds", "Exampledocument.pdf")),
-        attached_to: meeting
+        attached_to: meeting,
+        file: File.new(File.join(__dir__, "seeds", "Exampledocument.pdf")) # Keep after attached_to
       )
     end
 
@@ -209,7 +218,7 @@ Decidim.register_component(:meetings) do |component|
 
       params = {
         component: component,
-        scope: Faker::Boolean.boolean(0.5) ? global : scopes.sample,
+        scope: Faker::Boolean.boolean(true_ratio: 0.5) ? global : scopes.sample,
         category: participatory_space.categories.sample,
         title: Decidim::Faker::Localized.sentence(2),
         description: Decidim::Faker::Localized.wrapped("<p>", "</p>") do

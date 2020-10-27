@@ -142,7 +142,7 @@ module Decidim
         let(:user) do
           build(
             :user,
-            avatar: Rack::Test::UploadedFile.new(avatar_path, "image/jpg")
+            avatar: Rack::Test::UploadedFile.new(avatar_path, "image/jpeg")
           )
         end
 
@@ -157,8 +157,8 @@ module Decidim
         it "doesn't allow them" do
           weird_characters.each do |character|
             user = build(:user)
-            user.name = user.name.insert(rand(0..user.name.length), character)
-            user.nickname = user.nickname.insert(rand(0..user.nickname.length), character)
+            user.name.insert(rand(0..user.name.length), character)
+            user.nickname.insert(rand(0..user.nickname.length), character)
 
             expect(user).not_to be_valid
             expect(user.errors[:name].length).to eq(1)
