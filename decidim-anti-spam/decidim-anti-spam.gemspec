@@ -5,7 +5,7 @@ $LOAD_PATH.push File.expand_path("lib", __dir__)
 require "decidim/anti-spam/version"
 
 Gem::Specification.new do |s|
-  s.version = Decidim::Anti-spam.version
+  s.version = Decidim::AntiSpam.version
   s.authors = ["Cristian Georgescu"]
   s.email = ["georgescu.cristi@gmail.com"]
   s.license = "AGPL-3.0"
@@ -18,5 +18,5 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,config,lib}/**/*", "LICENSE-AGPLv3.txt", "Rakefile", "README.md"]
 
-  s.add_dependency "decidim-core", Decidim::Anti-spam.version
+  s.add_dependency "decidim-core", Decidim::AntiSpam.version
 end

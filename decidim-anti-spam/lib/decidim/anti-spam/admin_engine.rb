@@ -4,7 +4,7 @@ module Decidim
   module AntiSpam
     # This is the engine that runs on the public interface of `Anti-spam`.
     class AdminEngine < ::Rails::Engine
-      isolate_namespace Decidim::Anti-spam::Admin
+      isolate_namespace Decidim::AntiSpam::Admin
 
       paths["db/migrate"] = nil
       paths["lib/tasks"] = nil
