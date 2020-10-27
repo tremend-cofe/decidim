@@ -1,0 +1,6 @@
+---
+en:
+  decidim:
+    components:
+      anti-spam:
+        name: Anti-spam
