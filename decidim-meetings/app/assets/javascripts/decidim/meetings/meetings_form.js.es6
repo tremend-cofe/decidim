@@ -31,7 +31,7 @@
 
       const $meetingRegistrationType = $form.find("#meeting_registration_type");
       const $meetingRegistrationTerms = $form.find("#meeting_registration_terms");
-      const $meetingRegistrationEnabled = $form.find("#meeting_registration_enabled");
+      const $meetingRegistrationEnabled = $form.find("#meeting_registrations_enabled");
       const $meetingRegistrationUrl = $form.find("#meeting_registration_url");
       const $meetingAvailableSlots = $form.find("#meeting_available_slots");
 
