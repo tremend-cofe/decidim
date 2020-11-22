@@ -2,18 +2,21 @@
 
 module Decidim
   module Comments
-    CommentMutationType = GraphQL::ObjectType.define do
-      name "CommentMutation"
+    class CommentMutationType < Types::BaseObject
       description "A comment which includes its available mutations"
 
-      field :id, !types.ID, "The Comment's unique ID"
+      field :id, GraphQL::Types::ID, "The Comment's unique ID", null: false
 
-      field :upVote, !Decidim::Comments::CommentType do
-        resolve VoteCommentResolver.new(weight: 1)
+      field :up_vote, Decidim::Comments::CommentType, null: false do
+        def resolve_field(obj, _args, ctx)
+          VoteCommentResolver.new(weight: 1)
+        end
       end
 
-      field :downVote, !Decidim::Comments::CommentType do
-        resolve VoteCommentResolver.new(weight: -1)
+      field :down_vote, Decidim::Comments::CommentType, null: false do
+        def resolve_field(obj, _args, ctx)
+           VoteCommentResolver.new(weight: -1)
+         end
       end
     end
   end

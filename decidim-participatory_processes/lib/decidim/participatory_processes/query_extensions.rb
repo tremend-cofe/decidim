@@ -10,29 +10,21 @@ module Decidim
       # type - A GraphQL::BaseType to extend.
       #
       # Returns nothing.
-      def self.define(type)
-        type.field :participatoryProcessGroups do
-          type !types[ParticipatoryProcessGroupType]
-          description "Lists all participatory process groups"
+      def self.included(type)
+        type.field :participatory_process_groups, [ParticipatoryProcessGroupType, null: true], description: "Lists all participatory process groups", null: false
 
-          resolve lambda { |_obj, _args, ctx|
-            Decidim::ParticipatoryProcessGroup.where(
-              organization: ctx[:current_organization]
-            )
-          }
+        def participatory_process_groups
+          Decidim::ParticipatoryProcessGroup.where(organization: context[:current_organization])
         end
 
-        type.field :participatoryProcessGroup do
-          type ParticipatoryProcessGroupType
-          description "Finds a participatory process group"
-          argument :id, !types.ID, "The ID of the Participatory process group"
-
-          resolve lambda { |_obj, args, ctx|
+        type.field :participatory_process_group, ParticipatoryProcessGroupType, description: "Finds a participatory process group", null: true do
+          argument :id, GraphQL::Types::ID, "The ID of the Participatory process group", required: true
+          def resolve_field(object:, args:, context:)
             Decidim::ParticipatoryProcessGroup.find_by(
               organization: ctx[:current_organization],
               id: args[:id]
             )
-          }
+          end
         end
       end
     end

@@ -3,11 +3,11 @@
 module Decidim
   module Initiatives
     # This interface represents a commentable object.
-    InitiativeTypeInterface = GraphQL::InterfaceType.define do
-      name "InitiativeTypeInterface"
+    module InitiativeTypeInterface
+      include Types::BaseInterface
       description "An interface that can be used in Initiative objects."
 
-      field :initiativeType, Decidim::Initiatives::InitiativeApiType, "The object's initiative type", property: :type
+      field :initiative_type, Decidim::Initiatives::InitiativeApiType, "The object's initiative type", method: :type, null: true
     end
   end
 end

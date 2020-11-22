@@ -2,20 +2,19 @@
 
 module Decidim
   module Core
-    StatisticType = GraphQL::ObjectType.define do
-      name "Statistic"
+    class StatisticType < Types::BaseObject
       description "Represents a single statistic"
 
-      field :name, !types.String, "The name of the statistic" do
-        resolve ->(statistic, _args, _ctx) {
-          statistic[0]
-        }
+      field :name, String, "The name of the statistic", null: false
+
+      def name
+        object[0]
       end
 
-      field :value, !types.Int, "The actual value of the statistic" do
-        resolve ->(statistic, _args, _ctx) {
-          statistic[1]
-        }
+      field :value, Integer, "The actual value of the statistic", null: false
+
+      def value
+        object[1]
       end
     end
   end

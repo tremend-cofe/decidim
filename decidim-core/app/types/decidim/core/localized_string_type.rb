@@ -3,12 +3,12 @@
 module Decidim
   module Core
     # This type represents a localized string in a single language.
-    LocalizedStringType = GraphQL::ObjectType.define do
-      name "LocalizedString"
+    class LocalizedStringType < Types::BaseObject
+      graphql_name "Localized"
       description "Represents a particular translation of a LocalizedStringType"
 
-      field :locale, !types.String, "The standard locale of this translation."
-      field :text, types.String, "The content of this translation."
+      field :locale, String, "The standard locale of this translation.", null: false
+      field :text, String, "The content of this translation.", null: true
     end
   end
 end

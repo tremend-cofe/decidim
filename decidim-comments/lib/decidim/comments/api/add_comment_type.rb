@@ -3,11 +3,11 @@
 module Decidim
   module Comments
     # This type represents a mutation to create new comments.
-    AddCommentType = GraphQL::ObjectType.define do
-      name "Add comment"
+    class AddCommentType < Types::BaseObject
+      graphql_name "Add comment"
       description "Add a new comment"
 
-      field :comment, CommentType, "The new created comment"
+      field :comment, CommentType, "The new created comment", null: true
     end
   end
 end
