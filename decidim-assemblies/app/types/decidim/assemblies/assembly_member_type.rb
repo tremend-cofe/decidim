@@ -15,7 +15,7 @@ module Decidim
       field :created_at, Decidim::Core::DateTimeType, "The time this member was created", null: true
       field :updated_at, Decidim::Core::DateTimeType, "The time this member was updated", null: true
 
-      field :weight, Integer, "Order of appearance in which it should be represented", null: true
+      field :weight, Int, "Order of appearance in which it should be represented", null: true
       field :gender, String, "Gender of the member", null: true
       # field :birthday, Decidim::Core::DateType, "Birthday date of the member" # non-public currently
       field :birthplace, String, "Birthplace of the member", null: true

@@ -11,7 +11,7 @@ module Decidim
       field :created_at, Decidim::Core::DateType, "When this status was created", null: true
       field :updated_at, Decidim::Core::DateType, "When this status was updated", null: true
       field :description, Decidim::Core::TranslatedFieldType, "The description for this status", null: true
-      field :progress, Integer, "The progress for this status", null: true
+      field :progress, Int, "The progress for this status", null: true
 
       field :results, [Decidim::Accountability::ResultType, null: true], "The results for this status", null: true
     end

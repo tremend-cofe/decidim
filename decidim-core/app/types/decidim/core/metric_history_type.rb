@@ -10,7 +10,7 @@ module Decidim
         MetricObjectPresenter.new(object).attr_date(0)
       end
 
-      field :value, Integer, "The value for each key", null: false
+      field :value, Int, "The value for each key", null: false
 
       def value
         MetricObjectPresenter.new(object).attr_int(1)

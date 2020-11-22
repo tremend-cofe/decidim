@@ -19,8 +19,8 @@ module Decidim
       field :progress, Float, "The progress for this result", null: true
       field :created_at, Decidim::Core::DateTimeType, "When this result was created", null: true
       field :updated_at, Decidim::Core::DateTimeType, "When this result was updated", null: true
-      field :children_count, Integer, "The number of children results", null: true
-      field :weight, Integer, "The order of this result", null: false
+      field :children_count, Int, "The number of children results", null: true
+      field :weight, Int, "The order of this result", null: false
       field :external_id, String, "The external ID for this result", null: true
 
       field :children, [Decidim::Accountability::ResultType, null: true], "The childrens results", null: true

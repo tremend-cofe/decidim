@@ -31,8 +31,8 @@ module Decidim
       field :closed, Boolean, "Whether this meeting is closed or not.", method: :closed?, null: false
       field :closing_report, Decidim::Core::TranslatedFieldType, "The closing report of this meeting.", null: true
       field :attending_organizations, String, "list of attending organizations", null: true
-      field :attendee_count, Integer, "Amount of attendees to this meeting", method: :attendees_count, null: true
-      field :contribution_count, Integer, "Amount of contributions to this meeting", method: :contributions_count, null: true
+      field :attendee_count, Int, "Amount of attendees to this meeting", method: :attendees_count, null: true
+      field :contribution_count, Int, "Amount of contributions to this meeting", method: :contributions_count, null: true
       field :minutes, MinutesType, "Minutes for this meeting, if available", null: true
 
       def minutes
@@ -42,7 +42,7 @@ module Decidim
       field :transparent, Boolean, "For private meetings, information is public if transparent", null: false
       field :registrations_enabled, Boolean, "Whether the registrations are enabled or not", null: false
       field :registration_terms, Decidim::Core::TranslatedFieldType, "The registration terms", null: true
-      field :remaining_slots, Integer, "Amount of slots available for this meeting", null: true
+      field :remaining_slots, Int, "Amount of slots available for this meeting", null: true
       field :registration_form_enabled, Boolean, "Whether the registrations have a form or not", null: false
       field :registration_form, Decidim::Forms::QuestionnaireType, description: "If registration requires to fill a form, this is the questionnaire", null: true
 

@@ -38,9 +38,9 @@ module Decidim
 
       field :formatted_created_at, String, "The creation date of the comment in relative format", method: :friendly_created_at, null: false
 
-      field :alignment, Integer, "The comment's alignment. Can be 0 (neutral), 1 (in favor) or -1 (against)'", null: true
+      field :alignment, Int, "The comment's alignment. Can be 0 (neutral), 1 (in favor) or -1 (against)'", null: true
 
-      field :up_votes, Integer, "The number of comment's upVotes", null: false do
+      field :up_votes, Int, "The number of comment's upVotes", null: false do
         def resolve_field(obj, _args, _ctx)
           obj.up_votes.size
         end
@@ -52,7 +52,7 @@ module Decidim
         end
       end
 
-      field :down_votes, Integer, "The number of comment's downVotes", null: false do
+      field :down_votes, Int, "The number of comment's downVotes", null: false do
         def resolve_field(obj, _args, _ctx)
           obj.down_votes.size
         end

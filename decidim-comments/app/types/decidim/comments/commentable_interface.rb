@@ -27,7 +27,7 @@ module Decidim
         end
       end
 
-      field :total_comments_count, Integer, description: "The number of comments in all levels this resource holds", null: false do
+      field :total_comments_count, Int, description: "The number of comments in all levels this resource holds", null: false do
         def resolve_field(obj:, args:, context:)
           obj.comments_count
         end

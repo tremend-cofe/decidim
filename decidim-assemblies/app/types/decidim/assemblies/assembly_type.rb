@@ -37,7 +37,7 @@ module Decidim
       field :area, Decidim::Core::AreaApiType, "Area of this assembly", null: true
       field :parent, Decidim::Assemblies::AssemblyType, "The parent assembly of this assembly", null: true
       field :parents_path, String, "Assembly hierarchy representation", null: true
-      field :children_count, Integer, "Number of children assemblies", null: true
+      field :children_count, Int, "Number of children assemblies", null: true
       field :purpose_of_action, Decidim::Core::TranslatedFieldType, "Purpose of action", null: true
       field :composition, Decidim::Core::TranslatedFieldType, "Composition of this assembly", null: true
       field :assembly_type, Decidim::Assemblies::AssembliesTypeType, "Type of the assembly", null: true

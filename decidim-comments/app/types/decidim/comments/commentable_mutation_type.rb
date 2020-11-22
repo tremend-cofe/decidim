@@ -9,7 +9,7 @@ module Decidim
 
       field :add_comment, Decidim::Comments::CommentType, description: "Add a new comment to a commentable", null: true do
         argument :body, String, "The comments's body", required: true
-        argument :alignment, Integer, "The comment's alignment. Can be 0 (neutral), 1 (in favor) or -1 (against)'", default_value: 0, required: false
+        argument :alignment, Int, "The comment's alignment. Can be 0 (neutral), 1 (in favor) or -1 (against)'", default_value: 0, required: false
         argument :user_group_id, ID, "The comment's user group id. Replaces the author.", required: false
 
         def resolve_field(obj, args, ctx)

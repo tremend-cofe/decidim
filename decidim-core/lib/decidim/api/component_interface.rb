@@ -10,7 +10,7 @@ module Decidim
 
       field :name, Decidim::Core::TranslatedFieldType, "The name of this component.", null: false
 
-      field :weight, Integer, "The weight of the component", null: false
+      field :weight, Int, "The weight of the component", null: false
 
       field :participatory_space, ParticipatorySpaceType, "The participatory space in which this component belongs to.", null: false
 

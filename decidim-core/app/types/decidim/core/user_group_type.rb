@@ -54,7 +54,7 @@ module Decidim
         object.accepted_users
       end
 
-      field :members_count, Integer, "Number of members in this group", null: false
+      field :members_count, Int, "Number of members in this group", null: false
 
       def members_count
         object.accepted_memberships.count

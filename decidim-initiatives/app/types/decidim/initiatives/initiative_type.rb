@@ -24,9 +24,9 @@ module Decidim
       field :signature_type, String, "Signature type of the initiative", null: true
       field :signature_start_date, Decidim::Core::DateType, "The signature start date", null: false
       field :signature_end_date, Decidim::Core::DateType, "The signature end date", null: false
-      field :offline_votes, Integer, "The number of offline votes in this initiative", null: true
-      field :initiative_votes_count, Integer, "The number of votes in this initiative", null: true
-      field :initiative_supports_count, Integer, "The number of supports in this initiative", null: true
+      field :offline_votes, Int, "The number of offline votes in this initiative", null: true
+      field :initiative_votes_count, Int, "The number of votes in this initiative", null: true
+      field :initiative_supports_count, Int, "The number of supports in this initiative", null: true
       field :author, Decidim::Core::AuthorInterface, "The initiative author", null: false
 
       def author

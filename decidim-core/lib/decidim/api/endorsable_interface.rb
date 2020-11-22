@@ -13,7 +13,7 @@ module Decidim
         object.endorsements.map(&:normalized_author)
       end
 
-      field :endorsements_count, Integer, description: "The total amount of endorsements the object has received", null: true
+      field :endorsements_count, Int, description: "The total amount of endorsements the object has received", null: true
     end
   end
 end

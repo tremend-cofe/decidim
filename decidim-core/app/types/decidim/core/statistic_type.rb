@@ -11,7 +11,7 @@ module Decidim
         object[0]
       end
 
-      field :value, Integer, "The actual value of the statistic", null: false
+      field :value, Int, "The actual value of the statistic", null: false
 
       def value
         object[1]

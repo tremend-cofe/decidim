@@ -30,7 +30,7 @@ module Decidim
       field :start_date, Decidim::Core::DateType, "The date this conference starts", null: true
       field :end_date, Decidim::Core::DateType, "The date this conference ends", null: true
       field :registrations_enabled, Boolean, "If the registrations are enabled in this conference", null: true
-      field :available_slots, Integer, "The number of available slots in this conference", null: true
+      field :available_slots, Int, "The number of available slots in this conference", null: true
       field :registration_terms, Decidim::Core::TranslatedFieldType, "The registration terms of this conference", null: true
 
       field :speakers, [Decidim::Conferences::ConferenceSpeakerType, null: true], "List of speakers in this conference", null: true

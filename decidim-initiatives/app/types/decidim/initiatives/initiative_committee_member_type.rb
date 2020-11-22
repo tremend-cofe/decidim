@@ -10,7 +10,7 @@ module Decidim
       field :id, ID, "Internal ID for this member of the committee", null: false
       field :user, Decidim::Core::UserType, "The decidim user for this initiative committee member", null: true
 
-      field :state, Integer, "Type of the committee member", null: true
+      field :state, Int, "Type of the committee member", null: true
       field :created_at, Decidim::Core::DateTimeType, "The date this initiative committee member was created", null: true
       field :updated_at, Decidim::Core::DateTimeType, "The date this initiative committee member was updated", null: true
     end

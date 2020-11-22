@@ -33,17 +33,17 @@ module Decidim
       field :question_context, Decidim::Core::TranslatedFieldType, "The context for this question", null: true
       field :reference, String, "The reference for this question", null: true
       field :hashtag, String, "The hashtag of this question", null: true
-      field :votes_count, Integer, "The number of votes in this question", null: true
+      field :votes_count, Int, "The number of votes in this question", null: true
       field :origin_scope, Decidim::Core::TranslatedFieldType, "The origin scope of this question", null: true
       field :origin_title, Decidim::Core::TranslatedFieldType, "The origin title of this question", null: true
       field :origin_url, String, "The origin URL for this question", null: true
       field :i_frame_url, String, "The iframe URL for this question", null: true
       field :external_voting, Boolean, "If the question has external voting", null: true
-      field :responses_count, Integer, "The number of responses for this question", null: true
-      field :order, Integer, "The order in which the question should be represented", null: true
-      field :max_votes, Integer, "The maximum number of votes in this question", null: true
-      field :min_votes, Integer, "The minimum number of votes in this question", null: true
-      field :response_groups_count, Integer, "The number of group responses for this question", null: true
+      field :responses_count, Int, "The number of responses for this question", null: true
+      field :order, Int, "The order in which the question should be represented", null: true
+      field :max_votes, Int, "The maximum number of votes in this question", null: true
+      field :min_votes, Int, "The minimum number of votes in this question", null: true
+      field :response_groups_count, Int, "The number of group responses for this question", null: true
       field :instructions, Decidim::Core::TranslatedFieldType, "Instructions for this question", null: true
     end
   end

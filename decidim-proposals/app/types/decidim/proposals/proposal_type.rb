@@ -35,7 +35,7 @@ module Decidim
       field :published_at, Decidim::Core::DateTimeType, description: "The date and time this proposal was published", null: true
 
       field :participatory_text_level, String, description: "If it is a participatory text, the level indicates the type of paragraph", null: true
-      field :position, Integer, "Position of this proposal in the participatory text", null: true
+      field :position, Int, "Position of this proposal in the participatory text", null: true
 
       field :official, Boolean, "Whether this proposal is official or not", method: :official?, null: true
       field :created_in_meeting, Boolean, "Whether this proposal comes from a meeting or not", method: :official_meeting?, null: true
@@ -45,7 +45,7 @@ module Decidim
         object.authors.first if object.official_meeting?
       end
 
-      field :vote_count, Integer, description: "The total amount of votes the proposal has received", null: true
+      field :vote_count, Int, description: "The total amount of votes the proposal has received", null: true
 
       def vote_count
         current_component = object.component

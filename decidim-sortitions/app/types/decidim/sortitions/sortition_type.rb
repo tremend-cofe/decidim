@@ -9,10 +9,10 @@ module Decidim
       description "A sortition"
 
       field :id, ID, "The internal ID for this sortition", null: false
-      field :dice, Integer, "The dice for this sortition", null: true
-      field :target_items, Integer, "The target items for this sortition", null: true
+      field :dice, Int, "The dice for this sortition", null: true
+      field :target_items, Int, "The target items for this sortition", null: true
       field :request_timestamp, Decidim::Core::DateType, "The request time stamp for this request", null: true
-      field :selected_proposals, [Integer, null: true], "The selected proposals for this sortition", null: true
+      field :selected_proposals, [Int, null: true], "The selected proposals for this sortition", null: true
       field :created_at, Decidim::Core::DateTimeType, "When this sortition was created", null: true
       field :updated_at, Decidim::Core::DateTimeType, "When this sortition was updated", null: true
       field :witnesses, Decidim::Core::TranslatedFieldType, "The witnesses for this sortition", null: true

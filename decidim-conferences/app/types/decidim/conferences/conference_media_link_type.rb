@@ -10,7 +10,7 @@ module Decidim
       field :title, Decidim::Core::TranslatedFieldType, "Title for this media link", null: true
       field :link, String, "URL for this media link", null: true
       field :date, Decidim::Core::DateType, "Relevant date for the media link", null: true
-      field :weight, Integer, "Order of appearance in which it should be presented", null: true
+      field :weight, Int, "Order of appearance in which it should be presented", null: true
       field :created_at, Decidim::Core::DateTimeType, "The time this entry was created", null: true
       field :updated_at, Decidim::Core::DateTimeType, "The time this entry was updated", null: true
     end
