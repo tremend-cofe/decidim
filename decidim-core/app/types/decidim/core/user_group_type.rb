@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents a UserGroup
-    class UserGroupType < Types::BaseObject
+    class UserGroupType < Decidim::Api::Types::BaseObject
       description "A user group"
 
       implements Decidim::Core::AuthorInterface

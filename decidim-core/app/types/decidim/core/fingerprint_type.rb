@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class FingerprintType < Types::BaseObject
+    class FingerprintType < Decidim::Api::Types::BaseObject
       description "A fingerprint object"
 
       field :value, String, "The the hash value for the fingerprint", null: false

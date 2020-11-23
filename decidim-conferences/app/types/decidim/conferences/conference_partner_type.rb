@@ -3,7 +3,7 @@
 module Decidim
   module Conferences
     # This type represents a conference.
-    class ConferencePartnerType < Types::BaseObject
+    class ConferencePartnerType < Decidim::Api::Types::BaseObject
       description "A conference partner"
 
       field :id, ID, "ID of the resource", null: false

@@ -3,7 +3,7 @@
 module Decidim
   module ParticipatoryProcesses
     # This type represents a step on a participatory process.
-    class ParticipatoryProcessStepType < Types::BaseObject
+    class ParticipatoryProcessStepType < Decidim::Api::Types::BaseObject
       description "A participatory process step"
 
       field :id, ID, "The unique ID of this step.", null: false

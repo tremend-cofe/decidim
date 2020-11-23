@@ -2,7 +2,7 @@
 
 module Decidim
   module Budgets
-    class BudgetsType < Types::BaseObject
+    class BudgetsType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ComponentInterface
 
       graphql_name "Budgets"

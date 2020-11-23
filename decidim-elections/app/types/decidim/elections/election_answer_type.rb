@@ -4,7 +4,7 @@ module Decidim
   module Elections
     # This type represents an answer to an election question.
     # The name is different from the model because to enforce consistency with Question type name.
-    class ElectionAnswerType < Types::BaseObject
+    class ElectionAnswerType < Decidim::Api::Types::BaseObject
 
       implements Decidim::Core::AttachableInterface
       implements Decidim::Core::TraceableInterface

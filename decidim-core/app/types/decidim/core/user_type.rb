@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents a User.
-    class UserType < Types::BaseObject
+    class UserType < Decidim::Api::Types::BaseObject
       description "A user"
       graphql_name "User"
 

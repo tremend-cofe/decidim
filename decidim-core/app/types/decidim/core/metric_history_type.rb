@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class MetricHistoryType < Types::BaseObject
+    class MetricHistoryType < Decidim::Api::Types::BaseObject
 
       field :key, String, "The key value", null: false
 

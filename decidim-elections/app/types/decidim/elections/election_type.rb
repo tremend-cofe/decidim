@@ -3,7 +3,7 @@
 module Decidim
   module Elections
     # This type represents an Election.
-    class ElectionType < Types::BaseObject
+    class ElectionType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::AttachableInterface
       implements Decidim::Core::TraceableInterface
 

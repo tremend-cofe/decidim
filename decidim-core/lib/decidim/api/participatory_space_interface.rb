@@ -3,7 +3,7 @@
 module Decidim
   module Core
     module ParticipatorySpaceInterface
-      include Types::BaseInterface
+      include Decidim::Api::Types::BaseInterface
       graphql_name "ParticipatorySpaceInterface"
       description "The interface that all participatory spaces should implement."
 

@@ -2,7 +2,7 @@
 
 module Decidim
   module Initiatives
-    class InitiativeApiType < Types::BaseObject
+    class InitiativeApiType < Decidim::Api::Types::BaseObject
       graphql_name "InitiativeType"
       description "An initiative type"
 

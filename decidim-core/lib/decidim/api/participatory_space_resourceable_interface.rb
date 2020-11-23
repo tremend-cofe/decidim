@@ -7,7 +7,7 @@ module Decidim
     #
 
     module ParticipatorySpaceResourceableInterface
-      include Types::BaseInterface
+      include Decidim::Api::Types::BaseInterface
       graphql_name  "ParticipatorySpaceResourcableInterface"
       description "An interface that can be used in objects with participatorySpaceResourceable"
 

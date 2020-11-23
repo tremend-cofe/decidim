@@ -2,7 +2,7 @@
 
 module Decidim
   module Comments
-    class CommentableMutationType < Types::BaseObject
+    class CommentableMutationType < Decidim::Api::Types::BaseObject
       description "A commentable which includes its available mutations"
 
       field :id, ID, "The Commentable's unique ID", null: false

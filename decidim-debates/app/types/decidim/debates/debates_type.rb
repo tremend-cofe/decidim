@@ -2,7 +2,7 @@
 
 module Decidim
   module Debates
-    class DebatesType < Types::BaseObject
+    class DebatesType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ComponentInterface
 
       graphql_name "Debates"

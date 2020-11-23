@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents a Decidim's global property.
-    class DecidimType < Types::BaseObject
+    class DecidimType < Decidim::Api::Types::BaseObject
       description "Decidim's framework-related properties."
 
       field :version, String, "The current decidim's version of this deployment.", null: false

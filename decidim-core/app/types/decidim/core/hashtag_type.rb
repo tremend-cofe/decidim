@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents a User.
-    class HashtagType < Types::BaseObject
+    class HashtagType < Decidim::Api::Types::BaseObject
       graphql_name "HashtagType"
       description "hashtags list"
 

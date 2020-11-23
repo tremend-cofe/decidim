@@ -4,7 +4,7 @@ module Decidim
   module Meetings
     # This interface represents a categorizable object.
     module ServicesInterface
-      include Types::BaseInterface
+      include Decidim::Api::Types::BaseInterface
       description "An interface that can be used with services."
 
       field :services, [ServiceType, null: true], "The object's services", null: false

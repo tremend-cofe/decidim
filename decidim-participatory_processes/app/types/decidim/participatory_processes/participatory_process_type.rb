@@ -3,7 +3,7 @@
 module Decidim
   module ParticipatoryProcesses
     # This type represents a ParticipatoryProcess.
-    class ParticipatoryProcessType < Types::BaseObject
+    class ParticipatoryProcessType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ParticipatorySpaceInterface
       implements Decidim::Core::ParticipatorySpaceResourceableInterface
       implements Decidim::Core::ScopableInterface

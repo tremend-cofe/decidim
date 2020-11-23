@@ -2,7 +2,7 @@
 
 module Decidim
   module Meetings
-    class MinutesType < Types::BaseObject
+    class MinutesType < Decidim::Api::Types::BaseObject
       graphql_name "MeetingMinutes"
       description "A meeting minutes"
 

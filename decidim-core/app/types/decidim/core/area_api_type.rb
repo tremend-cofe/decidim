@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class AreaApiType < Types::BaseObject
+    class AreaApiType < Decidim::Api::Types::BaseObject
       graphql_name "Area"
       description "An area."
 

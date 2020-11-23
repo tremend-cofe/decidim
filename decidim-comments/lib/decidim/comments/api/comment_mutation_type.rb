@@ -2,7 +2,7 @@
 
 module Decidim
   module Comments
-    class CommentMutationType < Types::BaseObject
+    class CommentMutationType < Decidim::Api::Types::BaseObject
       description "A comment which includes its available mutations"
 
       field :id, GraphQL::Types::ID, "The Comment's unique ID", null: false

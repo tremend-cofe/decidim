@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class ParticipatorySpaceLinkType < Types::BaseObject
+    class ParticipatorySpaceLinkType < Decidim::Api::Types::BaseObject
       graphql_name "ParticipatorySpaceLink"
       description "A link representation between participatory spaces"
 

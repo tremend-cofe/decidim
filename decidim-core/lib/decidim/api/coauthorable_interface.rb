@@ -4,7 +4,7 @@ module Decidim
   module Core
     # This interface represents a coauthorable object.
     module CoauthorableInterface
-      include Types::BaseInterface
+      include Decidim::Api::Types::BaseInterface
       description "An interface that can be used in coauthorable objects."
 
       field :authors_count, Int, method: :coauthorships_count, description: "The total amount of co-authors that contributed to the proposal. Note that this field may include also non-user authors like meetings or the organization", null: true

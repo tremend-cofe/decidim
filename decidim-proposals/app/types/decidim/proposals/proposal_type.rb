@@ -2,7 +2,7 @@
 
 module Decidim
   module Proposals
-    class ProposalType < Types::BaseObject
+    class ProposalType < Decidim::Api::Types::BaseObject
       description "A proposal"
 
       implements Decidim::Comments::CommentableInterface

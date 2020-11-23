@@ -2,7 +2,7 @@
 
 module Decidim
   module Elections
-    class ElectionsType < Types::BaseObject
+    class ElectionsType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ComponentInterface
 
       graphql_name "Elections"

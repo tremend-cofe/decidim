@@ -2,7 +2,7 @@
 
 module Decidim
   module Accountability
-    class TimelineEntryType < Types::BaseObject
+    class TimelineEntryType < Decidim::Api::Types::BaseObject
       description "A Timeline Entry"
 
       field :id, ID, "The internal ID for this timeline entry", null: false

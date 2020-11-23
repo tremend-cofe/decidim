@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class ParticipatorySpaceType < Types::BaseObject
+    class ParticipatorySpaceType < Decidim::Api::Types::BaseObject
       implements ParticipatorySpaceInterface
       description "A participatory space"
     end

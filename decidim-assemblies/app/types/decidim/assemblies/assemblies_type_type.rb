@@ -3,7 +3,7 @@
 module Decidim
   module Assemblies
     # This type represents an AssembliesType.
-    class AssembliesTypeType < Types::BaseObject
+    class AssembliesTypeType < Decidim::Api::Types::BaseObject
       description "An assemblies type"
 
       field :id, ID, "The assemblies type's unique ID", null: false

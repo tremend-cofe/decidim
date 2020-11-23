@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class AttachmentType < Types::BaseObject
+    class AttachmentType < Decidim::Api::Types::BaseObject
       description "A file attachment"
 
       field :url, String, "The url of this attachment", null: false

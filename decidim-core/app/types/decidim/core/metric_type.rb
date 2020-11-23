@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class MetricType < Types::BaseObject
+    class MetricType < Decidim::Api::Types::BaseObject
       graphql_name "MetricType"
       description "Metric data"
 

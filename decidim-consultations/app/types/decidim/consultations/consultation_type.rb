@@ -3,7 +3,7 @@
 module Decidim
   module Consultations
     # This type represents a consultation.
-    class ConsultationType < Types::BaseObject
+    class ConsultationType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ParticipatorySpaceInterface
       description "A consultation"
 

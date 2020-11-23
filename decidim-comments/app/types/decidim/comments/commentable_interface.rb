@@ -4,7 +4,7 @@ module Decidim
   module Comments
     # This interface represents a commentable object.
     module CommentableInterface
-      include Types::BaseInterface
+      include Decidim::Api::Types::BaseInterface
       graphql_name "CommentableInterface"
       description "A commentable interface"
 

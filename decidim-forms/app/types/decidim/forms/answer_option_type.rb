@@ -2,7 +2,7 @@
 
 module Decidim
   module Forms
-    class AnswerOptionType < Types::BaseObject
+    class AnswerOptionType < Decidim::Api::Types::BaseObject
       description "An answer option for a multi-choice question in a questionnaire"
 
       field :id, ID, "ID of this answer option", null: false

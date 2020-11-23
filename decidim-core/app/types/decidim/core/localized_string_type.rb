@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents a localized string in a single language.
-    class LocalizedStringType < Types::BaseObject
+    class LocalizedStringType < Decidim::Api::Types::BaseObject
       graphql_name "Localized"
       description "Represents a particular translation of a LocalizedStringType"
 

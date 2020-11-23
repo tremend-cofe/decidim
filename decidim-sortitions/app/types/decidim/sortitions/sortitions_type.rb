@@ -2,7 +2,7 @@
 
 module Decidim
   module Sortitions
-    class SortitionsType < Types::BaseObject
+    class SortitionsType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ComponentInterface
 
       graphql_name "Sortitions"

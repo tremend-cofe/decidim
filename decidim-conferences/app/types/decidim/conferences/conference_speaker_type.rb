@@ -3,7 +3,7 @@
 module Decidim
   module Conferences
     # This type represents a conference.
-    class ConferenceSpeakerType < Types::BaseObject
+    class ConferenceSpeakerType < Decidim::Api::Types::BaseObject
       description "A conference speaker"
 
       field :id, ID, "Internal ID of the speaker", null: false

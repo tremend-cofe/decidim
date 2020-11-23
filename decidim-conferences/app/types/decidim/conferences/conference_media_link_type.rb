@@ -3,7 +3,7 @@
 module Decidim
   module Conferences
     # This type represents a conference.
-    class ConferenceMediaLinkType < Types::BaseObject
+    class ConferenceMediaLinkType < Decidim::Api::Types::BaseObject
       description "A conference media link"
 
       field :id, ID, "Internal ID for this media link", null: false

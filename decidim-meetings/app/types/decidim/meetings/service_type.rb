@@ -2,7 +2,7 @@
 
 module Decidim
   module Meetings
-    class ServiceType < Types::BaseObject
+    class ServiceType < Decidim::Api::Types::BaseObject
       graphql_name "MeetingService"
       description "A meeting service"
 

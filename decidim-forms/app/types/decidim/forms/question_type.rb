@@ -2,7 +2,7 @@
 
 module Decidim
   module Forms
-    class QuestionType < Types::BaseObject
+    class QuestionType < Decidim::Api::Types::BaseObject
       description "A question in a questionnaire"
 
       implements Decidim::Core::TimestampsInterface

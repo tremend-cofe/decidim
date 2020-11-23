@@ -2,7 +2,7 @@
 
 module Decidim
   module Debates
-    class DebateType < Types::BaseObject
+    class DebateType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::CategorizableInterface
       implements Decidim::Comments::CommentableInterface
       implements Decidim::Core::AuthorableInterface

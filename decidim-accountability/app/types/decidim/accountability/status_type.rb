@@ -2,7 +2,7 @@
 
 module Decidim
   module Accountability
-    class StatusType < Types::BaseObject
+    class StatusType < Decidim::Api::Types::BaseObject
       description "A status"
 
       field :id, ID, "The internal ID for this status", null: false

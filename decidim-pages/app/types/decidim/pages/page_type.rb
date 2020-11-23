@@ -2,7 +2,7 @@
 
 module Decidim
   module Pages
-    class PageType < Types::BaseObject
+    class PageType < Decidim::Api::Types::BaseObject
       graphql_name "Page"
       description "A page"
 

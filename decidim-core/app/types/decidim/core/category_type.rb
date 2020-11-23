@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class CategoryType < Types::BaseObject
+    class CategoryType < Decidim::Api::Types::BaseObject
       description "A category that can be applied to other resources."
 
       field :id, ID, null: false

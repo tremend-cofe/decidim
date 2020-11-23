@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class TraceVersionType < Types::BaseObject
+    class TraceVersionType < Decidim::Api::Types::BaseObject
       description "A trace version type"
 
       field :id, ID, "The ID of the version", null: false

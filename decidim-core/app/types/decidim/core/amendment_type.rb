@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class AmendmentType < Types::BaseObject
+    class AmendmentType < Decidim::Api::Types::BaseObject
       description "An amendment"
 
       field :id, ID, "The id of this amendment", null: false

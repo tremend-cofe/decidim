@@ -2,7 +2,7 @@
 
 module Decidim
   module Surveys
-    class SurveyType < Types::BaseObject
+    class SurveyType < Decidim::Api::Types::BaseObject
       description "A survey"
 
       field :id, ID, "The internal ID for this survey", null: false

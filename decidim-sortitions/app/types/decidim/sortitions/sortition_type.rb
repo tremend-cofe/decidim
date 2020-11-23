@@ -2,7 +2,7 @@
 
 module Decidim
   module Sortitions
-    class SortitionType < Types::BaseObject
+    class SortitionType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::AuthorableInterface
       implements Decidim::Comments::CommentableInterface
       implements Decidim::Core::CategorizableInterface

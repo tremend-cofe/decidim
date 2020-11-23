@@ -2,7 +2,7 @@
 
 module Decidim
   module Core
-    class AreaTypeType < Types::BaseObject
+    class AreaTypeType < Decidim::Api::Types::BaseObject
       description "An area type."
 
       field :id, ID, "Internal ID for this area type", null: false

@@ -2,7 +2,7 @@
 
 module Decidim
   module Blogs
-    class BlogsType < Types::BaseObject
+    class BlogsType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ComponentInterface
 
       graphql_name "Blogs"

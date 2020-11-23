@@ -3,7 +3,7 @@
 module Decidim
   module ParticipatoryProcesses
     # This type represents a ParticipatoryProcess.
-    class ParticipatoryProcessGroupType < Types::BaseObject
+    class ParticipatoryProcessGroupType < Decidim::Api::Types::BaseObject
       description "A participatory process group"
 
       field :id, ID, "ID of this participatory process group", null: false

@@ -3,7 +3,7 @@
 module Decidim
   module Core
     # This type represents the current user session.
-    class SessionType < Types::BaseObject
+    class SessionType < Decidim::Api::Types::BaseObject
       description "The current session"
 
       field :user, UserType, "The current user", null: true

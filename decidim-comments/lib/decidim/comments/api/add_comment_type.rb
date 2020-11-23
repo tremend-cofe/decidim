@@ -3,7 +3,7 @@
 module Decidim
   module Comments
     # This type represents a mutation to create new comments.
-    class AddCommentType < Types::BaseObject
+    class AddCommentType < Decidim::Api::Types::BaseObject
       graphql_name "Add comment"
       description "Add a new comment"
 
