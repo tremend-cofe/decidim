@@ -5,7 +5,7 @@ module Decidim
         field_class Types::BaseField
 
         def initialize(object, context)
-          Rails.logger.info("#{name} was initialized")
+          Rails.logger.info("#{self} was initialized")
           super
         end
 

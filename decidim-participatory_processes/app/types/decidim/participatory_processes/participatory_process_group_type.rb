@@ -7,8 +7,8 @@ module Decidim
       description "A participatory process group"
 
       field :id, ID, "ID of this participatory process group", null: false
-      field :name, Decidim::Core::TranslatedFieldType, "The name of this participatory process group", null: true
-      field :description, Decidim::Core::TranslatedFieldType, "The description of this participatory process group", null: true
+      field :name, Decidim::Core::TranslatedFieldInterface, "The name of this participatory process group", null: true
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description of this participatory process group", null: true
       field :participatory_processes, [ParticipatoryProcessType, null: true], description: "Lists all the participatory processes belonging to this group", null: false
       field :hero_image, String, "The hero image for this participatory process group", null: true
     end

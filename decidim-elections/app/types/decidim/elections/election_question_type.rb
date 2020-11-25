@@ -11,8 +11,8 @@ module Decidim
       description "A question for an election"
 
       field :id, ID, "The internal ID of this question", null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title for this question", null: false
-      field :description, Decidim::Core::TranslatedFieldType, "The description for this question", null: false
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title for this question", null: false
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description for this question", null: false
       field :max_selections, Int, "The maximum number of possible selections for this question", null: false
       field :weight, Int, "The ordering weight for this question", null: true
       field :random_answers_order, Boolean, "Should this question order answers in random order?", null: true

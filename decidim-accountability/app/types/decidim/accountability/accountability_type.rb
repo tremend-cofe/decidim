@@ -11,7 +11,7 @@ module Decidim
       field :results, ResultType.connection_type, null: true, connection: true
 
       def results
-        ResultTypeHelper.base_scope(object).includes(:component)
+        Result.where(component: object).includes(:component)
       end
 
       field :result, ResultType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def result(**args)
-        ResultTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module ResultTypeHelper
-      def self.base_scope(component)
-        Result.where(component: component)
+        Result.where(component: object).find_by(id: args[:id])
       end
     end
   end

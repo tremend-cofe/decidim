@@ -11,8 +11,8 @@ module Decidim
       description "An answer for an election's question"
 
       field :id, ID, "The internal ID of this answer", null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title for this answer", null: false
-      field :description, Decidim::Core::TranslatedFieldType, "The description for this answer", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title for this answer", null: false
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description for this answer", null: true
       field :weight, Int, "The ordering weight for this answer", null: true
       field :votes_count, Int, "The votes for this answer", null: true
       field :selected, Boolean, "Is this answer selected?", null: true

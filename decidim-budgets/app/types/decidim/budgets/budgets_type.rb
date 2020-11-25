@@ -11,7 +11,7 @@ module Decidim
       field :budgets, BudgetType.connection_type, null: true, connection: true
 
       def budgets
-        BudgetsTypeHelper.base_scope(object).includes(:component)
+        Budget.where(component: object).includes(:component)
       end
 
       field :budget, BudgetType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def budget(**args)
-        BudgetsTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module BudgetsTypeHelper
-      def self.base_scope(component)
-        Budget.where(component: component)
+        Budget.where(component: object).find_by(id: args[:id])
       end
     end
   end

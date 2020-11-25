@@ -9,7 +9,7 @@ module Decidim
 
       field :id, ID, "The participatory space's unique ID", null: false
 
-      field :title, Decidim::Core::TranslatedFieldType, "The name of this participatory space.", null: false
+      field :title, Decidim::Core::TranslatedFieldInterface, "The name of this participatory space.", null: false
 
       field :type, String, description: "The participatory space class name. i.e. Decidim::ParticipatoryProcess", null: false
 

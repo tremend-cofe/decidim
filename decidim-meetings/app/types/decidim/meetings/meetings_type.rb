@@ -11,7 +11,7 @@ module Decidim
       field :meetings, MeetingType.connection_type, null: true, connection: true
 
       def meetings
-        MeetingsTypeHelper.base_scope(object).includes(:component)
+        Meeting.visible.where(component: object).includes(:component)
       end
 
       field :meeting, MeetingType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def meeting(**args)
-        MeetingsTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module MeetingsTypeHelper
-      def self.base_scope(component)
-        Meeting.visible.where(component: component)
+        Meeting.visible.where(component: object).find_by(id: args[:id])
       end
     end
   end

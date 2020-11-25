@@ -11,7 +11,7 @@ module Decidim
       field :sortitions, SortitionType.connection_type, null: true, connection: true
 
       def sortitions
-        SortitionTypeHelper.base_scope(object).includes(:component)
+        Sortition.where(component: object).includes(:component)
       end
 
       field :sortition, SortitionType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def sortition(**args)
-        SortitionTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module SortitionTypeHelper
-      def self.base_scope(component)
-        Sortition.where(component: component)
+        Sortition.where(component: object).find_by(id: args[:id])
       end
     end
   end

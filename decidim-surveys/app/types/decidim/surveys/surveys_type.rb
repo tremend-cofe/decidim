@@ -11,7 +11,7 @@ module Decidim
       field :surveys, SurveyType.connection_type, null: true, connection: true
 
       def surveys
-        SurveysTypeHelper.base_scope(object).includes(:component)
+        Survey.where(component: object).includes(:component)
       end
 
       field :survey, SurveyType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def survey(**args)
-        SurveysTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module SurveysTypeHelper
-      def self.base_scope(component)
-        Survey.where(component: component)
+        Survey.where(component: object).find_by(id: args[:id])
       end
     end
   end

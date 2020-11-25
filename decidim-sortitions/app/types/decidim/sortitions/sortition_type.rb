@@ -6,6 +6,7 @@ module Decidim
       implements Decidim::Core::AuthorableInterface
       implements Decidim::Comments::CommentableInterface
       implements Decidim::Core::CategorizableInterface
+      implements Decidim::Core::TimestampsInterface
       description "A sortition"
 
       field :id, ID, "The internal ID for this sortition", null: false
@@ -13,16 +14,14 @@ module Decidim
       field :target_items, Int, "The target items for this sortition", null: true
       field :request_timestamp, Decidim::Core::DateType, "The request time stamp for this request", null: true
       field :selected_proposals, [Int, null: true], "The selected proposals for this sortition", null: true
-      field :created_at, Decidim::Core::DateTimeType, "When this sortition was created", null: true
-      field :updated_at, Decidim::Core::DateTimeType, "When this sortition was updated", null: true
-      field :witnesses, Decidim::Core::TranslatedFieldType, "The witnesses for this sortition", null: true
-      field :additional_info, Decidim::Core::TranslatedFieldType, "The additional info for this sortition", null: true
+      field :witnesses, Decidim::Core::TranslatedFieldInterface, "The witnesses for this sortition", null: true
+      field :additional_info, Decidim::Core::TranslatedFieldInterface, "The additional info for this sortition", null: true
       field :reference, String, "The reference for this sortition", null: true
-      field :title, Decidim::Core::TranslatedFieldType, "The title for this sortition", null: true
-      field :cancel_reason, Decidim::Core::TranslatedFieldType, "The cancel reason for this sortition", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title for this sortition", null: true
+      field :cancel_reason, Decidim::Core::TranslatedFieldInterface, "The cancel reason for this sortition", null: true
       field :cancelled_on, Decidim::Core::DateType, "When this sortition was cancelled", null: true
-      field :cancelled_by_user, Decidim::Core::UserType, "Who cancelled this sortition", null: true
-      field :candidate_proposals, Decidim::Core::TranslatedFieldType, "The candidate proposal for this sortition", null: true
+      field :cancelled_by_user, Decidim::Core::UserInterface, "Who cancelled this sortition", null: true
+      field :candidate_proposals, Decidim::Core::TranslatedFieldInterface, "The candidate proposal for this sortition", null: true
     end
   end
 end

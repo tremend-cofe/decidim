@@ -6,7 +6,7 @@ module Decidim
     module ScopableInterface
       include Decidim::Api::Types::BaseInterface
       description "An interface that can be used in scopable objects."
-
+      #
       field :scope, Decidim::Core::ScopeApiType, "The object's scope", null: true
     end
   end

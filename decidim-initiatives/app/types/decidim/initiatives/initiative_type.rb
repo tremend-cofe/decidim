@@ -9,15 +9,14 @@ module Decidim
       implements Decidim::Core::ScopableInterface
       implements Decidim::Core::AttachableInterface
       implements Decidim::Core::AuthorInterface
+      implements Decidim::Core::TimestampsInterface
       implements Decidim::Initiatives::InitiativeTypeInterface
       description "A initiative"
       graphql_name "Initiative"
 
-      field :description, Decidim::Core::TranslatedFieldType, "The description of this initiative.", null: true
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description of this initiative.", null: true
       field :slug, String, null: false
       field :hashtag, String, "The hashtag for this initiative", null: true
-      field :created_at, Decidim::Core::DateTimeType, "The time this initiative was created", null: false
-      field :updated_at, Decidim::Core::DateTimeType, "The time this initiative was updated", null: false
       field :published_at, Decidim::Core::DateTimeType, "The time this initiative was published", null: false
       field :reference, String, "Reference prefix for this initiative", null: false
       field :state, String, "Current status of the initiative", null: true

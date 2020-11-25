@@ -4,6 +4,9 @@ module Decidim
   module Core
     # This type represents a translated field in multiple languages.
     class TranslatedFieldType < Decidim::Api::Types::BaseObject
+
+      implements Decidim::Core::TranslatedFieldInterface
+
       graphql_name  "TranslatedField"
       description "A translated field"
 

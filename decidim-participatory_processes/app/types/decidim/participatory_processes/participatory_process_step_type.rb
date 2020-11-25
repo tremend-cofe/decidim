@@ -10,12 +10,12 @@ module Decidim
 
       field :participatory_process, ParticipatoryProcessType, description: "The participatory process in which this step belongs to.", null: false
 
-      field :title, Decidim::Core::TranslatedFieldType, "The title of this step", null: false
-      field :description, Decidim::Core::TranslatedFieldType, "The description of this step", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title of this step", null: false
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description of this step", null: true
       field :start_date, Decidim::Core::DateType, "This step's start date", null: true
       field :end_date, Decidim::Core::DateType, "This step's end date", null: true
       field :call_to_action_path, String, "A call to action URL for this step", method: :cta_path, null: true
-      field :call_to_action_text, Decidim::Core::TranslatedFieldType, "The call to action text for this step", method: :cta_text, null: true
+      field :call_to_action_text, Decidim::Core::TranslatedFieldInterface, "The call to action text for this step", method: :cta_text, null: true
       field :active, Boolean, "If this step is the active one", null: true
       field :position, Int, "Ordering position among all the steps", null: true
     end

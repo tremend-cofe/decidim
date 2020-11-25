@@ -5,6 +5,7 @@ module Decidim
     # This type represents a conference.
     class ConferencePartnerType < Decidim::Api::Types::BaseObject
       description "A conference partner"
+      implements Decidim::Core::TimestampsInterface
 
       field :id, ID, "ID of the resource", null: false
       field :name, String, "Partner name", null: true
@@ -12,8 +13,6 @@ module Decidim
       field :weight, Int, "Order of appearance in which it should be presented", null: true
       field :link, String, "Relevant URL for this partner", null: true
       field :logo, String, "Link to the partner's logo", null: true
-      field :created_at, Decidim::Core::DateTimeType, "The time this partner was created", null: true
-      field :updated_at, Decidim::Core::DateTimeType, "The time this partner was updated", null: true
     end
   end
 end

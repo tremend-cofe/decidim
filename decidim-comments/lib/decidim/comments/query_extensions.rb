@@ -19,9 +19,9 @@ module Decidim
           argument :toggle_translations, GraphQL::Types::Boolean, "Whether the user asked to toggle the machine translations or not.", required: true
         end
 
-        def commentable(id:, toggleTranslations:, locale:, type:)
+        def commentable(id:, toggle_translations:, locale:, type:)
           I18n.locale = locale.presence
-          RequestStore.store[:toggle_machine_translations] = toggleTranslations
+          RequestStore.store[:toggle_machine_translations] = toggle_translations
           type.constantize.find(id)
         end
       end

@@ -14,8 +14,8 @@ module Decidim
       description "A post"
 
       field :id, ID, "The internal ID of this post", null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title for this post", null: true
-      field :body, Decidim::Core::TranslatedFieldType, "The body of this post", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title for this post", null: true
+      field :body, Decidim::Core::TranslatedFieldInterface, "The body of this post", null: true
     end
   end
 end

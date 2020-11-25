@@ -7,10 +7,10 @@ module Decidim
       description "A page"
 
       field :id, ID, null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title of this page (same as the component name).", null: false
-      field :body, Decidim::Core::TranslatedFieldType, "The body of this page.", null: true
-      field :created_at, Decidim::Core::DateTimeType, "The time this page was created", null: false
-      field :updated_at, Decidim::Core::DateTimeType, "The time this page was updated", null: false
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title of this page (same as the component name).", null: false
+      field :body, Decidim::Core::TranslatedFieldInterface, "The body of this page.", null: true
+
+      implements Decidim::Core::TimestampsInterface
     end
   end
 end

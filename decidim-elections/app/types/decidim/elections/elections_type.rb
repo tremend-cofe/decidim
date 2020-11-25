@@ -11,7 +11,7 @@ module Decidim
       field :elections, ElectionType.connection_type, null: true, connection: true
 
       def elections
-        ElectionsTypeHelper.base_scope(object).includes(:component)
+        Election.where(component: object).where.not(published_at: nil).includes(:component)
       end
 
       field :election, ElectionType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def election(**args)
-        ElectionsTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module ElectionsTypeHelper
-      def self.base_scope(component)
-        Election.where(component: component).where.not(published_at: nil)
+        Election.where(component: object).where.not(published_at: nil).find_by(id: args[:id])
       end
     end
   end

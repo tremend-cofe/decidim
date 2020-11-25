@@ -18,8 +18,8 @@ module Decidim
       implements Decidim::Core::TimestampsInterface
 
       field :id, ID, null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title for this title", null: true
-      field :body, Decidim::Core::TranslatedFieldType, "The description for this body", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title for this title", null: true
+      field :body, Decidim::Core::TranslatedFieldInterface, "The description for this body", null: true
       field :address, String, "The physical address (location) of this proposal", null: true
       field :coordinates, Decidim::Core::CoordinatesType, "Physical coordinates for this proposal", null: true
 
@@ -28,7 +28,7 @@ module Decidim
       end
       field :reference, String, "This proposal's unique reference", null: true
       field :state, String, "The answer status in which proposal is in", null: true
-      field :answer, Decidim::Core::TranslatedFieldType, "The answer feedback for the status for this proposal", null: true
+      field :answer, Decidim::Core::TranslatedFieldInterface, "The answer feedback for the status for this proposal", null: true
 
       field :answered_at, Decidim::Core::DateTimeType, description: "The date and time this proposal was answered", null: true
 

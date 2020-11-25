@@ -6,11 +6,11 @@ module Decidim
       graphql_name "InitiativeType"
       description "An initiative type"
 
+      implements Decidim::Core::TimestampsInterface
+
       field :id, ID, "The internal ID for this initiative type", null: false
-      field :title, Decidim::Core::TranslatedFieldType, "Initiative type name", null: true
-      field :description, Decidim::Core::TranslatedFieldType, "This is the initiative type description", null: true
-      field :created_at, Decidim::Core::DateTimeType, "The date this initiative type was created", null: true
-      field :updated_at, Decidim::Core::DateTimeType, "The date this initiative type was updated", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "Initiative type name", null: true
+      field :description, Decidim::Core::TranslatedFieldInterface, "This is the initiative type description", null: true
       field :banner_image, String, "Banner image", null: true
       field :collect_user_extra_fields, Boolean, "Collect participant personal data on signature", null: true
       field :extra_fields_legal_information, String, "Legal information about the collection of personal data", null: true

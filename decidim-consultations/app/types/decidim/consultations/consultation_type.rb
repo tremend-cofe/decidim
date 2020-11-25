@@ -5,14 +5,13 @@ module Decidim
     # This type represents a consultation.
     class ConsultationType < Decidim::Api::Types::BaseObject
       implements Decidim::Core::ParticipatorySpaceInterface
+      implements Decidim::Core::TimestampsInterface
       description "A consultation"
 
       field :subtitle, Decidim::Core::TranslatedFieldType, "The subtitle of this consultation", null: true
-      field :description, Decidim::Core::TranslatedFieldType, "The description of this consultation", null: true
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description of this consultation", null: true
       field :slug, String, "Slug of this consultation", null: false
-      field :created_at, Decidim::Core::DateTimeType, "The time this consultation was created", null: false
-      field :updated_at, Decidim::Core::DateTimeType, "The time this consultation was updated", null: false
-      field :published_at, Decidim::Core::DateTimeType, "The time this consultation was published", null: false
+      # field :published_at, Decidim::Core::DateTimeType, "The time this consultation was published", null: false
 
       field :introductory_video_url, String, "The introductory video url for this consultation", null: true
       field :introductory_image, String, "The introductory image for this consultation", null: true

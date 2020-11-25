@@ -11,7 +11,7 @@ module Decidim
       field :pages, PageType.connection_type, null: true, connection: true
 
       def pages
-        PagesTypeHelper.base_scope(object).includes(:component)
+        Page.where(component: object).includes(:component)
       end
 
       field :page, PageType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def page(**args)
-        PagesTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module PagesTypeHelper
-      def self.base_scope(component)
-        Page.where(component: component)
+        Page.where(component: object).find_by(id: args[:id])
       end
     end
   end

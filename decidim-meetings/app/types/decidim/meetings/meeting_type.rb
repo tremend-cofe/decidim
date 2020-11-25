@@ -17,8 +17,8 @@ module Decidim
 
       field :id, ID, "ID of this meeting", null: false
       field :reference, String, "Reference for this meeting", null: false
-      field :title, Decidim::Core::TranslatedFieldType, "The title of this meeting.", null: false
-      field :description, Decidim::Core::TranslatedFieldType, "The description of this meeting.", null: true
+      field :title, Decidim::Core::TranslatedFieldInterface, "The title of this meeting.", null: false
+      field :description, Decidim::Core::TranslatedFieldInterface, "The description of this meeting.", null: true
       field :start_time, Decidim::Core::DateTimeType, "The time this meeting starts", null: false
       field :end_time, Decidim::Core::DateTimeType, "The time this meeting ends", null: false
       field :author, Decidim::Core::AuthorInterface, "If specified, the author of this meeting", null: true
@@ -29,7 +29,7 @@ module Decidim
       end
 
       field :closed, Boolean, "Whether this meeting is closed or not.", method: :closed?, null: false
-      field :closing_report, Decidim::Core::TranslatedFieldType, "The closing report of this meeting.", null: true
+      field :closing_report, Decidim::Core::TranslatedFieldInterface, "The closing report of this meeting.", null: true
       field :attending_organizations, String, "list of attending organizations", null: true
       field :attendee_count, Int, "Amount of attendees to this meeting", method: :attendees_count, null: true
       field :contribution_count, Int, "Amount of contributions to this meeting", method: :contributions_count, null: true
@@ -41,7 +41,7 @@ module Decidim
       field :private_meeting, Boolean, "Whether the meeting is private or not (it can only be true if transparent)", null: false
       field :transparent, Boolean, "For private meetings, information is public if transparent", null: false
       field :registrations_enabled, Boolean, "Whether the registrations are enabled or not", null: false
-      field :registration_terms, Decidim::Core::TranslatedFieldType, "The registration terms", null: true
+      field :registration_terms, Decidim::Core::TranslatedFieldInterface, "The registration terms", null: true
       field :remaining_slots, Int, "Amount of slots available for this meeting", null: true
       field :registration_form_enabled, Boolean, "Whether the registrations have a form or not", null: false
       field :registration_form, Decidim::Forms::QuestionnaireType, description: "If registration requires to fill a form, this is the questionnaire", null: true
@@ -49,8 +49,8 @@ module Decidim
       def registration_form
         object.questionnaire if object.registration_form_enabled?
       end
-      field :location, Decidim::Core::TranslatedFieldType, "The location of this meeting (free format)", null: true
-      field :location_hints, Decidim::Core::TranslatedFieldType, "The location of this meeting (free format)", null: true
+      field :location, Decidim::Core::TranslatedFieldInterface, "The location of this meeting (free format)", null: true
+      field :location_hints, Decidim::Core::TranslatedFieldInterface, "The location of this meeting (free format)", null: true
       field :address, String, "The physical address of this meeting (used for geolocation)", null: true
       field :coordinates, Decidim::Core::CoordinatesType, "Physical coordinates for this meeting", null: true
 

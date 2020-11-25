@@ -11,7 +11,7 @@ module Decidim
       field :debates, DebateType.connection_type, null: true, connection: true
 
       def debates
-        DebatesTypeHelper.base_scope(object).includes(:component)
+        Debate.where(component: object).includes(:component)
       end
 
       field :debate, DebateType, null: true do
@@ -19,13 +19,7 @@ module Decidim
       end
 
       def debate(**args)
-        DebatesTypeHelper.base_scope(object).find_by(id: args[:id])
-      end
-    end
-
-    module DebatesTypeHelper
-      def self.base_scope(component)
-        Debate.where(component: component)
+        Debate.where(component: object).find_by(id: args[:id])
       end
     end
   end

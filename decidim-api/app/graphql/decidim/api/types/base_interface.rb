@@ -4,7 +4,7 @@ module Decidim
       module BaseInterface
         include GraphQL::Schema::Interface
 
-        field_class Types::BaseField
+        # field_class Types::BaseField
 
 
         def self.resolve_type(obj:, ctx:)

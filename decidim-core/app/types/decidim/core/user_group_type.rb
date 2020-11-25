@@ -48,7 +48,7 @@ module Decidim
         object.presenter.badge
       end
 
-      field :members, [UserType, null: true], "Members of this group", null: false
+      field :members, [UserInterface, null: true], "Members of this group", null: false
 
       def members
         object.accepted_users

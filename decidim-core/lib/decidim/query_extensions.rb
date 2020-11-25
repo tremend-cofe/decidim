@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "decidim/api/component_interface"
-require "decidim/api/participatory_space_interface"
+require "decidim/core/api"
 
 module Decidim
   # This module's job is to extend the API with custom fields related to
@@ -30,17 +29,17 @@ module Decidim
 
         base.field :component, Decidim::Core::ComponentInterface, description: "Lists the components this space contains.", null: true do
           argument :id, GraphQL::Types::ID, "The ID of the component to be found", required: true
-
-          def resolve_field(object, args, ctx)
-            component = Decidim::Component.published.find_by(id: args[:id])
-            component&.organization == ctx[:current_organization] ? component : nil
-          end
         end
 
-        base.field :session, Core::SessionType, description: "Return's information about the logged in user", null: true do
-          def resolve_field(object, args, ctx)
-            ctx[:current_user]
-          end
+        def component(id: )
+          component = Decidim::Component.published.find_by(id: id)
+          component&.organization == organization ? component : nil
+        end
+
+        base.field :session, Core::SessionType, description: "Return's information about the logged in user", null: true
+
+        def session
+          context[:current_user]
         end
 
         base.field :decidim, Core::DecidimType, "Decidim's framework properties.", null: true
@@ -54,13 +53,17 @@ module Decidim
         def organization
           context[:current_organization]
         end
-
+        #
         base.field :hashtags, [Core::HashtagType, null: true], description: "The hashtags for current organization", null: true do
           argument :name, GraphQL::Types::String, "The name of the hashtag", required: false
 
           def resolve_field(object, args, ctx)
-            Decidim::HashtagsResolver.new(ctx[:current_organization], args[:name]).hashtags
+
           end
+        end
+
+        def hashtags(name: )
+          Decidim::HashtagsResolver.new(organization, name).hashtags
         end
 
         base.field :metrics, [Decidim::Core::MetricType, null: true], null: true do
@@ -88,15 +91,16 @@ module Decidim
           end
         end
 
-        base.field :user, type: Core::AuthorInterface, description: "A participant (user or group) in the current organization", null: true do
-          def resolve_field(_obj:, args:, ctx:)
-            Core::UserEntityFinder.new.call(_obj, args, ctx)
-          end
+        base.field :user, type: Core::AuthorInterface, description: "A participant (user or group) in the current organization", null: true
+
+        def user(_obj:, args:, ctx:)
+          Core::UserEntityFinder.new.call(_obj, args, ctx)
         end
-        base.field :users, type: [Core::AuthorInterface], description: "The participants (users or groups) for the current organization", null: true do
-          def resolve_field(_obj:, args:, ctx:)
-            Core::UserEntityList.new.call(_obj, args, ctx)
-          end
+
+        base.field :users, type: [Core::AuthorInterface], description: "The participants (users or groups) for the current organization", null: true
+
+        def users(_obj:, args:, ctx:)
+          Core::UserEntityList.new.call(_obj, args, ctx)
         end
 
     end

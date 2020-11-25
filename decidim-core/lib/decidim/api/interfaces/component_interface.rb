@@ -5,10 +5,10 @@ module Decidim
     module ComponentInterface
       include Decidim::Api::Types::BaseInterface
       description "This interface is implemented by all components that belong into a Participatory Space"
+      #
+      field :id, GraphQL::Types::ID, "The Component's unique ID", null: false
 
-      field :id, ID, "The Component's unique ID", null: false
-
-      field :name, Decidim::Core::TranslatedFieldType, "The name of this component.", null: false
+      field :name, Decidim::Core::TranslatedFieldInterface, "The name of this component.", null: false
 
       field :weight, Int, "The weight of the component", null: false
 

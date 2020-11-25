@@ -8,6 +8,7 @@ module Decidim
       graphql_name "User"
 
       implements Decidim::Core::AuthorInterface
+      implements Decidim::Core::UserInterface
 
       field :id, ID, "The user's id", null: false
 
