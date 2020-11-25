@@ -122,7 +122,7 @@ module Decidim
       end
 
       initializer "decidim_initiatives.query_extensions" do
-        Decidim::Api::QueryType.include QueryExtensions
+        Decidim::Api.add_query_extensions Decidim::Initiatives::QueryExtensions
       end
     end
   end

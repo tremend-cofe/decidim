@@ -30,7 +30,7 @@ module Decidim
       end
 
       initializer "decidim_comments.query_extensions" do
-        Decidim::Api::QueryType.include QueryExtensions
+        Decidim::Api.add_query_extensions Decidim::Comments::QueryExtensions
       end
 
       initializer "decidim_comments.mutation_extensions" do

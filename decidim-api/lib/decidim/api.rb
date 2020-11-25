@@ -20,5 +20,14 @@ module Decidim
       @orphan_types ||= []
       @orphan_types += [type]
     end
+
+    def self.add_query_extensions(type)
+      @query_extensions ||= []
+      @query_extensions.push type
+    end
+
+    def self.query_extensions
+      @query_extensions || []
+    end
   end
 end
