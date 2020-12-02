@@ -58,13 +58,13 @@ edit_link(
         <% double = meeting.has_contributions? && meeting.has_attendees? %>
         <div class="card card--secondary extra definition-data">
           <% if meeting.has_contributions? %>
-            <div class=<%="definition-data__item #{"definition-data__item--double" if double}"%>>
+            <div class="definition-data__item <%= "definition-data__item--double" if double %>">
               <span class="definition-data__title"><%= t(".contributions") %></span>
               <span class="definition-data__number"><%= meeting.contributions_count %></span>
             </div>
           <% end %>
           <% if meeting.has_attendees? %>
-            <div class=<%="definition-data__item #{"definition-data__item--double" if double}"%>>
+            <div class="definition-data__item <%= "definition-data__item--double" if double %>">
               <span class="definition-data__title"><%= t(".attendees") %></span>
               <span class="definition-data__number"><%= meeting.attendees_count %></span>
             </div>
