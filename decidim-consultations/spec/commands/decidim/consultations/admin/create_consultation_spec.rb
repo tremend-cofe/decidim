@@ -59,7 +59,7 @@ module Decidim
           end
 
           before do
-            expect(Decidim::Consultation).to receive(:new).and_return(invalid_consultation)
+            allow(Decidim::Consultation).to receive(:new).and_return(invalid_consultation)
           end
 
           it "broadcasts invalid" do

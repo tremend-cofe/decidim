@@ -70,7 +70,7 @@ module Decidim
             organization.settings.tap do |settings|
               settings.upload.maximum_file_size.default = 5
             end
-            expect(subject.banner_image).to receive(:size).and_return(6.megabytes)
+            allow(subject.banner_image).to receive(:size).and_return(6.megabytes)
           end
 
           it { is_expected.not_to be_valid }
