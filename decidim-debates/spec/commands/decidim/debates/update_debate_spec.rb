@@ -27,7 +27,7 @@ describe Decidim::Debates::UpdateDebate do
 
   describe "when the form is not valid" do
     before do
-      expect(form).to receive(:invalid?).and_return(true)
+      allow(form).to receive(:invalid?).and_return(true)
     end
 
     it "broadcasts invalid" do
@@ -43,7 +43,7 @@ describe Decidim::Debates::UpdateDebate do
 
   describe "when the debate is not editable by the user" do
     before do
-      expect(debate).to receive(:editable_by?).and_return(false)
+      allow(debate).to receive(:editable_by?).and_return(false)
     end
 
     it "broadcasts invalid" do

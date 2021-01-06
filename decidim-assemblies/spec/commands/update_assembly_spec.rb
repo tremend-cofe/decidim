@@ -85,7 +85,7 @@ module Decidim::Assemblies
 
       describe "when the form is not valid" do
         before do
-          expect(form).to receive(:invalid?).and_return(true)
+          allow(form).to receive(:invalid?).and_return(true)
         end
 
         it "broadcasts invalid" do
@@ -120,7 +120,7 @@ module Decidim::Assemblies
 
       describe "when the assembly is not valid" do
         before do
-          expect(form).to receive(:invalid?).and_return(false)
+          allow(form).to receive(:invalid?).and_return(false)
           expect(my_assembly).to receive(:valid?).at_least(:once).and_return(false)
           my_assembly.errors.add(:hero_image, "Image too big")
           my_assembly.errors.add(:banner_image, "Image too big")

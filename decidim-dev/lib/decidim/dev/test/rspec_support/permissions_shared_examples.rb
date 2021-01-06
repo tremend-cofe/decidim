@@ -16,7 +16,7 @@ shared_examples "delegates permissions to" do |delegated_class|
       .with(user, permission_action, context)
       .and_return delegated_permissions
 
-    expect(delegated_permissions)
+    allow(delegated_permissions)
       .to receive(:permissions)
       .and_return(delegated_permission_action)
 
