@@ -105,8 +105,8 @@ module Decidim
         # with true and false as values. If these values fit your filtering needs,
         # you won't have to declare a `filters_with_values` method in your concern.
         def filters_with_values
-          filters.each_with_object({}) do |filter, hash|
-            hash[filter] = [true, false]
+          filters.index_with do |_filter|
+            [true, false]
           end
         end
 
