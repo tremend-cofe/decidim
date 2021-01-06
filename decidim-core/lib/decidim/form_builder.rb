@@ -785,7 +785,7 @@ module Decidim
     def selected_scopes(attribute)
       selected = object.send(attribute) || []
       selected = selected.values if selected.is_a?(Hash)
-      selected = [selected] unless selected.is_a?(Array)
+      selected = Array(selected)
       selected = Decidim::Scope.where(id: selected.map(&:to_i)) unless selected.first.is_a?(Decidim::Scope)
       selected
     end

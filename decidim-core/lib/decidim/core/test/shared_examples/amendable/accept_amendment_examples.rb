@@ -19,7 +19,7 @@ shared_examples "accept amendment" do
     end
 
     it "traces the action", versioning: true do
-      expect(Decidim.traceability)
+      allow(Decidim.traceability)
         .to receive(:update!)
         .with(
           amendment,

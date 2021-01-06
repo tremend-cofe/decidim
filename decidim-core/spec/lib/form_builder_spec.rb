@@ -689,7 +689,7 @@ module Decidim
         end
 
         before do
-          expect(helper).to receive(:render).and_return("[rendering]")
+          allow(helper).to receive(:render).and_return("[rendering]")
         end
 
         it "renders a hidden field and a container for the editor" do

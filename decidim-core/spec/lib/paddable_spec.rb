@@ -83,8 +83,8 @@ module Decidim
 
         it "finds a pad in the server" do
           etherpad_service = instance_double(EtherpadLite::Instance)
-          expect(paddable).to receive(:etherpad).and_return(etherpad_service)
-          expect(etherpad_service).to receive(:pad).with("secret-id").and_return(pad)
+          allow(paddable).to receive(:etherpad).and_return(etherpad_service)
+          allow(etherpad_service).to receive(:pad).with("secret-id").and_return(pad)
 
           expect(paddable.pad).to eq(pad)
         end

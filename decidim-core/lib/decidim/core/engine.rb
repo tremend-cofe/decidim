@@ -54,12 +54,18 @@ module Decidim
       initializer "Rails 6 autoloader" do
         Rails.application.configure do
           if config.autoloader == :zeitwerk
-            ActiveSupport::Deprecation.warn("\n"*5 + "The zeitwerk autoloader is not yet compatible with Decidim. Setting fallback to classic autoloader" + "\n"*5)
+            ActiveSupport::Deprecation.warn(
+              <<~DEPRECATION.strip
+                The zeitwerk autoloader is not yet compatible with Decidim. Setting fallback to classic autoloader
+
+
+              DEPRECATION
+            )
             config.autoloader = :classic
           end
         end
       end
-      
+
       initializer "decidim.action_controller" do |_app|
         ActiveSupport.on_load :action_controller do
           helper Decidim::LayoutHelper if respond_to?(:helper)
@@ -73,7 +79,7 @@ module Decidim
       end
 
       initializer "decidim.assets" do |app|
-        Sprockets.register_mime_type 'application/ecmascript-6', extensions: ['.es6', '.js.es6'], charset: :unicode
+        Sprockets.register_mime_type "application/ecmascript-6", extensions: [".es6", ".js.es6"], charset: :unicode
         app.config.assets.paths << File.expand_path("../../../app/assets/stylesheets", __dir__)
         app.config.assets.precompile += %w(decidim_core_manifest.js
                                            decidim/identity_selector_dialog)

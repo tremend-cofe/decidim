@@ -33,7 +33,7 @@ module Decidim
 
       context "when no params given" do
         it "gets the params from the controller" do
-          expect(helper.controller).to receive(:params).and_return(double(to_unsafe_h: params))
+          allow(helper.controller).to receive(:params).and_return(double(to_unsafe_h: params))
           expect(helper.filter_link_params).not_to be_empty
         end
       end
