@@ -29,7 +29,7 @@ describe Decidim do
       manifests = [double(name: "Component A"), double(name: "Component B")]
       allow(described_class).to receive(:participatory_space_manifests).and_return(manifests)
 
-      allow(manifests).to all(receive(:seed!).once)
+      expect(manifests).to all(receive(:seed!).once)
 
       application = double(railties: (decidim_railties + other_railties))
       allow(Rails).to receive(:application).and_return application
