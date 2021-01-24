@@ -42,6 +42,7 @@ fr:
         title: Actions
       admin:
         exports:
+          result_comments: Commentaires
           results: Réalisations
         import_results:
           new:
@@ -124,7 +125,7 @@ fr:
       content_blocks:
         highlighted_results:
           dates: Dates
-          results: Résultats
+          results: Réalisations
           unspecified: Non précisé
       import_mailer:
         import:
@@ -138,8 +139,12 @@ fr:
       models:
         result:
           fields:
+            category: Catégorie
+            created_at: Créé le
             end_date: Date de fin
+            id: ID
             progress: Avancement
+            scope: Secteur
             start_date: Date de début
             status: Statut
             title: Titre
@@ -154,8 +159,8 @@ fr:
             description: Description
             entry_date: Date
       result_m:
-        executed: Fait
-        view: Aperçu
+        executed: Exécuté
+        view: Voir
       results:
         count:
           results_count:
@@ -186,6 +191,15 @@ fr:
             votes: Votes
         timeline:
           title: Évolution du projet
+    admin:
+      filters:
+        results:
+          category_id_eq:
+            label: Catégorie
+          scope_id_eq:
+            label: Secteur
+          status_id_eq:
+            label: Statut
     components:
       accountability:
         name: Suivi
