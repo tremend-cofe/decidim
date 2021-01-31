@@ -18,7 +18,10 @@ describe Decidim::Votings::Admin::CreateVoting do
       slug: slug,
       scope: scope,
       current_user: user,
-      current_organization: organization
+      current_organization: organization,
+      banner_image: nil,
+      introductory_image: nil,
+      promoted: promoted
     )
   end
 
@@ -29,6 +32,7 @@ describe Decidim::Votings::Admin::CreateVoting do
   let(:end_time) { start_time + 1.month }
   let(:slug) { "voting-slug" }
   let(:scope) { create :scope, organization: organization }
+  let(:promoted) { true }
 
   let(:voting) { Decidim::Votings::Voting.last }
 
@@ -49,6 +53,7 @@ describe Decidim::Votings::Admin::CreateVoting do
     expect(voting.slug).to eq slug
     expect(voting.scope).to eq scope
     expect(voting.organization).to eq organization
+    expect(voting.promoted).to eq promoted
   end
 
   it "traces the action", versioning: true do
