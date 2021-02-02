@@ -9,8 +9,7 @@ module Decidim
 
       def index
         enforce_permission_to :read, :moderate_users
-        target_scope = params[:blocked] && params[:blocked] == "true" ? :blocked : :unblocked
-        @moderated_users = collection.page(params[:page]).per(15)
+        @moderated_users = filtered_collection.page(params[:page]).per(15)
         
       end
 
