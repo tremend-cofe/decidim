@@ -103,7 +103,7 @@ module Decidim
         gem_modifier = if options[:path]
                          "path: \"#{options[:path]}\""
                        elsif options[:edge]
-                         "git: \"https://github.com/decidim/decidim.git\""
+                         "git: \"https://github.com/decidim/decidim.git\", branch: \"develop\""
                        elsif options[:branch]
                          "git: \"https://github.com/decidim/decidim.git\", branch: \"#{options[:branch]}\""
                        else
@@ -114,7 +114,6 @@ module Decidim
 
         if current_gem == "decidim"
           gsub_file "Gemfile", /gem "decidim-dev".*/, "gem \"decidim-dev\", #{gem_modifier}"
-          gsub_file "Gemfile", /gem "decidim-demographics".*/, "gem \"decidim-demographics\", #{gem_modifier}"
 
           %w(conferences consultations elections initiatives templates).each do |component|
             if options[:demo]
