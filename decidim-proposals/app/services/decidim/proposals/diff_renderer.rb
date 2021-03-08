@@ -31,8 +31,8 @@ module Decidim
           attribute => {
             type: type,
             label: I18n.t(attribute, scope: i18n_scope),
-            old_value: old_value,
-            new_value: new_value
+            old_value: translated_attribute(old_value),
+            new_value: translated_attribute(new_value)
           }
         )
       end
