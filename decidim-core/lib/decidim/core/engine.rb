@@ -2,6 +2,7 @@
 
 require "rails"
 require "active_support/all"
+require "sprockets/railtie"
 
 require "pg"
 require "redis"
@@ -44,12 +45,34 @@ require "anchored"
 
 require "decidim/api"
 
+require_relative "../../../app/helpers/decidim/layout_helper"
+require_relative "../../../app/middleware/decidim/current_organization"
+require_relative "../../../app/middleware/decidim/strip_x_forwarded_host"
+require_relative "../../../app/services/decidim/events_manager"
+require_relative "../../../app/services/decidim/settings_change"
 module Decidim
   module Core
     # Decidim's core Rails Engine.
     class Engine < ::Rails::Engine
       isolate_namespace Decidim
       engine_name "decidim"
+
+      # Please note the following initializer that actually disables the zeitwerk from any Decidim installation.
+      # I have taken the decision of not upgrading the zeitwerk, to keep the pull request smaller , and allow smaller iterations on the upcomming changes.
+      # While running the project using the classic autoloader, the following warning is posted by rails, and is different for each one of the classes.
+      # DEPRECATION WARNING: Initialization autoloaded the constants Decidim::LayoutHelper, Decidim::CurrentOrganization and a lot more classes.
+      initializer "Rails 6 autoloader" do
+        Rails.application.configure do
+          if config.autoloader == :zeitwerk
+            ActiveSupport::Deprecation.warn(%(
+
+The zeitwerk autoloader is not yet compatible with Decidim. Setting fallback to classic autoloader
+
+))
+            config.autoloader = :classic
+          end
+        end
+      end
 
       initializer "decidim.action_controller" do |_app|
         ActiveSupport.on_load :action_controller do
@@ -179,53 +202,62 @@ module Decidim
 
       initializer "decidim.menu" do
         Decidim.menu :menu do |menu|
-          menu.item I18n.t("menu.home", scope: "decidim"),
-                    decidim.root_path,
-                    position: 1,
-                    active: :exclusive
+          menu.add_item :root,
+                        I18n.t("menu.home", scope: "decidim"),
+                        decidim.root_path,
+                        position: 1,
+                        active: :exclusive
 
-          menu.item I18n.t("menu.help", scope: "decidim"),
-                    decidim.pages_path,
-                    position: 7,
-                    active: :inclusive
+          menu.add_item :pages,
+                        I18n.t("menu.help", scope: "decidim"),
+                        decidim.pages_path,
+                        position: 7,
+                        active: :inclusive
         end
       end
 
       initializer "decidim.user_menu" do
         Decidim.menu :user_menu do |menu|
-          menu.item t("account", scope: "layouts.decidim.user_profile"),
-                    decidim.account_path,
-                    position: 1.0,
-                    active: :exact
+          menu.add_item :account,
+                        t("account", scope: "layouts.decidim.user_profile"),
+                        decidim.account_path,
+                        position: 1.0,
+                        active: :exact
 
-          menu.item t("notifications_settings", scope: "layouts.decidim.user_profile"),
-                    decidim.notifications_settings_path,
-                    position: 1.1
+          menu.add_item :notifications_settings,
+                        t("notifications_settings", scope: "layouts.decidim.user_profile"),
+                        decidim.notifications_settings_path,
+                        position: 1.1
 
           if available_verification_workflows.any?
-            menu.item t("authorizations", scope: "layouts.decidim.user_profile"),
-                      decidim_verifications.authorizations_path,
-                      position: 1.2
+            menu.add_item :authorizations,
+                          t("authorizations", scope: "layouts.decidim.user_profile"),
+                          decidim_verifications.authorizations_path,
+                          position: 1.2
           end
 
           if current_organization.user_groups_enabled? && user_groups.any?
-            menu.item t("user_groups", scope: "layouts.decidim.user_profile"),
-                      decidim.own_user_groups_path,
-                      position: 1.3
+            menu.add_item :own_user_groups,
+                          t("user_groups", scope: "layouts.decidim.user_profile"),
+                          decidim.own_user_groups_path,
+                          position: 1.3
           end
 
-          menu.item t("my_interests", scope: "layouts.decidim.user_profile"),
-                    decidim.user_interests_path,
-                    position: 1.4
+          menu.add_item :user_interests,
+                        t("my_interests", scope: "layouts.decidim.user_profile"),
+                        decidim.user_interests_path,
+                        position: 1.4
 
-          menu.item t("my_data", scope: "layouts.decidim.user_profile"),
-                    decidim.data_portability_path,
-                    position: 1.5
+          menu.add_item :data_portability,
+                        t("my_data", scope: "layouts.decidim.user_profile"),
+                        decidim.data_portability_path,
+                        position: 1.5
 
-          menu.item t("delete_my_account", scope: "layouts.decidim.user_profile"),
-                    decidim.delete_account_path,
-                    position: 999,
-                    active: :exact
+          menu.add_item :delete_account,
+                        t("delete_my_account", scope: "layouts.decidim.user_profile"),
+                        decidim.delete_account_path,
+                        position: 999,
+                        active: :exact
         end
       end
 
@@ -334,8 +366,8 @@ module Decidim
           end
         end
 
-        Decidim.metrics_registry.register(:suspended_users) do |metric_registry|
-          metric_registry.manager_class = "Decidim::Metrics::SuspendedUsersMetricManage"
+        Decidim.metrics_registry.register(:blocked_users) do |metric_registry|
+          metric_registry.manager_class = "Decidim::Metrics::BlockedUsersMetricManage"
 
           metric_registry.settings do |settings|
             settings.attribute :highlighted, type: :boolean, default: false

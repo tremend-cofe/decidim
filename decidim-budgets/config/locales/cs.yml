@@ -6,7 +6,7 @@ cs:
         description: Popis
         title: Název
         total_budget: Celkový rozpočet
-        weight: Váha
+        weight: Pozice v řazení
       project:
         budget_amount: Částka rozpočtu
         decidim_category_id: Kategorie
@@ -47,7 +47,11 @@ cs:
             title: Upravit rozpočet
             update: Aktualizovat rozpočet
           index:
+            finished_orders: Dokončené hlasy
+            pending_orders: Čekající hlasy
             title: Rozpočty
+            users_with_finished_orders: Uživatelé s dokončenými hlasy
+            users_with_pending_orders: Uživatelé s čekajícími hlasy
           new:
             create: Vytvořit rozpočet
             title: Nový rozpočet
@@ -294,6 +298,9 @@ cs:
         success: Váš hlas byl úspěšně zrušen
     resource_links:
       included_proposals:
-        project_proposal: 'Návrhy zahrnuté do tohoto projektu:'
+        project_proposal: Návrhy zahrnuté do tohoto projektu
+    statistics:
+      orders_count: Podpory
+      projects_count: Projekty
   index:
     confirmed_orders_count: Počet hlasů

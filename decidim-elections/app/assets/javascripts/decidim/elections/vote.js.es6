@@ -1,261 +1,195 @@
-/* eslint-disable require-jsdoc, prefer-template, func-style, id-length, no-use-before-define, init-declarations, no-invalid-this */
-/* eslint no-unused-vars: ["error", { "args": "none" }] */
+/* eslint-disable no-console */
 // = require decidim/bulletin_board/decidim-bulletin_board
+// = require decidim/bulletin_board/dummy-voting-scheme
+// = require decidim/bulletin_board/election_guard-voting-scheme
 
-$(() => {
-  const { Voter, Client } = decidimBulletinBoard;
+// = require ./vote_questions.component
+
+$(async () => {
+  const { VoteQuestionsComponent } = window.Decidim;
+  const { VoteComponent } = window.decidimBulletinBoard;
+  const { VoterWrapperAdapter: DummyVoterWrapperAdapter } = window.dummyVotingScheme;
+  const { VoterWrapperAdapter: ElectionGuardVoterWrapperAdapter } = window.electionGuardVotingScheme;
+
+  // UI Elements
   const $voteWrapper = $(".vote-wrapper");
-  const $continueButton = $voteWrapper.find("a.focus__next");
-  const $confirmButton = $voteWrapper.find("a.focus__next.confirm");
-  const $continueSpan = $voteWrapper.find("span.disabled-continue");
+  const $ballotHash = $voteWrapper.find(".ballot-hash");
 
-  let $answerCounter = 0;
-  let $currentStep,
-      $currentStepMaxSelection = "";
-  let $formData = $voteWrapper.find(".answer_input");
+  // Data
+  const bulletinBoardClientParams = {
+    apiEndpointUrl: $voteWrapper.data("apiEndpointUrl")
+  };
+  const electionUniqueId = $voteWrapper.data("electionUniqueId");
+  const authorityPublicKeyJSON = JSON.stringify(
+    $voteWrapper.data("authorityPublicKey")
+  );
+  const voterUniqueId = $voteWrapper.data("voterId");
+  const schemeName = $voteWrapper.data("schemeName");
 
-  // Updates the status of the vote
-  const updateVoteStatus = (id) => {
-    $.ajax({
-      method: "PATCH",
-      url: $voteWrapper.data("updateVoteStatusUrl"),
-      contentType: "application/json",
-      data: JSON.stringify({ vote_id: id }), // eslint-disable-line camelcase
-      headers: {
-        "X-CSRF-Token": $("meta[name=csrf-token]").attr("content")
-      }
-    });
-  }
-
-  function initStep() {
-    setCurrentStep();
-    toggleContinueButton();
-    $($confirmButton).addClass("show").removeClass("hide");
-    $(".evote__counter-min").text($answerCounter);
-    answerCounter();
-    disableCheckbox();
-  }
-
-  initStep()
-
-  function setCurrentStep() {
-    $currentStep = $voteWrapper.find(".focus__step:visible")
-    setSelections();
-    onSelectionChange();
-  }
-
-  function setSelections() {
-    $currentStepMaxSelection = $currentStep.find(".evote__options").data("max-selection")
-  }
-
-  function onSelectionChange() {
-    let $voteOptions = $currentStep.find(".evote__options");
-    $voteOptions.on("change", (event) => {
-      toggleContinueButton();
-      toggleConfirmAnswers();
-      answerCounter();
-    });
-  }
-
-  // disable checkboxes if NOTA option is selected
-  function disableCheckbox() {
-    $("[data-disabled-by]").on("click", function(e) {
-      if ($(this).attr("aria-disabled") || $(this).hasClass("is-disabled")) {
-        e.preventDefault();
-      }
-    });
-
-    $("[data-disable-check]").on("change", function() {
-      let checkId = $(this).attr("id");
-      let checkStatus = this.checked;
-
-      $($currentStep).find("[data-disabled-by='#" + checkId + "']").each(function() {
-        if (checkStatus) {
-          $(this).addClass("is-disabled");
-          $(this).find("input[type=checkbox]").prop("checked", false);
-        } else {
-          $(this).removeClass("is-disabled");
-        }
-
-        $(this).find("input[type=checkbox]").attr("aria-disabled", checkStatus);
-      });
-    });
-  }
-
-  function toggleContinueButton() {
-    if (checkAnswers() === true) {
-      // next step enabled
-      $($continueButton).addClass("show").removeClass("hide")
-      $($continueSpan).addClass("hide").removeClass("show")
-    } else {
-      // next step disabled
-      $($continueButton).addClass("hide").removeClass("show")
-      $($continueSpan).addClass("show").removeClass("hide")
-    }
-  }
-
-  // check if answers are correctly checked
-  function checkAnswers() {
-    let currentAnswersChecked = $("#" + $currentStep.attr("id") + " .answer_input:checked").length
-    let notaAnswerChecked = $("#" + $currentStep.attr("id") + " .nota_input:checked").length
-
-    if ((currentAnswersChecked >= 1 || notaAnswerChecked > 0) && (currentAnswersChecked <= $currentStepMaxSelection)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // receive confirmed answers
-  function toggleConfirmAnswers() {
-    $(".answer_input:checked").each(function() {
-      let confirmedAnswer = $(".evote__confirm").find("#" + this.value);
-      $(confirmedAnswer).removeClass("hide")
-    })
-
-    $(".answer_input").not(":checked").each(function() {
-      let confirmedAnswer = $(".evote__confirm").find("#" + this.value);
-      $(confirmedAnswer).addClass("hide")
-    })
-
-    $(".nota_input:checked").each(function() {
-      let confirmedAnswer = $(".evote__confirm").find("." + this.value);
-      $(confirmedAnswer).removeClass("hide")
-    })
-
-    $(".nota_input").not(":checked").each(function() {
-      let confirmedAnswer = $(".evote__confirm").find("." + this.value);
-      $(confirmedAnswer).addClass("hide")
-    })
-  }
-
-  function answerCounter() {
-    let checked = $("#" + $currentStep.attr("id") + " .answer_input:checked").length
-    $(".evote__counter-min").text(checked);
-  }
-
-  // get form Data
-  function getFormData(formData) {
-    return formData.serializeArray().reduce((acc, {name, value}) => {
-      if (!acc[name]) {
-        acc[name] = [];
-      }
-      acc[name] = [...acc[name], value];
-      return acc;
-    }, {"ballot_style": "unique"});
-  }
-
-  // confirm vote
-  $(".button.confirm").on("click", (event) => {
-    const boothMode = $(event.currentTarget).data("booth-mode");
-    const formData = getFormData($formData);
-    castVote(boothMode, formData)
+  // Use the questions component
+  const questionsComponent = new VoteQuestionsComponent($voteWrapper);
+  questionsComponent.init();
+  $(document).on("on.zf.toggler", () => {
+    // continue and back btn
+    questionsComponent.init();
   });
 
-  const isPreview = $voteWrapper.data("booth-mode") === "preview";
+  // Use the correct voter wrapper adapter
+  let voterWrapperAdapter = null;
 
-  function simulatePreviewDelay() {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 500);
-    })
+  if (schemeName === "dummy") {
+    voterWrapperAdapter = new DummyVoterWrapperAdapter({
+      voterId: voterUniqueId
+    });
+  } else if (schemeName === "election_guard") {
+    voterWrapperAdapter = new ElectionGuardVoterWrapperAdapter({
+      voterId: voterUniqueId,
+      workerUrl: "/assets/election_guard/webworker.js"
+    });
+  } else {
+    throw new Error(`Voting scheme ${schemeName} not supported.`);
   }
 
-  // cast vote
-  function castVote(_boothMode, formData) {
-    const bulletinBoardClient = new Client({
-      apiEndpointUrl: $voteWrapper.data("apiEndpointUrl"),
-      wsEndpointUrl: $voteWrapper.data("websocketUrl")
-    });
+  // Use the voter component and bind all UI events
+  const voteComponent = new VoteComponent({
+    bulletinBoardClientParams,
+    authorityPublicKeyJSON,
+    electionUniqueId,
+    voterUniqueId,
+    voterWrapperAdapter
+  });
 
-    const voter = new Voter({
-      id: $voteWrapper.data("voterId"),
-      bulletinBoardClient,
-      electionContext: {
-        id: $voteWrapper.data("electionUniqueId")
-      }
-    });
+  await voteComponent.bindEvents({
+    onBindEncryptButton(onEventTriggered) {
+      $(".button.confirm").on("click", onEventTriggered);
+    },
+    onStart() {},
+    onVoteEncryption(validVoteFn) {
+      const getFormData = (formData) => {
+        return formData.serializeArray().reduce(
+          (acc, { name, value }) => {
+            if (!acc[name]) {
+              acc[name] = [];
+            }
+            acc[name] = [...acc[name], `${name}_${value}`];
+            return acc;
+          }, {}
+        );
+      };
+      const formData = getFormData($voteWrapper.find(".answer_input"));
+      validVoteFn(formData);
+    },
+    castOrAuditBallot({encryptedDataHash}) {
+      $voteWrapper.find("#encrypting").addClass("hide");
+      $ballotHash.text(
+        `Your ballot identifier is: ${encryptedDataHash}`
+      );
+      $voteWrapper.find("#ballot_decision").removeClass("hide");
+    },
+    onBindAuditBallotButton(onEventTriggered) {
+      $(".audit_ballot").on("click", onEventTriggered);
+    },
+    onBindCastBallotButton(onEventTriggered) {
+      $(".cast_ballot").on("click", onEventTriggered);
+    },
+    onAuditBallot(auditedData, auditedDataFileName) {
+      const vote = JSON.stringify(auditedData);
+      const link = document.createElement("a");
+      $voteWrapper.find(".button.cast_ballot").addClass("hide");
+      $voteWrapper.find(".button.back").removeClass("hide");
+      questionsComponent.voteCasted = true;
 
-    let encryptedVoteHashToVerify = null;
+      link.setAttribute("href", `data:text/plain;charset=utf-8,${vote}`);
+      link.setAttribute("download", auditedDataFileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    onAuditComplete() {
+      console.log("AUDIT COMPLETED");
+    },
+    async onCastBallot(ballot) {
+      const simulatePreviewDelay = () => {
+        return new Promise((resolve) => setTimeout(resolve, 500));
+      };
+      const isPreview = $voteWrapper.data("booth-mode") === "preview";
 
-    voter.encrypt(formData).then((encryptedVoteAsJSON) => {
-      return crypto.subtle.digest("SHA-256", new TextEncoder().encode(encryptedVoteAsJSON)).then((hashBuffer) => {
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+      $voteWrapper.find("#ballot_decision").addClass("hide");
+      $voteWrapper.find("#confirmed_page").removeClass("hide");
+      $voteWrapper.find(".vote-confirmed-result").addClass("hide");
 
-        return {
-          encryptedVote: encryptedVoteAsJSON,
-          encryptedVoteHash: hashHex
-        };
-      })
-    }).then(({ encryptedVote, encryptedVoteHash}) => {
-      encryptedVoteHashToVerify = encryptedVoteHash;
-
-      return $.ajax({
+      await $.ajax({
         method: "POST",
         url: $voteWrapper.data("castVoteUrl"),
         contentType: "application/json",
-        data: JSON.stringify({ encrypted_vote: encryptedVote, encrypted_vote_hash: encryptedVoteHash }), // eslint-disable-line camelcase
+        data: JSON.stringify({
+          encrypted_vote: ballot.encryptedData, // eslint-disable-line camelcase
+          encrypted_vote_hash: ballot.encryptedDataHash // eslint-disable-line camelcase
+        }),
         headers: {
           "X-CSRF-Token": $("meta[name=csrf-token]").attr("content")
         }
-      })
-    }).then(() => {
-      const $messageId = $voteWrapper.find(".vote-confirmed-result").data("messageId");
+      });
 
       if (isPreview) {
-        return simulatePreviewDelay()
-      }
-
-      return voter.waitForPendingMessageToBeProcessed($messageId)
-    }).then((pendingMessage) => {
-      const $voteId = $voteWrapper.find(".vote-confirmed-result").data("voteId");
-
-      if (isPreview || pendingMessage.status === "accepted") {
+        await simulatePreviewDelay();
         $voteWrapper.find("#encrypting").addClass("hide");
+        $voteWrapper.find("#ballot_decision").addClass("hide");
         $voteWrapper.find("#confirmed_page").removeClass("hide");
-        $voteWrapper.find(".vote-confirmed-result").hide();
-        window.confirmed = true;
-      }
-
-      if (isPreview) {
-        return simulatePreviewDelay()
-      }
-
-      updateVoteStatus($voteId)
-
-      if (pendingMessage.status === "rejected") {
-        return null
-      }
-
-      return voter.verifyVote(encryptedVoteHashToVerify);
-    }).then((logEntry) => {
-      if (isPreview || logEntry) {
-        $voteWrapper.find(".vote-confirmed-processing").hide();
-        $voteWrapper.find(".vote-confirmed-result").show();
+        questionsComponent.voteCasted = true;
       } else {
-        const $error = $voteWrapper.find(".vote-confirmed-result").data("error");
-        alert($error); // eslint-disable-line no-alert
+        const messageId = $voteWrapper.
+          find(".vote-confirmed-result").
+          data("messageId");
+        const voteId = $voteWrapper.
+          find(".vote-confirmed-result").
+          data("voteId");
+        const pendingMessage = await voteComponent.bulletinBoardClient.waitForPendingMessageToBeProcessed(
+          messageId
+        );
+
+        await $.ajax({
+          method: "PATCH",
+          url: $voteWrapper.data("updateVoteStatusUrl"),
+          contentType: "application/json",
+          data: JSON.stringify({ vote_id: voteId }), // eslint-disable-line camelcase
+          headers: {
+            "X-CSRF-Token": $("meta[name=csrf-token]").attr("content")
+          }
+        });
+
+        if (pendingMessage.status === "accepted") {
+          $voteWrapper.find("#encrypting").addClass("hide");
+          $voteWrapper.find("#ballot_decision").addClass("hide");
+          $voteWrapper.find("#confirmed_page").removeClass("hide");
+          questionsComponent.voteCasted = true;
+
+          const logEntry = await voteComponent.voter.verifyVote(
+            ballot.encryptedDataHash
+          );
+
+          if (logEntry) {
+            $voteWrapper.find(".vote-confirmed-processing").hide();
+            $voteWrapper.find(".vote-confirmed-result").removeClass("hide");
+          } else {
+            const $error = $voteWrapper.
+              find(".vote-confirmed-result").
+              data("error");
+            alert($error); // eslint-disable-line no-alert
+          }
+        } else {
+          const $error = $voteWrapper.
+            find(".vote-confirmed-result").
+            data("error");
+          alert($error); // eslint-disable-line no-alert
+        }
       }
-    })
-  }
-
-  // exit message before confirming
-  const $form = $(".evote__options");
-  if ($form.length > 0) {
-
-    window.onbeforeunload = () => {
-      const voteCast = window.confirmed;
-
-      if (voteCast) {
-        return null;
-      }
-
-      return "";
+    },
+    onCastComplete() {
+      console.log("Cast completed")
+    },
+    onInvalid() {
+      console.log("Something went wrong.")
     }
-  }
-
-  $(document).on("on.zf.toggler", (event) => {
-    // continue and back btn
-    initStep()
   });
 });

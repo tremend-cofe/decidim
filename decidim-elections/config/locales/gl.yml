@@ -93,12 +93,20 @@ gl:
           close_modal: Pechar modal
           filter: Filtrar
           filter_by: Filtrar por
-        preview:
-          available_answers: Respostas dispoñibles
         results:
           selected: Seleccionado
         show:
-          verify: Verificar
+          action_button:
+            change_vote: Troca o teu voto
+            vote: Comezar votación
+            vote_again: Votar de novo
+          callout:
+            already_voted: Xa votaches nesta elección. Podes trocar o teu voto ou verificalo.
+            vote_rejected: Non foi posíbel verificar o teu voto. Por favor, faino de novo.
+          verify:
+            already_voted: Xa votaches?
+            verify_here: Verifica o teu voto aquí.
+            will_verify: Poderás verificar o teu voto unha vez comece a elección.
       models:
         answer:
           fields:
@@ -157,3 +165,15 @@ gl:
             email_outro: Recibiches esta notificación porque votaches pola elección de %{resource_name}.
             email_subject: O teu voto por %{resource_name} foi aceptado.
             notification_title: 'O teu voto foi aceptado, verifícao <a href="%{verify_url}">aquí</a> empregando o teu token de votación: %{encrypted_vote_hash}'
+    votings:
+      admin:
+        menu:
+          votings_submenu:
+            components: Compoñentes
+        votings:
+          form:
+            select_a_voting_type: Por favor, selecciona un tipo de votación
+            voting_type:
+              hybrid: Híbrido
+              in_person: En persoa
+              online: En liña

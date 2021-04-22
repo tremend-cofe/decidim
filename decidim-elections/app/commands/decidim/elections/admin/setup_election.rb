@@ -19,8 +19,8 @@ module Decidim
           return broadcast(:invalid) if form.invalid?
 
           transaction do
-            add_trustees_to_election
             log_action
+            update_election
             notify_trustee_about_election
             setup_election
           end
@@ -45,91 +45,74 @@ module Decidim
         end
 
         def trustees
-          @trustees ||= Decidim::Elections::Trustee.where(id: form.trustee_ids)
+          @trustees ||= Decidim::Elections::Trustee.where(id: form.trustee_ids).order(:id)
         end
 
-        def add_trustees_to_election
+        def update_election
           return if election.trustees.exists?(id: form.trustee_ids)
 
           election.trustees << trustees
-          election.save!
+          election.blocked_at = Time.current
+          election.bb_created!
         end
 
         def election_data
           {
-            iat: Time.now.to_i,
-            scheme: bulletin_board.scheme,
-            authority: {
-              name: bulletin_board.authority_name,
-              public_key: bulletin_board.public_key
-            },
-            trustees:
-              trustees.collect do |trustee|
-                {
-                  name: trustee.name,
-                  public_key: trustee.public_key
-                }
-              end,
-            description: {
-              name: {
-                text: [{
-                  value: election.title[current_organization.default_locale.to_s],
-                  language: current_organization.default_locale.to_s
-                }]
-              },
-              start_date: election.start_time,
-              end_date: election.end_time,
-              candidates:
-                  answers.collect do |answer|
-                    {
-                      object_id: answer.id.to_s,
-                      ballot_name: {
-                        text: [{
-                          value: answer.title[current_organization.default_locale.to_s],
-                          language: current_organization.default_locale.to_s
-                        }]
-                      }
-                    }
-                  end,
-              contests:
-                questions.collect do |question|
-                  {
-                    "@type": "CandidateContest",
-                    object_id: question.id.to_s,
-                    sequence_order: question.weight,
-                    vote_variation: question.vote_variation,
-                    name: question.title[current_organization.default_locale.to_s],
-                    number_elected: question.answers.count,
-                    votes_allowed: 1,
-                    ballot_title: {
-                      text: [{
-                        value: question.title[current_organization.default_locale.to_s],
-                        language: current_organization.default_locale.to_s
-                      }]
-                    },
-                    ballot_subtitle: {
-                      text: [{
-                        value: question.description[current_organization.default_locale.to_s],
-                        language: current_organization.default_locale.to_s
-                      }]
-                    },
-                    ballot_selections:
-                      question.answers.collect do |answer|
-                        {
-                          object_id: answer.id.to_s,
-                          sequence_order: answer.weight,
-                          candidate_id: answer.id.to_s
-                        }
-                      end
-                  }
-                end
+            trustees: trustees_data,
+            default_locale: current_organization.default_locale,
+            title: flatten_translations(election.title),
+            start_date: election.start_time,
+            end_date: election.end_time,
+            questions: questions_data,
+            answers: answers_data
+          }
+        end
+
+        def trustees_data
+          trustees.map do |trustee|
+            {
+              name: trustee.name,
+              slug: trustee.slug,
+              public_key: JSON.parse(trustee.public_key)
             }
-          }.to_h
+          end
+        end
+
+        def questions_data
+          questions.map do |question|
+            {
+              slug: question.slug,
+              weight: question.weight,
+              max_selections: question.max_selections,
+              title: flatten_translations(question.title),
+              description: flatten_translations(question.description),
+              answers: question_answers_data(question)
+            }
+          end
+        end
+
+        def question_answers_data(question)
+          question.answers.map do |answer|
+            {
+              slug: answer.slug,
+              weight: answer.weight
+            }
+          end
+        end
+
+        def answers_data
+          answers.map do |answer|
+            {
+              slug: answer.slug,
+              title: flatten_translations(answer.title)
+            }
+          end
         end
 
         def setup_election
           bb_election = bulletin_board.create_election(election.id, election_data)
-          store_bulletin_board_status(bb_election.status)
+
+          raise StandardError, "Wrong status for the created election" if bb_election.status != "created"
         end
 
         def log_action
@@ -153,10 +136,20 @@ module Decidim
           Decidim::EventsManager.publish(data)
         end
 
-        def store_bulletin_board_status(bb_status)
-          election.blocked_at = Time.current
-          election.bb_status = bb_status
-          election.save
+        # Since machine_translations return a nested hash but Electionguard and other
+        # schemes expect the translations to be returned in a "simple" hash, we need to
+        # flatten the translations.
+        #   {
+        #     "language": "en",
+        #      "value": "Jubilee Alliance"
+        #   }
+        # You can read more about the Civics Common Standard Data Specification here:
+        # https://developers.google.com/civics-data/reference/internationalized-text
+        def flatten_translations(translated_attribute)
+          translated_attribute.deep_symbolize_keys!
+          machine_translations = translated_attribute.delete(:machine_translations) || {}
+
+          machine_translations.merge(translated_attribute)
         end
       end
     end

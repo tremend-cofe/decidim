@@ -422,6 +422,7 @@ fr:
           form:
             attachment_legend: "(Facultatif) Ajouter une pièce jointe"
             created_in_meeting: Cette proposition provient d'une réunion
+            delete_attachment: Supprimer la pièce jointe
             select_a_category: Sélectionner une catégorie
             select_a_meeting: Sélectionnez une réunion
           index:
@@ -660,6 +661,7 @@ fr:
         success: Le brouillon de la proposition a bien été supprimé.
       last_activity:
         new_proposal_at_html: "<span>Nouvelle proposition à %{link}</span>"
+        proposal_updated_at_html: "<span>Débat mis à jour à %{link}</span>"
       models:
         collaborative_draft:
           fields:
@@ -769,6 +771,8 @@ fr:
         placeholder:
           address: 60 Boulevard Victor Hugo Saint-Jean-de-Luz, BP 64500
         preview:
+          announcement_body: Votre proposition a été enregistrée en tant que brouillon. Elle doit être publiée pour qu'elle apparaisse sur le site.
+          announcement_title: Votre proposition n'a pas encore été publiée
           modify: Modifier la proposition
           proposal_edit_before_minutes:
             one: Vous avez la possibilité de modifier cette proposition dans la première minute suivant sa publication. Une fois ce laps de temps écoulé, vous ne pourrez plus la modifier.

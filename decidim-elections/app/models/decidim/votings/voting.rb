@@ -17,7 +17,7 @@ module Decidim
       include Decidim::HasAttachments
       include Decidim::HasAttachmentCollections
 
-      enum voting_type: [:in_person, :online, :hybrid].map { |type| [type, type.to_s] }.to_h, _suffix: :voting
+      enum voting_type: [:in_person, :online, :hybrid].index_with(&:to_s), _suffix: :voting
 
       translatable_fields :title, :description
 
@@ -26,6 +26,18 @@ module Decidim
                  class_name: "Decidim::Organization"
 
       has_many :components, as: :participatory_space, dependent: :destroy
+      has_many :categories,
+               foreign_key: "decidim_participatory_space_id",
+               foreign_type: "decidim_participatory_space_type",
+               dependent: :destroy,
+               as: :participatory_space
+      has_many :polling_stations, foreign_key: "decidim_votings_voting_id", class_name: "Decidim::Votings::PollingStation", inverse_of: :voting, dependent: :destroy
+      has_many :polling_officers, foreign_key: "decidim_votings_voting_id", class_name: "Decidim::Votings::PollingOfficer", inverse_of: :voting, dependent: :destroy
+      has_many :monitoring_committee_members,
+               foreign_key: "decidim_votings_voting_id",
+               class_name: "Decidim::Votings::MonitoringCommitteeMember",
+               inverse_of: :voting,
+               dependent: :destroy
 
       validates :slug, uniqueness: { scope: :organization }
       validates :slug, presence: true, format: { with: Decidim::Votings::Voting.slug_format }
@@ -107,6 +119,16 @@ module Decidim
 
       def needs_elections?
         !in_person_voting? && !has_elections?
+      end
+
+      def polling_stations_with_missing_officers?
+        !online_voting? && polling_stations.any?(&:missing_officers?)
+      end
+
+      def available_polling_officers
+        polling_officers
+          .where(presided_polling_station_id: nil)
+          .where(managed_polling_station_id: nil)
       end
 
       private

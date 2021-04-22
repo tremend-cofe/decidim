@@ -6,7 +6,7 @@ require "decidim/proposals/test/capybara_proposals_picker"
 describe "Admin manages meetings", type: :system, serves_map: true, serves_geocoding_autocomplete: true do
   let(:manifest_name) { "meetings" }
   let!(:meeting) { create :meeting, scope: scope, services: [], component: current_component }
-  let(:address) { "Carrer Pare Llaurador 113, baixos, 08224 Terrassa" }
+  let(:address) { "Some address" }
   let(:latitude) { 40.1234 }
   let(:longitude) { 2.1234 }
   let(:service_titles) { ["This is the first service", "This is the second service"] }
@@ -206,6 +206,13 @@ describe "Admin manages meetings", type: :system, serves_map: true, serves_geoco
 
     scope_pick select_data_picker(:meeting_decidim_scope_id), scope
     select translated(category.name), from: :meeting_decidim_category_id
+
+    # the field is not visible by default
+    expect(page).not_to have_field("Custom content in registration email")
+    # make the field visible
+    find("#meeting_customize_registration_email").click
+    expect(help_text_for("div[data-tabs-content*='meeting-registration_email_custom_content-tab']")).to be_present
+    fill_in_i18n(:meeting_registration_email_custom_content, "#meeting-registration_email_custom_content-tabs", { "en" => "We're very happy you registered for this event!" })
 
     within ".new_meeting" do
       find("*[type=submit]").click

@@ -24,7 +24,6 @@ sv:
       component:
         name: Namn
         published_at: Publicerad
-        weight: Vikt
       id: ID
       newsletter:
         body: Innehåll
@@ -99,12 +98,10 @@ sv:
         show_in_footer: Visa i sidfoten
         slug: URL slug
         title: Titel
-        weight: Vikt
       static_page_topic:
         description: Beskrivning
         show_in_footer: Visa i sidfoten
         title: Titel
-        weight: Vikt
       user_group_csv_verification:
         file: Fil
     errors:
@@ -133,7 +130,13 @@ sv:
     admin:
       actions:
         add: Lägg till
+        attachment:
+          new: Ny bifogad fil
+        attachment_collection:
+          new: Ny mapp för bilagor
         browse: Bläddra
+        category:
+          new: Ny kategori
         export: Exportera
         manage: Hantera
         new: Ny %{name}

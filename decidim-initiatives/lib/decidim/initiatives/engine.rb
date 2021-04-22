@@ -80,6 +80,7 @@ module Decidim
 
           content_block.settings do |settings|
             settings.attribute :max_results, type: :integer, default: 4
+            settings.attribute :order, type: :string, default: "default"
           end
         end
       end
@@ -91,10 +92,11 @@ module Decidim
 
       initializer "decidim_initiatives.menu" do
         Decidim.menu :menu do |menu|
-          menu.item I18n.t("menu.initiatives", scope: "decidim"),
-                    decidim_initiatives.initiatives_path,
-                    position: 2.6,
-                    active: :inclusive
+          menu.add_item :initiatives,
+                        I18n.t("menu.initiatives", scope: "decidim"),
+                        decidim_initiatives.initiatives_path,
+                        position: 2.4,
+                        active: :inclusive
         end
       end
 
