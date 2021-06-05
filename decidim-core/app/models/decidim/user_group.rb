@@ -141,6 +141,14 @@ module Decidim
       @unread_messages_count_for[user.id] ||= Decidim::Messaging::Conversation.user_collection(self).unread_messages_by(user).count
     end
 
+    def self.state_eq(value)
+      send(value.to_sym) if %w(all pending rejected verified).include?(value)
+    end
+
+    def self.ransackable_scopes(_auth = nil)
+      [:state_eq]
+    end
+
     private
 
     # Private: Checks if the state user group is correct.
