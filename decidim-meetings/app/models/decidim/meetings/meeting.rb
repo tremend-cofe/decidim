@@ -322,16 +322,8 @@ module Decidim
       end
 
       ransacker :is_upcoming do
-        query = <<-SQL.squish
-        (
-          SELECT EXISTS (
-            SELECT 1 FROM decidim_meetings_meetings as dmm WHERE dmm.id = decidim_meetings_meetings.id AND dmm.start_time > NOW()
-          )
-        )
-        SQL
-        Arel.sql(query)
+        Arel.sql("(start_time > NOW())")
       end
-
 
       ransacker :origin do
         Arel.sql("CASE
