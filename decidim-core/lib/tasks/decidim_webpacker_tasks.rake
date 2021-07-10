@@ -12,18 +12,33 @@ namespace :decidim do
       remove_file_from_application "bin/yarn"
       # Babel config
       copy_file_to_application "babel.config.json"
-      # Npm packagesj
-      copy_file_to_application "package.json"
-      copy_file_to_application "package-lock.json"
       # PostCSS configuration
       copy_file_to_application "decidim-core/lib/decidim/webpacker/postcss.config.js", "postcss.config.js"
       # Webpacker configuration
       copy_file_to_application "decidim-core/lib/decidim/webpacker/webpacker.yml", "config/webpacker.yml"
       # Webpack JS config files
       copy_folder_to_application "decidim-core/lib/decidim/webpacker/webpack", "config"
+      # Modify the webpack binstubs
+      add_binstub_load_path "bin/webpack"
+      add_binstub_load_path "bin/webpack-dev-server"
 
       # Install JS dependencies
-      system! "npm ci"
+      system! "npm i decidim/decidim#develop"
+
+      # Remove the webpacker dependencies as they come through Decidim dependencies.
+      # This ensures we can control their versions from Decidim dependencies to avoid version conflicts.
+      webpacker_packages = %w(
+        @rails/actioncable
+        @rails/activestorage
+        @rails/ujs
+        @rails/webpacker
+        turbolinks
+        webpack
+        webpack-cli
+        @webpack-cli/serve
+        webpack-dev-server
+      )
+      system! "npm uninstall #{webpacker_packages.join(" ")}"
     end
 
     def decidim_path
@@ -46,8 +61,40 @@ namespace :decidim do
       FileUtils.rm(path, force: true)
     end
 
+    def add_binstub_load_path(binstub_path)
+      file = rails_app_path.join(binstub_path)
+      lines = File.readlines(file)
+
+      # Skip if the load path is already added
+      return if lines.grep(
+        %r{^\$LOAD_PATH.unshift "#\{Gem.loaded_specs\["decidim-core"\].full_gem_path\}/lib/gem_overrides"$}
+      ).size.positive?
+
+      contents = ""
+      lines.each do |line|
+        contents += line
+        next unless line =~ %r{^require "bundler/setup"$}
+
+        contents += "\n"
+        contents += "# Add the Decidim override load path to override webpacker functionality\n"
+        contents += "$LOAD_PATH.unshift \"\#{Gem.loaded_specs[\"decidim-core\"].full_gem_path}/lib/gem_overrides\"\n"
+      end
+
+      File.write(file, contents)
+    end
+
     def system!(*args)
       system(*args) || abort("\n== Command #{args} failed ==")
     end
   end
+end
+
+# Override the Webpacker instance for the rake tasks to correctly assign the
+# configuration file path. This is needed e.g. when `rails assets:precompile` is
+# being run. Otherwise webpacker might not recognize if the assets need to be
+# compiled again (i.e. if the asset hash has been changed).
+if (config_path = Decidim::Webpacker.configuration.configuration_file)
+  Webpacker.instance = Webpacker::Instance.new(
+    config_path: Pathname.new(config_path)
+  )
 end
