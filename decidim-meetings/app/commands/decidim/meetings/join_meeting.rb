@@ -109,7 +109,7 @@ module Decidim
       end
 
       def follow_meeting
-        Decidim::CreateFollow.call(follow_form, user)
+        Decidim::CreateFollow.call(follow_form, user) unless user.follows?(meeting)
       end
 
       def follow_form

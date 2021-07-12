@@ -21,7 +21,7 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        create_comment
+        I18n.with_locale(form.locale) { create_comment }
 
         broadcast(:ok, comment)
       end
@@ -39,7 +39,8 @@ module Decidim
           root_commentable: root_commentable(form.commentable),
           body: { I18n.locale => parsed.rewrite },
           alignment: form.alignment,
-          decidim_user_group_id: form.user_group_id
+          decidim_user_group_id: form.user_group_id,
+          participatory_process: form.current_component.try(:participatory_space)
         }
 
         @comment = Decidim.traceability.create!(

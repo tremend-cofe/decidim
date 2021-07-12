@@ -42,8 +42,16 @@ FactoryBot.define do
       component.try(:organization)
     end
 
+    trait :in_person do
+      type_of_meeting { :in_person }
+    end
+
     trait :published do
       published_at { Time.current }
+    end
+
+    trait :in_person do
+      type_of_meeting { :in_person }
     end
 
     trait :online do

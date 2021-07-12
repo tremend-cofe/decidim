@@ -2,8 +2,8 @@
 
 module Decidim
   module Meetings
-    # This command is executed when the user closes a Meeting from the public
-    # views.
+    # This command is executed when the user closes a Meeting from the admin
+    # panel.
     class CloseMeeting < Rectify::Command
       # Initializes a CloseMeeting Command.
       #
@@ -21,7 +21,7 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
 
         transaction do
-          close_meeting
+          I18n.with_locale(form.locale) { close_meeting }
           link_proposals
         end
 
