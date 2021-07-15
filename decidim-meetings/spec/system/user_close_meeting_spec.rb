@@ -47,6 +47,7 @@ describe "User edit meeting", type: :system do
         expect(page).to have_content "Choose proposals"
 
         fill_in :close_meeting_closing_report, with: closing_report
+        fill_in :close_meeting_attendees_count, with: 10
 
         click_button "Close meeting"
       end
