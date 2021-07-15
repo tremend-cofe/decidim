@@ -10,6 +10,7 @@ module Decidim::Meetings
     let(:component) { create(:meeting_component) }
     let(:attributes) do
       {
+        attendees_count: attendees_count,
         closing_report: closing_report
       }
     end
@@ -32,6 +33,18 @@ module Decidim::Meetings
 
     describe "when closing_report is missing" do
       let(:closing_report) { nil }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    describe "when attendees_count is missing" do
+      let(:attendees_count) { nil }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    describe "when attendees_count is invalid" do
+      let(:attendees_count) { "a" }
 
       it { is_expected.not_to be_valid }
     end
