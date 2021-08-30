@@ -98,6 +98,14 @@ module Decidim
         root_commentable.accepts_new_comments? && depth < MAX_DEPTH
       end
 
+      # Checks whether the proposal is inside the time window to be editable or not once published.
+      def within_edit_time_limit?
+        return true if component.settings.comment_edit_time == "infinite"
+
+        limit = updated_at + component.settings.comment_edit_before_minutes.minutes
+         Time.current < limit
+      end
+
       # Public: Override comment threads to exclude hidden ones.
       #
       # Returns comment.

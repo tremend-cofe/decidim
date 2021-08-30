@@ -150,6 +150,11 @@ en:
             proposal_edit_time_choices:
               infinite: Allow editing proposals for an infinite amount of time
               limited: Allow editing of proposals within a specific timeframe
+            comment_edit_time: Comment editing
+            comment_edit_time_choices:
+              infinite: Allow editing comments for an infinite amount of time
+              limited: Allow editing of comments within a specific timeframe
+            comment_edit_before_minutes: Comment can be edited by authors before this many minutes passes
             proposal_length: Maximum proposal body length
             proposal_limit: Proposal limit per participant
             proposal_wizard_step_1_help_text: Proposal wizard "Create" step help text

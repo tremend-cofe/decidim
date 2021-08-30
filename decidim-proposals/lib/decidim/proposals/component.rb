@@ -31,6 +31,8 @@ Decidim.register_component(:proposals) do |component|
     settings.attribute :proposal_length, type: :integer, default: 500
     settings.attribute :proposal_edit_time, type: :enum, default: "limited", choices: -> { %w(limited infinite) }
     settings.attribute :proposal_edit_before_minutes, type: :integer, default: 5
+    settings.attribute :comment_edit_time, type: :enum, default: "limited", choices: -> { %w(limited infinite) }
+    settings.attribute :comment_edit_before_minutes, type: :integer, default: 5
     settings.attribute :threshold_per_proposal, type: :integer, default: 0
     settings.attribute :can_accumulate_supports_beyond_threshold, type: :boolean, default: false
     settings.attribute :proposal_answering_enabled, type: :boolean, default: true

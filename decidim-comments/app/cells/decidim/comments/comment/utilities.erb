@@ -15,7 +15,7 @@
         <span><%= t("decidim.components.comment.single_comment_link_title") %></span>
       <% end %>
     </li>
-    <% if model.authored_by?(current_user) %>
+    <% if model.authored_by?(current_user) && model.within_edit_time_limit? %>
       <li>
       <button type="button" class="link-alt comment__header__context-menu__content-item" data-open="<%= "editCommentModal#{model.id}" %>" title="<%= t("decidim.components.comment.edit") %>" aria-controls="<%= "editCommentModal#{model.id}" %>" aria-haspopup="true" tabindex="0">
           <%= icon "pencil", class: "icon--small", aria_label: t("decidim.components.comment.edit") %>

@@ -123,6 +123,11 @@ en:
             announcement: Announcement
             comments_enabled: Comments enabled
             comments_max_length: Comments max length (Leave 0 for default value)
+            comment_edit_time: Comment editing
+            comment_edit_time_choices:
+              infinite: Allow editing comments for an infinite amount of time
+              limited: Allow editing of comments within a specific timeframe
+            comment_edit_before_minutes: Comment can be edited by authors before this many minutes passes
             creation_enabled_for_participants: Participants can create meetings
             default_registration_terms: Default registration terms
             enable_pads_creation: Enable pads creation

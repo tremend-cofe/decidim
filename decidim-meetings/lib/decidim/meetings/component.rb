@@ -84,6 +84,8 @@ Decidim.register_component(:meetings) do |component|
     settings.attribute :announcement, type: :text, translated: true, editor: true
     settings.attribute :default_registration_terms, type: :text, translated: true, editor: true
     settings.attribute :comments_enabled, type: :boolean, default: true
+    settings.attribute :comment_edit_time, type: :enum, default: "limited", choices: -> { %w(limited infinite) }
+    settings.attribute :comment_edit_before_minutes, type: :integer, default: 5
     settings.attribute :comments_max_length, type: :integer, required: false
     settings.attribute :registration_code_enabled, type: :boolean, default: true
     settings.attribute :resources_permissions_enabled, type: :boolean, default: true
