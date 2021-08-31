@@ -144,7 +144,7 @@ Decidim.register_component(:elections) do |component|
             description: Decidim::Faker::Localized.sentence(word_count: 5),
             attached_to: answer,
             content_type: "image/jpeg",
-            file: ActiveStorage::Blob.create_after_upload!(
+            file: ActiveStorage::Blob.create_and_upload!(
               io: File.open(File.join(__dir__, "seeds", "city.jpeg")),
               filename: "city.jpeg",
               content_type: "image/jpeg",
@@ -244,7 +244,7 @@ Decidim.register_component(:elections) do |component|
             description: Decidim::Faker::Localized.sentence(word_count: 5),
             attached_to: answer,
             content_type: "image/jpeg",
-            file: ActiveStorage::Blob.create_after_upload!(
+            file: ActiveStorage::Blob.create_and_upload!(
               io: File.open(File.join(__dir__, "seeds", "city.jpeg")),
               filename: "city.jpeg",
               content_type: "image/jpeg",
@@ -368,7 +368,7 @@ Decidim.register_component(:elections) do |component|
             description: Decidim::Faker::Localized.sentence(word_count: 5),
             attached_to: answer,
             content_type: "image/jpeg",
-            file: ActiveStorage::Blob.create_after_upload!(
+            file: ActiveStorage::Blob.create_and_upload!(
               io: File.open(File.join(__dir__, "seeds", "city.jpeg")),
               filename: "city.jpeg",
               content_type: "image/jpeg",
@@ -487,7 +487,7 @@ Decidim.register_component(:elections) do |component|
           description: Decidim::Faker::Localized.sentence(word_count: 5),
           attached_to: answer,
           content_type: "image/jpeg",
-          file: ActiveStorage::Blob.create_after_upload!(
+          file: ActiveStorage::Blob.create_and_upload!(
             io: File.open(File.join(__dir__, "seeds", "city.jpeg")),
             filename: "city.jpeg",
             content_type: "image/jpeg",
