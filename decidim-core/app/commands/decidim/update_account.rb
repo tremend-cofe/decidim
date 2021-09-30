@@ -33,6 +33,7 @@ module Decidim
 
     def update_personal_data
       @user.locale = @form.locale
+      @user.language_preference = @form.language_preference
       @user.name = @form.name
       @user.nickname = @form.nickname
       @user.email = @form.email
