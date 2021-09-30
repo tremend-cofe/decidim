@@ -14,15 +14,7 @@ module Decidim
       end
 
       def add_comment(body:, alignment: nil, user_group_id: nil)
-        params = {
-          "comment" => {
-            "body" => body,
-            "alignment" => alignment,
-            "user_group_id" => user_group_id,
-            "commentable" => object,
-            "locale" => context[:current_organization].default_locale.to_s
-          }
-        }
+        params = { "comment" => { "body" => body, "alignment" => alignment, "user_group_id" => user_group_id, "commentable" => object } }
         form = Decidim::Comments::CommentForm.from_params(params).with_context(
           current_organization: context[:current_organization],
           current_component: object.component

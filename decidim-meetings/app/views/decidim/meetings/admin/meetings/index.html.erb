@@ -31,7 +31,6 @@
               <%= sort_link(query, :closed, t("models.meeting.fields.closed", scope: "decidim.meetings"), default_order: :desc ) %>
             </th>
             <% if maps_enabled? && Decidim::Map.available?(:static, :geocoding) %>
-
               <th><%= t("models.meeting.fields.map", scope: "decidim.meetings") %></th>
             <% end %>
             <% if resource_with_scopes_enabled? %>
