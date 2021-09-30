@@ -78,6 +78,10 @@ module Decidim
       it "updates the language preference" do
         expect { command.call }.to broadcast(:ok)
         expect(user.reload.locale).to eq("es")
+      end
+
+      it "updates the language preference" do
+        expect { command.call }.to broadcast(:ok)
         expect(user.reload.language_preference).to eq("en")
       end
 
