@@ -8,7 +8,6 @@ module Decidim
       attribute :description, String
       attribute :location, String
       attribute :location_hints, String
-      attribute :locale, String
 
       attribute :address, String
       attribute :latitude, Float
@@ -58,7 +57,6 @@ module Decidim
         self.location = presenter.location(all_locales: false)
         self.location_hints = presenter.location_hints(all_locales: false)
         self.registration_terms = presenter.registration_terms(all_locales: false)
-        self.locale = presenter.locale(all_locales: false)
         self.type_of_meeting = model.type_of_meeting
       end
 
