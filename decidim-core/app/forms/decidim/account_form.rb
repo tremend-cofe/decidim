@@ -10,6 +10,7 @@ module Decidim
 
     attribute :language_preference
     attribute :locale
+    attribute :language_preference
     attribute :name
     attribute :nickname
     attribute :email
