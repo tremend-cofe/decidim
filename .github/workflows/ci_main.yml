@@ -47,5 +47,9 @@ jobs:
             npm-
       - name: Install JS dependencies
         run: npm ci
+      - name: Bundle Audit
+        run: |
+          gem install bundler-audit
+          bundle-audit check --update
       - run: bundle exec rspec
         name: RSpec
