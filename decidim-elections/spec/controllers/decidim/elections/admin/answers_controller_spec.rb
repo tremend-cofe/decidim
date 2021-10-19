@@ -66,13 +66,10 @@ module Decidim
               let(:answer_title) { { en: "" } }
               let(:answer) { create(:election_answer, :with_photos, question: question) }
 
-              before do
-                controller.class_eval do
-                  helper_method :proposals_picker_election_question_answers_path
-
-                  def proposals_picker_election_question_answers_path(_election, _question)
-                    "/"
-                  end
+              controller(AnswersController) do
+                helper_method :proposals_picker_election_question_answers_path
+                def proposals_picker_election_question_answers_path(_foo, _bar)
+                  "/"
                 end
               end
 
