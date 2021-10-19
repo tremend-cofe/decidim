@@ -10,10 +10,12 @@ describe Decidim::Meetings::MeetingsController, type: :controller do
   let(:meeting_component) { create(:meeting_component, :with_creation_enabled, participatory_space: participatory_process) }
   let(:meeting) { create :meeting, :published, component: meeting_component }
 
-  let(:space_params) { {
-    participatory_process_slug: participatory_process.slug,
-    script_name: "/participatory_process/#{participatory_process.slug}",
-  } }
+  let(:space_params) do
+    {
+      participatory_process_slug: participatory_process.slug,
+      script_name: "/participatory_process/#{participatory_process.slug}"
+    }
+  end
 
   before do
     request.env["decidim.current_organization"] = organization
@@ -22,7 +24,7 @@ describe Decidim::Meetings::MeetingsController, type: :controller do
   end
 
   shared_examples "having meeting access visibility applied" do
-    let(:params) { space_params.merge( id: meeting.id ) }
+    let(:params) { space_params.merge(id: meeting.id) }
 
     it "can access non private meetings" do
       get :show, params: params
@@ -90,7 +92,7 @@ describe Decidim::Meetings::MeetingsController, type: :controller do
 
   describe "#show" do
     context "when user is not logged in" do
-      let(:params) { space_params.merge( id: meeting.id ) }
+      let(:params) { space_params.merge(id: meeting.id) }
 
       it "can access non private meetings" do
         get :show, params: params

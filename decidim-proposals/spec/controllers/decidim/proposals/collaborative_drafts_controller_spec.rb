@@ -8,16 +8,18 @@ module Decidim
       routes { Decidim::Proposals::Engine.routes }
 
       let(:component) { create(:proposal_component, :with_creation_enabled, :with_collaborative_drafts_enabled) }
-      let(:params) { space_params.merge( component_id: component.id ) }
+      let(:params) { space_params.merge(component_id: component.id) }
       let(:user) { create(:user, :confirmed, organization: component.organization) }
       let(:author) { create(:user, :confirmed, organization: component.organization) }
       let!(:collaborative_draft) { create(:collaborative_draft, component: component, users: [author]) }
       let(:user_2) { create(:user, :confirmed, organization: component.organization) }
 
-      let(:space_params) { {
-        participatory_process_slug: component.participatory_space.slug,
-        script_name: "/participatory_process/#{component.participatory_space.slug}",
-      } }
+      let(:space_params) do
+        {
+          participatory_process_slug: component.participatory_space.slug,
+          script_name: "/participatory_process/#{component.participatory_space.slug}"
+        }
+      end
 
       before do
         request.env["decidim.current_organization"] = component.organization
@@ -39,7 +41,7 @@ module Decidim
 
       describe "GET show" do
         it "returns details of a collaborative_draft" do
-          get :show, params: space_params.merge( id: collaborative_draft.id)
+          get :show, params: space_params.merge(id: collaborative_draft.id)
 
           expect(response).to have_http_status(:ok)
           expect(assigns(:collaborative_draft)).to be_kind_of(Decidim::Proposals::CollaborativeDraft)
@@ -97,7 +99,7 @@ module Decidim
         end
 
         it "renders the edit form" do
-          get :edit, params: space_params.merge( id: collaborative_draft.id )
+          get :edit, params: space_params.merge(id: collaborative_draft.id)
           expect(response).to have_http_status(:ok)
           expect(assigns(:collaborative_draft)).to be_kind_of(Decidim::Proposals::CollaborativeDraft)
           expect(subject).to render_template(:edit)

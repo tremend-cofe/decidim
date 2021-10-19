@@ -13,10 +13,12 @@ describe Decidim::Meetings::Admin::RegistrationsController, type: :controller do
 
   let(:available_slots) { 0 }
   let(:reserved_slots) { 0 }
-  let(:space_params) { {
-    participatory_process_slug: participatory_process.slug,
-    script_name: "/admin/participatory_process/#{participatory_process.slug}",
-  } }
+  let(:space_params) do
+    {
+      participatory_process_slug: participatory_process.slug,
+      script_name: "/admin/participatory_process/#{participatory_process.slug}"
+    }
+  end
   let(:params) do
     space_params.merge(
       meeting_id: meeting.id,

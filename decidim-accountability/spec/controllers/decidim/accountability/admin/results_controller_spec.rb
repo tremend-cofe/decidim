@@ -21,12 +21,14 @@ module Decidim
           )
         end
         let(:result) { create(:result, component: component) }
-        let(:space_params) { {
+        let(:space_params) do
+          {
             component_id: component.id,
             participatory_process_slug: participatory_space.slug,
-            script_name: "/admin/participatory_process/#{participatory_space.slug}",
-        } }
-        let(:params) { space_params.merge( id: result.id ) }
+            script_name: "/admin/participatory_process/#{participatory_space.slug}"
+          }
+        end
+        let(:params) { space_params.merge(id: result.id) }
 
         before do
           request.env["decidim.current_organization"] = organization

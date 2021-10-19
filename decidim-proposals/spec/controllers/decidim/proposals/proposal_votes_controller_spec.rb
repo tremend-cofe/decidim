@@ -10,10 +10,12 @@ module Decidim
       let(:proposal) { create(:proposal, component: component) }
       let(:user) { create(:user, :confirmed, organization: component.organization) }
 
-      let(:space_params) { {
-        participatory_process_slug: component.participatory_space.slug,
-        script_name: "/participatory_process/#{component.participatory_space.slug}",
-      } }
+      let(:space_params) do
+        {
+          participatory_process_slug: component.participatory_space.slug,
+          script_name: "/participatory_process/#{component.participatory_space.slug}"
+        }
+      end
 
       let(:params) do
         space_params.merge(

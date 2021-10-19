@@ -37,10 +37,12 @@ module Decidim
             }
           end
 
-          let(:space_params) { {
-            election_slug: component.participatory_space.slug,
-            script_name: "/participatory_process/#{component.participatory_space.slug}",
-          } }
+          let(:space_params) do
+            {
+              election_slug: component.participatory_space.slug,
+              script_name: "/participatory_process/#{component.participatory_space.slug}"
+            }
+          end
           let(:params) do
             space_params.merge(
               id: answer.id,

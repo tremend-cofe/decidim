@@ -19,11 +19,13 @@ module Decidim
         end
 
         let(:session_token) { answers.first.session_token }
-        let(:space_params) { {
-          component_id: survey.component.id,
-          participatory_process_slug: survey.component.participatory_space.slug,
-          script_name: "/admin/participatory_process/#{survey.component.participatory_space.slug}"
-        } }
+        let(:space_params) do
+          {
+            component_id: survey.component.id,
+            participatory_process_slug: survey.component.participatory_space.slug,
+            script_name: "/admin/participatory_process/#{survey.component.participatory_space.slug}"
+          }
+        end
 
         before do
           request.env["decidim.current_organization"] = component.organization
@@ -46,9 +48,9 @@ module Decidim
         describe "show" do
           let(:params) do
             space_params.merge({
-              id: survey.id,
-              session_token: session_token
-            })
+                                 id: survey.id,
+                                 session_token: session_token
+                               })
           end
 
           it "renders the show template" do
@@ -61,9 +63,9 @@ module Decidim
           let(:filename) { "Response for #{session_token}.pdf" }
           let(:params) do
             space_params.merge({
-              id: survey.id,
-              session_token: session_token
-            })
+                                 id: survey.id,
+                                 session_token: session_token
+                               })
           end
 
           it "redirects with a flash notice message" do

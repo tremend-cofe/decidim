@@ -9,16 +9,18 @@ module Decidim
 
       let(:user) { create(:user, :confirmed, organization: component.organization) }
 
-      let(:space_params) { {
-        participatory_process_slug: component.participatory_space.slug,
-        script_name: "/participatory_process/#{component.participatory_space.slug}",
-      } }
+      let(:space_params) do
+        {
+          participatory_process_slug: component.participatory_space.slug,
+          script_name: "/participatory_process/#{component.participatory_space.slug}"
+        }
+      end
       let(:proposal_params) do
         {
           component_id: component.id
         }
       end
-      let(:params) { space_params.merge proposal: proposal_params  }
+      let(:params) { space_params.merge proposal: proposal_params }
 
       before do
         request.env["decidim.current_organization"] = component.organization

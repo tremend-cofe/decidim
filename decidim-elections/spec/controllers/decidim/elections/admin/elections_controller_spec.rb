@@ -6,6 +6,12 @@ describe Decidim::Elections::Admin::ElectionsController, type: :controller do
   routes { Decidim::Elections::AdminEngine.routes }
 
   let(:user) { create(:user, :confirmed, :admin, organization: component.organization) }
+  let(:space_params) do
+    {
+      election_slug: component.participatory_space.slug,
+      script_name: "/participatory_process/#{component.participatory_space.slug}"
+    }
+  end
 
   before do
     request.env["decidim.current_organization"] = component.organization
@@ -14,10 +20,6 @@ describe Decidim::Elections::Admin::ElectionsController, type: :controller do
     sign_in user
   end
 
-  let(:space_params) { {
-    election_slug: component.participatory_space.slug,
-    script_name: "/participatory_process/#{component.participatory_space.slug}",
-  } }
   describe "PATCH update" do
     let(:datetime_format) { I18n.t("time.formats.decidim_short") }
     let(:component) { create(:elections_component) }
