@@ -10,7 +10,10 @@ module Decidim
 
         let(:organization) { create(:organization) }
         let(:current_user) { create(:user, :confirmed, :admin, organization: organization) }
-        let(:params) { { participatory_process_slug: participatory_space.slug, component_id: component.id } }
+        let(:params) { {
+          script_name: "/admin/participatory_process/#{participatory_space.slug}",
+          participatory_process_slug: participatory_space.slug,
+          component_id: component.id } }
         let!(:component) do
           create(
             :accountability_component,
