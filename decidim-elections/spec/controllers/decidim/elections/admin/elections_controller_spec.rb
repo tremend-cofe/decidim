@@ -14,6 +14,10 @@ describe Decidim::Elections::Admin::ElectionsController, type: :controller do
     sign_in user
   end
 
+  let(:space_params) { {
+    election_slug: component.participatory_space.slug,
+    script_name: "/participatory_process/#{component.participatory_space.slug}",
+  } }
   describe "PATCH update" do
     let(:datetime_format) { I18n.t("time.formats.decidim_short") }
     let(:component) { create(:elections_component) }
@@ -33,10 +37,10 @@ describe Decidim::Elections::Admin::ElectionsController, type: :controller do
       }
     end
     let(:params) do
-      {
+      space_params.merge(
         id: election.id,
         election: election_params
-      }
+      )
     end
 
     it "updates the election" do

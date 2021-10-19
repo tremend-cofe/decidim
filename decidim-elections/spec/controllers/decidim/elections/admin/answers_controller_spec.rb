@@ -36,13 +36,18 @@ module Decidim
               photos: election.photos.map { |a| a.id.to_s }
             }
           end
+
+          let(:space_params) { {
+            election_slug: component.participatory_space.slug,
+            script_name: "/participatory_process/#{component.participatory_space.slug}",
+          } }
           let(:params) do
-            {
+            space_params.merge(
               id: answer.id,
               election_id: election.id,
               question_id: question.id,
               answer: answer_params
-            }
+            )
           end
 
           it "updates the election" do
