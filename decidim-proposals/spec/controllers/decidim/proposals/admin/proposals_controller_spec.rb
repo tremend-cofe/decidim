@@ -14,6 +14,12 @@ describe Decidim::Proposals::Admin::ProposalsController, type: :controller do
     sign_in user
   end
 
+  let(:space_params) { {
+    participatory_process_slug: component.participatory_space.slug,
+    script_name: "/admin/participatory_process/#{component.participatory_space.slug}",
+  } }
+
+
   describe "PATCH update" do
     let(:component) { create(:proposal_component, :with_creation_enabled, :with_attachments_allowed) }
     let(:proposal) { create(:proposal, :official, component: component) }
@@ -28,10 +34,10 @@ describe Decidim::Proposals::Admin::ProposalsController, type: :controller do
       }
     end
     let(:params) do
-      {
+      space_params.merge(
         id: proposal.id,
         proposal: proposal_params
-      }
+      )
     end
 
     it "updates the proposal" do
