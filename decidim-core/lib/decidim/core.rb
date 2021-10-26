@@ -3,6 +3,7 @@
 require "decidim/core/engine"
 require "decidim/core/api"
 require "decidim/core/version"
+require_relative '../gem_overrides/rectify/command'
 
 # Decidim configuration.
 module Decidim
@@ -95,7 +96,6 @@ module Decidim
   autoload :ShareableWithToken, "decidim/shareable_with_token"
   autoload :RecordEncryptor, "decidim/record_encryptor"
   autoload :AttachmentAttributes, "decidim/attachment_attributes"
-  autoload :RectifyCommand, "decidim/rectify_command"
   autoload :CarrierWaveMigratorService, "decidim/carrier_wave_migrator_service"
   autoload :ReminderRegistry, "decidim/reminder_registry"
   autoload :ReminderManifest, "decidim/reminder_manifest"
