@@ -1,0 +1,21 @@
+<% form.fields_for :settings, form.object.settings do |settings_fields| %>
+  <div class="columns large-2">
+    <%= settings_fields.translated :text_area, :title, label: t(".title") %>
+  </div>
+
+  <div class="columns large-2">
+    <%= settings_fields.translated :text_area, :short_description, label: t(".short_description")%>
+  </div>
+
+  <div class="columns large-2">
+    <%= settings_fields.translated :text_area, :action_url, label: t(".action_url") %>
+  </div>
+
+  <div class="columns large-2">
+    <%= settings_fields.translated :text_area, :action_title, label: t(".action_title") %>
+  </div>
+
+  <div class="columns large-2">
+    <%= settings_fields.translated :text_area, :subtitle, label: t(".subtitle") %>
+  </div>
+<% end %>

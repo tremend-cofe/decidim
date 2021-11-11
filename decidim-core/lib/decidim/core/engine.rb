@@ -420,9 +420,26 @@ module Decidim
         end
 
         Decidim.content_blocks.register(:homepage, :highlighted_content_banner) do |content_block|
-          content_block.cell = "decidim/content_blocks/highlighted_content_banner"
+          content_block.cell = "decidim/content_blocks/highlighted_content_banner/main"
+          content_block.settings_form_cell = "decidim/content_blocks/highlighted_content_banner/settings"
           content_block.public_name_key = "decidim.content_blocks.highlighted_content_banner.name"
           content_block.default!
+
+          content_block.images = [
+            {
+              name: :banner_image,
+              uploader: "Decidim::ContentBlocks::SliderImageUploader"
+            }
+          ]
+
+          content_block.settings do |settings|
+            settings.attribute :title, type: :string, translated: :true
+            settings.attribute :short_description, type: :text, translated: :true
+            settings.attribute :action_url, type: :string, translated: :true, validation_options: { url: true }
+            settings.attribute :action_title, type: :string, translated: :true
+            settings.attribute :subtitle, type: :string, translated: :true
+          end
+
         end
 
         Decidim.content_blocks.register(:homepage, :how_to_participate) do |content_block|

@@ -15,7 +15,7 @@ module Decidim
 
       def update
         enforce_permission_to :update, :organization, organization: current_organization
-        @form = form(ContentBlockForm).from_params(params)
+        @form = form(ContentBlockForm).from_params(content_block_params)
 
         UpdateContentBlock.call(@form, content_block, :homepage) do
           on(:ok) do
@@ -29,6 +29,26 @@ module Decidim
       end
 
       private
+
+      def content_block_params
+        params[:content_block].permit!.tap do |hsh|
+          hsh[:id] = params[:id]
+          hsh[:settings] = content_block.manifest.settings.schema.new(hsh[:settings])
+          # images = content_block.images_container
+          #
+          # content_block.manifest.images.each do |image_config|
+          #   image_name = image_config[:name]
+          #
+          #   if hsh[:images][image_name]
+          #     images.send("#{image_name}=", hsh[:images][image_name])
+          #   elsif hsh[:images]["remove_#{image_name}".to_sym] == "1"
+          #     images.send("#{image_name}=", nil)
+          #   end
+          # end
+          #
+          # hsh[:images] = content_block.images_container
+        end
+      end
 
       def content_block
         @content_block ||= content_blocks.find_by(manifest_name: params[:id]) ||

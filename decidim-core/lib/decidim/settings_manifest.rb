@@ -62,13 +62,17 @@ module Decidim
         end
 
         manifest.attributes.each do |name, attribute|
+          validation_options = {}.merge(attribute.validation_options)
           if attribute.translated?
-            translatable_attribute name, attribute.type_class, default: attribute.default_value
+            translatable_attribute name, attribute.type_class, default: attribute.default_value do |attribute_name, locale|
+              validates attribute_name, **validation_options if validation_options.size.positive?
+            end
             validates name, translatable_presence: true if attribute.required
           else
             attribute name, attribute.type_class, default: attribute.default_value
-            validates name, presence: true if attribute.required
-            validates name, inclusion: { in: attribute.build_choices } if attribute.type == :enum
+            validation_options.merge!(presence: true) if attribute.required
+            validation_options.merge!(inclusion: { in: attribute.build_choices }) if attribute.type == :enum
+            validates name, **validation_options if validation_options.size.positive?
           end
         end
       end
@@ -97,7 +101,8 @@ module Decidim
         enum: { klass: String, default: nil },
         select: { klass: String, default: nil },
         scope: { klass: Integer, default: nil },
-        time: { klass: Time, default: nil }
+        time: { klass: Time, default: nil },
+        hash: { klass: Hash, default: {} }
       }.freeze
 
       attribute :type, Symbol, default: :boolean
@@ -111,7 +116,7 @@ module Decidim
       attribute :readonly
       attribute :choices
       attribute :include_blank, Boolean, default: false
-
+      attribute :validation_options, Hash,  default: {}
       validates :type, inclusion: { in: TYPES.keys }
 
       def type_class

@@ -1,4 +1,5 @@
 ---
+
 en:
   activemodel:
     attributes:
@@ -409,6 +410,12 @@ en:
         background_image: Background image
         welcome_text: Welcome text
       highlighted_content_banner:
+        settings:
+          action_title: Action title
+          action_url: Action url
+          short_description: Short Description
+          subtitle: Subtitle
+          title: Title
         name: Highlighted content banner
       highlighted_elements_settings_form:
         orders:
