@@ -32,7 +32,7 @@ module Decidim
     attr_reader :follow, :form, :current_user
 
     def create_follow!
-      @follow = Follow.find_by(
+      @follow = Follow.where(
         followable: form.followable,
         user: current_user
       ) || Follow.create!(

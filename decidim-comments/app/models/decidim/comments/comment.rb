@@ -46,6 +46,9 @@ module Decidim
       # is accepted and sets the comment as hidden.
       after_touch :update_counter
 
+      after_save :update_votes_counter
+      after_touch :update_votes_counter
+
       before_validation :compute_depth
       validates :body, presence: true
       validates :depth, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: MAX_DEPTH }
@@ -122,14 +125,14 @@ module Decidim
       #
       # Returns a bool value to indicate if the condition is truthy or not
       def up_voted_by?(user)
-        up_votes.any? { |vote| vote.author == user }
+        up_votes.exists?(author: user)
       end
 
       # Public: Check if the user has downvoted the comment
       #
       # Returns a bool value to indicate if the condition is truthy or not
       def down_voted_by?(user)
-        down_votes.any? { |vote| vote.author == user }
+        down_votes.exists?(author: user)
       end
 
       # Public: Overrides the `reported_content_url` Reportable concern method.
@@ -247,6 +250,11 @@ module Decidim
       # Private: converts the string from markdown to html
       def render_markdown(string)
         markdown.render(string)
+      end
+
+      def update_votes_counter
+        update_column :up_votes_count, up_votes.count
+        update_column :down_votes_count, down_votes.count
       end
 
       def update_counter

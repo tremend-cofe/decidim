@@ -46,7 +46,7 @@ module Decidim
         if single_comment?
           [single_comment]
         else
-          SortedComments.for(model, order_by: order)
+          SortedComments.for(model, order_by: order).includes(:root_commentable, :commentable)
         end
       end
 

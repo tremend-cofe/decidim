@@ -32,7 +32,7 @@ module Decidim
       def query
         scope = base_scope
                 .not_hidden
-                .includes(:author, :user_group, :up_votes, :down_votes)
+                .includes(author: [:organization, :avatar_attachment], user_group: [:organization, :avatar_attachment])
 
         case @options[:order_by]
         when "older"

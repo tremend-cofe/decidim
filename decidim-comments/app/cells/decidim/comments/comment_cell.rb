@@ -20,6 +20,12 @@ module Decidim
       property :accepts_new_comments?
       property :edited?
 
+      def initialize(model = nil, options = nil)
+        super
+        @voted_up = model.up_voted_by?(current_user)
+        @voted_down = model.down_voted_by?(current_user)
+      end
+
       def alignment_badge
         return unless [-1, 1].include?(alignment)
 
@@ -128,11 +134,11 @@ module Decidim
       end
 
       def up_votes_count
-        model.up_votes.count
+        model.up_votes_count
       end
 
       def down_votes_count
-        model.down_votes.count
+        model.down_votes_count
       end
 
       def root_depth
@@ -148,11 +154,11 @@ module Decidim
       end
 
       def voted_up?
-        model.up_voted_by?(current_user)
+        @voted_up
       end
 
       def voted_down?
-        model.down_voted_by?(current_user)
+        @voted_down
       end
 
       def nested?
