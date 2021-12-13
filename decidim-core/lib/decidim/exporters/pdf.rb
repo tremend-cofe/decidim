@@ -18,7 +18,8 @@ module Decidim
         html = controller.render_to_string(
           template: template,
           layout: layout,
-          locals: locals
+          locals: locals,
+          formats: [:html]
         )
 
         document = WickedPdf.new.pdf_from_string(html, orientation: orientation)

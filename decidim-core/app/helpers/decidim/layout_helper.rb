@@ -107,12 +107,12 @@ module Decidim
       extra_items = items.slice((max_items + 1)..-1) || []
       active_item = items.find { |item| item[:active] }
 
-      render partial: "decidim/shared/extended_navigation_bar.html", locals: {
+      render partial: "decidim/shared/extended_navigation_bar", locals: {
         items: items,
         extra_items: extra_items,
         active_item: active_item,
         max_items: max_items
-      }
+      }, formats: [:html]
     end
 
     # Renders a view with the customizable CSS variables in two flavours:
