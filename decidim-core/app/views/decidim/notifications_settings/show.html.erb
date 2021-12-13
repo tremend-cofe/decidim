@@ -18,6 +18,19 @@
         <span class="switch-label"><%= t(".everything_followed") %></span>
       <% end %>
     </div>
+    <% Decidim.notification_settings_registry.manifests.filter{ |a| a.area == :global }.each do |manifest| %>
+      <div class="switch tiny switch-with-label email_on_moderations">
+        <label>
+          <%= f.check_box "notification_settings[#{manifest.name}]",
+                          checked: current_user.notification_settings.fetch(manifest.name.to_s, manifest.default_value) == "1",
+                          label: false,
+                          class: "switch-input"
+          %>
+          <span class="switch-paddle"></span>
+          <span class="switch-label"><%= t(".notification_settings.#{manifest.name}") %></span>
+        </label>
+      </div>
+    <% end %>
 
     <p><strong><%= t(".send_notifications_by_email") %></strong></p>
     <div class="switch tiny switch-with-label email_on_notification">
@@ -55,6 +68,21 @@
           <span class="switch-label"><%= t(".email_on_moderations") %></span>
         </label>
       </div>
+
+      <% Decidim.notification_settings_registry.manifests.filter{ |a| a.area == :administrators }.each do |manifest| %>
+        <div class="switch tiny switch-with-label email_on_moderations">
+          <label>
+            <%= f.check_box "notification_settings[#{manifest.name}]",
+                            checked: current_user.notification_settings.fetch(manifest.name.to_s, manifest.default_value) == "1",
+                              label: false,
+                              class: "switch-input"
+            %>
+            <span class="switch-paddle"></span>
+            <span class="switch-label"><%= t(".notification_settings.#{manifest.name}") %></span>
+          </label>
+        </div>
+      <% end %>
+
     <% end %>
 
     <%= f.submit t(".update_notifications_settings") %>

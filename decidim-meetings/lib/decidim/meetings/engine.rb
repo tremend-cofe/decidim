@@ -42,6 +42,10 @@ module Decidim
         end
       end
 
+      initializer "decidim_meetings.notification_settings" do
+        Decidim.notification_settings(:close_meeting_reminder) { |ns| ns.area = :administrators }
+      end
+
       initializer "decidim_meetings.view_hooks" do
         Decidim.view_hooks.register(:participatory_space_highlighted_elements, priority: Decidim::ViewHooks::HIGH_PRIORITY) do |view_context|
           view_context.cell("decidim/meetings/highlighted_meetings", view_context.current_participatory_space)

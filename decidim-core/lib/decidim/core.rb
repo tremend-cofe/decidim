@@ -95,6 +95,7 @@ module Decidim
   autoload :RecordEncryptor, "decidim/record_encryptor"
   autoload :AttachmentAttributes, "decidim/attachment_attributes"
   autoload :CarrierWaveMigratorService, "decidim/carrier_wave_migrator_service"
+  autoload :NotificationSettingManifest, "decidim/notification_setting_manifest"
 
   include ActiveSupport::Configurable
   # Loads seeds from all engines.
@@ -442,6 +443,10 @@ module Decidim
     component_registry.register(name, &block)
   end
 
+  def self.notification_settings(name, &block)
+    notification_settings_registry.register(name, &block)
+  end
+
   # Public: Registers a participatory space, usually held in an external library
   # or in a separate folder in the main repository. Exposes a DSL defined by
   # `Decidim::ParticipatorySpaceManifest`.
@@ -520,6 +525,10 @@ module Decidim
   # Public: Stores the registry of components
   def self.component_registry
     @component_registry ||= ManifestRegistry.new(:components)
+  end
+
+  def self.notification_settings_registry
+    @notification_settings_registry ||= ManifestRegistry.new(:notification_settings)
   end
 
   # Public: Stores the registry of participatory spaces
