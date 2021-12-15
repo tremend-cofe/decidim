@@ -73,6 +73,16 @@ module Decidim
         template "database.yml.erb", "config/database.yml", force: true
       end
 
+      def package_json
+        template "package.json"
+      end
+
+      def remove_old_assets
+        remove_file "config/initializers/assets.rb"
+        remove_dir("app/assets")
+        remove_dir("app/javascript")
+      end
+
       def decidim_controller
         template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb", force: true
       end

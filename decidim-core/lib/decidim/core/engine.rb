@@ -99,8 +99,8 @@ module Decidim
         Decidim::Api.add_orphan_type Decidim::Core::UserGroupType
       end
 
-      initializer "decidim.i18n_exceptions" do
-        ActionView::Base.raise_on_missing_translations = true unless Rails.env.production?
+      initializer "decidim.i18n_exceptions" do |app|
+        app.config.i18n.raise_on_missing_translations = true unless Rails.env.production?
       end
 
       initializer "decidim.geocoding", after: :load_config_initializers do
