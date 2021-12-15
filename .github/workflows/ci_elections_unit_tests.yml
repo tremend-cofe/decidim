@@ -89,7 +89,7 @@ jobs:
         name: Create test app
       - run: mkdir -p ./spec/decidim_dummy_app/tmp/screenshots
         name: Create the screenshots folder
-      - run: RAILS_ENV=test bundle exec rails assets:precompile
+      - run: RAILS_ENV=test bundle exec rake webpacker:compile
         name: Precompile assets
         working-directory: ./spec/decidim_dummy_app/
       - uses: nanasess/setup-chromedriver@v1.0.1
