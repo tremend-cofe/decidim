@@ -69,6 +69,10 @@ module Decidim
                                default: "true",
                                desc: "Doesn't force to use ssl"
 
+      def remove_gemfile
+        remove_file "Gemfile" if options[:skip_gemfile]
+      end
+
       def database_yml
         template "database.yml.erb", "config/database.yml", force: true
       end
