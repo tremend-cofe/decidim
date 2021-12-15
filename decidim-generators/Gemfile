@@ -4,10 +4,13 @@ source "https://rubygems.org"
 
 ruby RUBY_VERSION
 
+gem "devise", "~> 4.8.0", github: "heartcombo/devise", ref: '9f5b837'
+gem "ransack", "~> 2.4.2", github: "activerecord-hackery/ransack"
+
 gem "decidim", path: ".."
 gem "decidim-conferences", path: ".."
 gem "decidim-consultations", path: ".."
-gem "decidim-elections", path: ".."
+# gem "decidim-elections", path: ".."
 gem "decidim-initiatives", path: ".."
 gem "decidim-templates", path: ".."
 
