@@ -114,7 +114,6 @@ module Decidim
         # Regenerate webpacker binstubs
         remove_file "bin/yarn"
         rails "webpacker:binstubs"
-        rails "webpacker:install"
 
         # Run Decidim custom webpacker installation
         rails "decidim:webpacker:install"
