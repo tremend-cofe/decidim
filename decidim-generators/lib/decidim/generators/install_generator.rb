@@ -38,6 +38,28 @@ module Decidim
         route "mount Decidim::Core::Engine => '/'"
       end
 
+      def remove_old_assets
+        remove_file "config/initializers/assets.rb"
+        remove_dir("app/assets")
+        remove_dir("app/javascript")
+      end
+
+      def remove_sprockets_requirement
+        gsub_file "config/application.rb", %r{require ['"]rails/all['"]\R}, <<~RUBY
+          require "decidim/rails"
+
+          # Add the frameworks used by your app that are not loaded by Decidim.
+          # require "action_mailbox/engine"
+          # require "action_text/engine"
+          require "action_cable/engine"
+          require "rails/test_unit/railtie"
+        RUBY
+
+        gsub_file "config/environments/development.rb", /config\.assets.*$/, ""
+        gsub_file "config/environments/test.rb", /config\.assets.*$/, ""
+        gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
+      end
+
       def add_seeds
         append_file "db/seeds.rb", <<~RUBY
           # You can remove the 'faker' gem if you don't want Decidim seeds.
@@ -96,28 +118,6 @@ module Decidim
 
         # Run Decidim custom webpacker installation
         rails "decidim:webpacker:install"
-      end
-
-      def remove_old_assets
-        remove_file "config/initializers/assets.rb"
-        remove_dir("app/assets")
-        remove_dir("app/javascript")
-      end
-
-      def remove_sprockets_requirement
-        gsub_file "config/application.rb", %r{require ['"]rails/all['"]\R}, <<~RUBY
-          require "decidim/rails"
-
-          # Add the frameworks used by your app that are not loaded by Decidim.
-          # require "action_mailbox/engine"
-          # require "action_text/engine"
-          require "action_cable/engine"
-          require "rails/test_unit/railtie"
-        RUBY
-
-        gsub_file "config/environments/development.rb", /config\.assets.*$/, ""
-        gsub_file "config/environments/test.rb", /config\.assets.*$/, ""
-        gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
       end
 
       def copy_migrations
