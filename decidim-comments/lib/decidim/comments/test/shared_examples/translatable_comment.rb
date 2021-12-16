@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-shared_examples_for "a translated meeting event" do
-  describe "translated notifications" do
-    let(:participatory_process) { create :participatory_process, organization: organization }
-    let(:meeting_component) { create(:meeting_component, participatory_space: participatory_process) }
+require "spec_helper"
 
-    let(:resource) do
-      create :meeting,
-             component: meeting_component,
-             title: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } },
-             description: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } }
-    end
+shared_examples_for "a translated comment event" do
+  describe "translated notifications" do
+    let(:body) { { "en": "This is Sparta!", "machine_translations": { "ca": "C'est Sparta!" } } }
+    let(:participatory_process) { create :participatory_process, organization: organization }
+    let(:component) { create(:component, participatory_space: participatory_process) }
+    let(:commentable) { create(:dummy_resource, component: component) }
+    let(:comment) { create :comment, body: body, commentable: commentable }
 
     context "when it is not machine machine translated" do
-      let(:organization) { create(:organization, enable_machine_translations: false) }
+      let(:organization) { create(:organization, enable_machine_translations: false, machine_translation_display_priority: "original") }
 
       it "does not perform translation" do
         expect(subject.perform_translation?).to eq(false)
@@ -28,11 +26,11 @@ shared_examples_for "a translated meeting event" do
       end
 
       it "does return the original language" do
-        expect(subject.safe_resource_text).to eq(resource.description["en"])
+        expect(subject.safe_resource_text).to eq(subject.resource_text)
       end
 
       it "does not offer an alternate translation" do
-        expect(subject.safe_resource_translated_text).to eq(resource.description["en"])
+        expect(subject.safe_resource_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
       end
     end
 
@@ -46,15 +44,8 @@ shared_examples_for "a translated meeting event" do
       context "when priority is original" do
         let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "original") }
 
-        let(:resource) do
-          create :meeting,
-                 component: meeting_component,
-                 title: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } },
-                 description: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } }
-        end
-
         it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
+          expect(subject.perform_translation?).to eq(translatable)
         end
 
         it "does not have a missing translation" do
@@ -66,27 +57,22 @@ shared_examples_for "a translated meeting event" do
         end
 
         it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(resource.description["en"])
+          expect(subject.safe_resource_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
         end
 
         it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq(resource.description["machine_translations"]["ca"])
+          expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["machine_translations"]["ca"]}</p></div>")
         end
 
         context "when translation is not available" do
-          let(:resource) do
-            create :meeting,
-                   component: meeting_component,
-                   title: { "en": "A nice event" },
-                   description: { "en": "A nice event" }
-          end
+          let(:body) { { "en": "This is Sparta!" } }
 
           it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
+            expect(subject.perform_translation?).to eq(translatable)
           end
 
           it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
+            expect(subject.translation_missing?).to eq(translatable)
           end
 
           it "does have content available in multiple languages" do
@@ -94,11 +80,11 @@ shared_examples_for "a translated meeting event" do
           end
 
           it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(resource.description["en"])
+            expect(subject.safe_resource_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
           end
 
           it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(resource.description["en"])
+            expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
           end
         end
       end
@@ -106,15 +92,8 @@ shared_examples_for "a translated meeting event" do
       context "when priority is translation" do
         let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "translation") }
 
-        let!(:resource) do
-          create :meeting,
-                 component: meeting_component,
-                 title: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } },
-                 description: { "en": "A nice event", "machine_translations": { "ca": "Une belle event" } }
-        end
-
         it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
+          expect(subject.perform_translation?).to eq(translatable)
         end
 
         it "does not have a missing translation" do
@@ -126,27 +105,22 @@ shared_examples_for "a translated meeting event" do
         end
 
         it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(resource.description["en"])
+          expect(subject.safe_resource_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
         end
 
         it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq(resource.description["machine_translations"]["ca"])
+          expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["machine_translations"]["ca"]}</p></div>")
         end
 
         context "when translation is not available" do
-          let(:resource) do
-            create :meeting,
-                   component: meeting_component,
-                   title: { "en": "A nice event" },
-                   description: { "en": "A nice event" }
-          end
+          let(:body) { { "en": "This is Sparta!" } }
 
           it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
+            expect(subject.perform_translation?).to eq(translatable)
           end
 
           it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
+            expect(subject.translation_missing?).to eq(translatable)
           end
 
           it "does have content available in multiple languages" do
@@ -154,11 +128,11 @@ shared_examples_for "a translated meeting event" do
           end
 
           it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(resource.description["en"])
+            expect(subject.safe_resource_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
           end
 
           it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(resource.description["en"])
+            expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["en"]}</p></div>")
           end
         end
       end

@@ -32,7 +32,7 @@ module Decidim
       end
 
       def safe_resource_translated_text
-        I18n.with_locale(I18n.locale) { translated_attribute(resource_text).to_s.html_safe }
+        I18n.with_locale(I18n.locale) { translated_attribute(resource_text, nil, true).to_s.html_safe }
       end
 
       private

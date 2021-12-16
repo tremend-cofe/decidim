@@ -37,7 +37,7 @@ module Decidim
         def safe_resource_translated_text
           return safe_resource_text unless perform_translation?
 
-          I18n.with_locale(I18n.locale) { translated_attribute(resource.description).to_s.html_safe }
+          I18n.with_locale(I18n.locale) { translated_attribute(resource.description, nil, true).to_s.html_safe }
         end
       end
     end

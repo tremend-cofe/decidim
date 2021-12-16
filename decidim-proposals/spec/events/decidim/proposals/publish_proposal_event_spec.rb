@@ -6,10 +6,13 @@ module Decidim
   module Proposals
     describe PublishProposalEvent do
       let(:resource) { create :proposal, title: "A nice proposal" }
+      let(:participatory_process) { create :participatory_process, organization: organization }
+      let(:proposal_component) { create(:proposal_component, participatory_space: participatory_process) }
       let(:resource_title) { translated(resource.title) }
       let(:event_name) { "decidim.events.proposals.proposal_published" }
 
       include_context "when a simple event"
+
       it_behaves_like "a simple event"
 
       describe "resource_text" do
@@ -84,15 +87,13 @@ module Decidim
 
       describe "translated notifications" do
         context "when it is not machine machine translated" do
+          let(:organization) { create(:organization, enable_machine_translations: false) }
+
           let(:resource) do
             create :proposal,
+                   component: proposal_component,
                    title: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } },
                    body: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } }
-          end
-
-          before do
-            organization = resource.organization
-            organization.update enable_machine_translations: false
           end
 
           it "does not perform translation" do
@@ -112,7 +113,7 @@ module Decidim
           end
 
           it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(resource.body["machine_translations"]["ca"])
+            expect(subject.safe_resource_translated_text).to eq(resource.body["en"])
           end
         end
 
@@ -121,13 +122,9 @@ module Decidim
 
           let(:resource) do
             create :proposal,
+                   component: proposal_component,
                    title: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } },
                    body: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } }
-          end
-
-          before do
-            organization = resource.organization
-            organization.update enable_machine_translations: true
           end
 
           around do |example|
@@ -135,9 +132,8 @@ module Decidim
           end
 
           context "when priority is original" do
-            before do
-              organization.update machine_translation_display_priority: "original"
-            end
+            let(:user) { create :user, organization: organization, locale: "ca" }
+            let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "original") }
 
             it "does perform translation" do
               expect(subject.perform_translation?).to eq(true)
@@ -155,13 +151,14 @@ module Decidim
               expect(subject.safe_resource_text).to eq(subject.resource_text["en"])
             end
 
-            it "does not offer an alternate translation" do
+            it "does offer an alternate translation" do
               expect(subject.safe_resource_translated_text).to eq(subject.resource_text["machine_translations"]["ca"])
             end
 
             context "when translation is not available" do
               let(:resource) do
                 create :proposal,
+                       component: proposal_component,
                        title: { "en": "A nice proposal" },
                        body: { "en": "A nice proposal" }
               end
@@ -189,14 +186,13 @@ module Decidim
           end
 
           context "when priority is translation" do
+            let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "translation") }
+
             let(:resource) do
               create :proposal,
+                     component: proposal_component,
                      title: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } },
                      body: { "en": "A nice proposal", "machine_translations": { "ca": "Une belle idee" } }
-            end
-
-            before do
-              organization.update machine_translation_display_priority: "translation"
             end
 
             it "does perform translation" do
@@ -222,6 +218,7 @@ module Decidim
             context "when translation is not available" do
               let(:resource) do
                 create :proposal,
+                       component: proposal_component,
                        title: { "en": "A nice proposal" },
                        body: { "en": "A nice proposal" }
               end
