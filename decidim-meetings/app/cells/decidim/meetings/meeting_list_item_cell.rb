@@ -19,6 +19,7 @@ module Decidim
         hash.push(model.cache_key_with_version)
         hash.push(model.component.cache_key_with_version)
         hash.push(model.must_render_translation?(current_organization) ? 1 : 0) if model.respond_to?(:must_render_translation?)
+
         hash.join(Decidim.cache_key_separator)
       end
 

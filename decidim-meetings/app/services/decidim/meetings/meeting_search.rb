@@ -27,7 +27,6 @@ module Decidim
       def search_space
         return query if options[:space].blank? || options[:space] == "all"
 
-        # raise options[:space].inspect
         query.joins(:component).where(decidim_components: { participatory_space_type: options[:space].classify })
       end
 

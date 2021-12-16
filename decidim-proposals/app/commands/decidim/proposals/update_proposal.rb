@@ -40,7 +40,11 @@ module Decidim
         end
 
         transaction do
-          @proposal.draft? ? update_draft : update_proposal
+          if @proposal.draft?
+            update_draft
+          else
+            update_proposal
+          end
 
           create_gallery if process_gallery?
           create_attachments if process_attachments?

@@ -68,13 +68,6 @@ module Decidim
           %w(all global) + current_organization.scopes.pluck(:id).map(&:to_s)
         end
 
-        def default_filter_origin_params
-          filter_origin_params = %w(citizens)
-          filter_origin_params << "official"
-          filter_origin_params << "user_group" if current_organization.user_groups_enabled?
-          filter_origin_params
-        end
-
         def context_params
           { component: meeting_components, organization: current_organization, current_user: current_user }
         end

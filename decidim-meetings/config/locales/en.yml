@@ -405,7 +405,6 @@ en:
       directory:
         meetings:
           index:
-            all: All
             meetings: Meetings
             space_type: Participatory space
       iframe_access_level:
@@ -502,11 +501,11 @@ en:
           select_an_iframe_embed_type: Please select an iframe embed type
           show_embedded_iframe_help: Only a few services allow embedding in meeting or live event (YouTube, Twitch and Jitsi)
         index:
-          click_here: Click here
+          click_here: See all meetings
           new_meeting: New meeting
           see_all: See all meetings
           see_all_withdrawn: See all withdrawn meetings
-          text_banner: You are viewing the list of meetings withdrawn by their authors. %{go_back_link} to go back to the meeting index.
+          text_banner: You are viewing the list of meetings withdrawn by their authors. %{go_back_link}.
         meeting_minutes:
           related_information: Related Information
         meetings:
