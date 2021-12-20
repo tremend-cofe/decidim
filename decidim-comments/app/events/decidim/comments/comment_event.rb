@@ -77,7 +77,7 @@ module Decidim
         end
 
         def resource_url_params
-          { anchor: "comment_#{comment.id}" }
+          { anchor: "comment_#{comment.id}", commentId: comment.id }
         end
       end
     end
