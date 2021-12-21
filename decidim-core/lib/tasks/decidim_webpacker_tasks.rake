@@ -33,7 +33,6 @@ namespace :decidim do
         @rails/actioncable
         @rails/activestorage
         @rails/ujs
-        @rails/webpacker
         turbolinks
         webpack
         webpack-cli
