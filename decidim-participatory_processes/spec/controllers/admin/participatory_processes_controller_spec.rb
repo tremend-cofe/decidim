@@ -17,16 +17,6 @@ module Decidim
             organization: organization
           )
         end
-        let(:participatory_process_params) do
-          {
-            title: participatory_process.title,
-            subtitle: participatory_process.subtitle,
-            description: participatory_process.description,
-            short_description: participatory_process.short_description,
-            slug: participatory_process.slug,
-            scopes_enabled: participatory_process.scopes_enabled
-          }
-        end
 
         before do
           request.env["decidim.current_organization"] = organization

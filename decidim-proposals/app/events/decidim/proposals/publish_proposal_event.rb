@@ -4,26 +4,26 @@ module Decidim
   module Proposals
     class PublishProposalEvent < Decidim::Events::SimpleEvent
       include Decidim::Events::CoauthorEvent
+      include Decidim::Core::Engine.routes.url_helpers
+      include ActionView::Helpers::UrlHelper
+      include Decidim::Events::MachineTranslatedEvent
 
       def resource_text
         resource.body
       end
 
-      def perform_translation?
-        organization.enable_machine_translations
+      def i18n_options
+        author_path = link_to("@#{author.nickname}", profile_path(author.nickname))
+        author_string = "#{author.name} #{author_path}"
+        super.merge({ author: author_string })
       end
 
-      def content_in_same_language?
-        return false unless perform_translation?
-        return false unless resource.respond_to?(:content_original_language)
-
-        resource.content_original_language == I18n.locale.to_s
+      def translatable_resource
+        resource
       end
 
-      def translation_missing?
-        return false unless perform_translation?
-
-        resource_text.dig("machine_translations", I18n.locale.to_s).blank?
+      def translatable_text
+        resource.body
       end
 
       def safe_resource_text

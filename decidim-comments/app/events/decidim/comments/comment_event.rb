@@ -7,9 +7,9 @@ module Decidim
     module CommentEvent
       extend ActiveSupport::Concern
       include Decidim::Events::AuthorEvent
+      include Decidim::Events::MachineTranslatedEvent
 
       included do
-
         def resource_text(override_translation = nil)
           translated_body = translated_attribute(comment.body, comment.organization, override_translation)
           Decidim::ContentProcessor.render(sanitize_content(render_markdown(translated_body)), "div")
@@ -30,21 +30,12 @@ module Decidim
                                 end
         end
 
-        def perform_translation?
-          organization.enable_machine_translations
+        def translatable_resource
+          comment
         end
 
-        def content_in_same_language?
-          return false unless perform_translation?
-          return false unless resource_text.respond_to?(:content_original_language)
-
-          comment.content_original_language == I18n.locale.to_s
-        end
-
-        def translation_missing?
-          return false unless perform_translation?
-
-          comment.body.dig("machine_translations", I18n.locale.to_s).blank?
+        def translatable_text
+          comment.body
         end
 
         def safe_resource_text

@@ -6,27 +6,19 @@ module Decidim
     #
     module MeetingEvent
       extend ActiveSupport::Concern
+      include Decidim::Events::MachineTranslatedEvent
 
       included do
         def resource_text
           translated_attribute(resource.description)
         end
 
-        def perform_translation?
-          organization.enable_machine_translations
+        def translatable_resource
+          resource
         end
 
-        def content_in_same_language?
-          return false unless perform_translation?
-          return false unless resource.respond_to?(:content_original_language)
-
-          resource.content_original_language == I18n.locale.to_s
-        end
-
-        def translation_missing?
-          return false unless perform_translation?
-
-          resource.description.dig("machine_translations", I18n.locale.to_s).blank?
+        def translatable_text
+          resource.description
         end
 
         def safe_resource_text

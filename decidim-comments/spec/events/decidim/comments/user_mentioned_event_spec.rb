@@ -11,18 +11,16 @@ describe Decidim::Comments::UserMentionedEvent do
   let(:ca_comment_content) { "<div><p>Un commentaire pour #{author_link}</p></div>" }
   let(:en_comment_content) { "<div><p>Comment mentioning some user, #{author_link}</p></div>" }
   let(:author_link) { "<a class=\"user-mention\" href=\"http://#{organization.host}/profiles/#{author.nickname}\">@#{author.nickname}</a>" }
-  let(:body) { "Comment mentioning some user, @#{author.nickname}" }
-  let(:ca_body) { "Un commentaire pour @#{author.nickname}" }
-  let(:parsed_body) { Decidim::ContentProcessor.parse(body, current_organization: organization) }
-  let(:parsed_ca_body) { Decidim::ContentProcessor.parse(ca_body, current_organization: organization) }
-  let(:comment_body) { { en: parsed_body.rewrite, "machine_translations": { "ca": parsed_ca_body.rewrite } } }
+  let(:parsed_body) { Decidim::ContentProcessor.parse("Comment mentioning some user, @#{author.nickname}", current_organization: organization) }
+  let(:parsed_ca_body) { Decidim::ContentProcessor.parse("Un commentaire pour @#{author.nickname}", current_organization: organization) }
+  let(:body) { { en: parsed_body.rewrite, "machine_translations": { "ca": parsed_ca_body.rewrite } } }
 
   let(:participatory_process) { create :participatory_process, organization: organization }
   let(:component) { create(:component, participatory_space: participatory_process) }
   let(:commentable) { create(:dummy_resource, component: component) }
 
   let(:author) { create :user, organization: organization }
-  let!(:comment) { create :comment, body: comment_body, author: author, commentable: commentable }
+  let!(:comment) { create :comment, body: body, author: author, commentable: commentable }
   let(:user) { create :user, organization: organization, locale: "ca" }
 
   it_behaves_like "a comment event"
@@ -64,292 +62,18 @@ describe Decidim::Comments::UserMentionedEvent do
   end
 
   describe "translated notifications" do
+    let(:en_body) { parsed_body.rewrite }
+
+    let(:body) { { en: en_body, "machine_translations": { "ca": parsed_ca_body.rewrite } } }
+
     let(:participatory_process) { create :participatory_process, organization: organization }
     let(:component) { create(:component, participatory_space: participatory_process) }
     let(:commentable) { create(:dummy_resource, component: component) }
-    let!(:comment) { create :comment, body: comment_body, author: author, commentable: commentable }
-
-    context "when it is not machine machine translated" do
-      let(:organization) { create(:organization, enable_machine_translations: false, machine_translation_display_priority: "original") }
-
-      it "does not perform translation" do
-        expect(subject.perform_translation?).to eq(false)
-      end
-
-      it "does not have a missing translation" do
-        expect(subject.translation_missing?).to eq(false)
-      end
-
-      it "does have content available in multiple languages" do
-        expect(subject.content_in_same_language?).to eq(false)
-      end
-
-      it "does return the original language" do
-        expect(subject.safe_resource_text).to eq(subject.resource_text)
-      end
-
-      it "does not offer an alternate translation" do
-        expect(subject.safe_resource_text).to eq(en_comment_content)
-      end
-    end
-
-    context "when is machine machine translated" do
-      around do |example|
-        I18n.with_locale(user.locale) { example.run }
-      end
-
-      context "when priority is original" do
-        let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "original") }
-
-        it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
-        end
-
-        it "does not have a missing translation" do
-          expect(subject.translation_missing?).to eq(false)
-        end
-
-        it "does have content available in multiple languages" do
-          expect(subject.content_in_same_language?).to eq(false)
-        end
-
-        it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(en_comment_content)
-        end
-
-        it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq(ca_comment_content)
-        end
-
-        context "when translation is not available" do
-          let(:comment_body) { { en: parsed_body.rewrite } }
-
-          it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
-          end
-
-          it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
-          end
-
-          it "does have content available in multiple languages" do
-            expect(subject.content_in_same_language?).to eq(false)
-          end
-
-          it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(en_comment_content)
-          end
-
-          it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(en_comment_content)
-          end
-        end
-      end
-
-      context "when priority is translation" do
-        let(:organization) { create(:organization, enable_machine_translations: true, machine_translation_display_priority: "translation") }
-
-        it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
-        end
-
-        it "does not have a missing translation" do
-          expect(subject.translation_missing?).to eq(false)
-        end
-
-        it "does have content available in multiple languages" do
-          expect(subject.content_in_same_language?).to eq(false)
-        end
-
-        it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(en_comment_content)
-        end
-
-        it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq(ca_comment_content)
-        end
-
-        context "when translation is not available" do
-          let(:comment_body) { { en: parsed_body.rewrite } }
-
-          it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
-          end
-
-          it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
-          end
-
-          it "does have content available in multiple languages" do
-            expect(subject.content_in_same_language?).to eq(false)
-          end
-
-          it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(en_comment_content)
-          end
-
-          it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(en_comment_content)
-          end
-        end
-      end
-    end
-  end
-
-  describe "translated notifications" do
-    context "when it is not machine machine translated" do
-      let(:comment) do
-        create :comment, body: { "en": "This is Sparta!", "machine_translations": { "ca": "C'est Sparta!" } }
-      end
-
-      before do
-        organization = comment.organization
-        organization.update enable_machine_translations: false
-      end
-
-      it "does not perform translation" do
-        expect(subject.perform_translation?).to eq(false)
-      end
-
-      it "does not have a missing translation" do
-        expect(subject.translation_missing?).to eq(false)
-      end
-
-      it "does have content available in multiple languages" do
-        expect(subject.content_in_same_language?).to eq(false)
-      end
-
-      it "does return the original language" do
-        expect(subject.safe_resource_text).to eq(subject.resource_text)
-      end
-
-      it "does not offer an alternate translation" do
-        expect(subject.safe_resource_text).to eq(en_comment_content)
-      end
-    end
-
-    context "when is machine machine translated" do
-      let(:user) { create :user, organization: organization, locale: "ca" }
-
-      let(:comment) do
-        create :comment, body: { "en": "This is Sparta!", "machine_translations": { "ca": "C'est Sparta!" } }
-      end
-
-      before do
-        organization = comment.organization
-        organization.update enable_machine_translations: true
-      end
-
-      around do |example|
-        I18n.with_locale(user.locale) { example.run }
-      end
-
-      context "when priority is original" do
-        before do
-          organization.update machine_translation_display_priority: "original"
-        end
-
-        it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
-        end
-
-        it "does not have a missing translation" do
-          expect(subject.translation_missing?).to eq(false)
-        end
-
-        it "does have content available in multiple languages" do
-          expect(subject.content_in_same_language?).to eq(false)
-        end
-
-        it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(en_comment_content)
-        end
-
-        it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["machine_translations"]["ca"]}</p></div>")
-        end
-
-        context "when translation is not available" do
-          let(:comment_body) { { en: parsed_body.rewrite } }
-          let(:comment) do
-            create :comment, body: { "en": "This is Sparta!" }
-          end
-
-          it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
-          end
-
-          it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
-          end
-
-          it "does have content available in multiple languages" do
-            expect(subject.content_in_same_language?).to eq(false)
-          end
-
-          it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(en_comment_content)
-          end
-
-          it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(en_comment_content)
-          end
-        end
-      end
-
-      context "when priority is translation" do
-        let(:comment) { create :comment, body: { "en": "This is Sparta!", "machine_translations": { "ca": "C'est Sparta!" } } }
-        let(:comment_body) { { en: parsed_body.rewrite, "machine_translations": { "ca": parsed_ca_body.rewrite } } }
-
-        before do
-          organization.update machine_translation_display_priority: "translation"
-        end
-
-        it "does perform translation" do
-          expect(subject.perform_translation?).to eq(true)
-        end
-
-        it "does not have a missing translation" do
-          expect(subject.translation_missing?).to eq(false)
-        end
-
-        it "does have content available in multiple languages" do
-          expect(subject.content_in_same_language?).to eq(false)
-        end
-
-        it "does return the original language" do
-          expect(subject.safe_resource_text).to eq(en_comment_content)
-        end
-
-        it "does not offer an alternate translation" do
-          expect(subject.safe_resource_translated_text).to eq("<div><p>#{comment.body["machine_translations"]["ca"]}</p></div>")
-        end
-
-        context "when translation is not available" do
-          let(:comment_body) { { en: parsed_body.rewrite } }
-          let(:comment) { create :comment }
-
-          it "does perform translation" do
-            expect(subject.perform_translation?).to eq(true)
-          end
-
-          it "does have a missing translation" do
-            expect(subject.translation_missing?).to eq(true)
-          end
-
-          it "does have content available in multiple languages" do
-            expect(subject.content_in_same_language?).to eq(false)
-          end
-
-          it "does return the original language" do
-            expect(subject.safe_resource_text).to eq(en_comment_content)
-          end
-
-          it "does not offer an alternate translation" do
-            expect(subject.safe_resource_translated_text).to eq(en_comment_content)
-          end
-        end
-      end
-    end
+    let!(:comment) { create :comment, body: body, author: author, commentable: commentable }
+    let(:en_version) { en_comment_content }
+    let(:machine_translated) { ca_comment_content }
+    let(:translatable) { true }
+
+    it_behaves_like "a translated event"
   end
 end

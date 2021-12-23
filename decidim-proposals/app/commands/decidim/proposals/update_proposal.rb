@@ -45,7 +45,6 @@ module Decidim
           else
             update_proposal
           end
-
           create_gallery if process_gallery?
           create_attachments if process_attachments?
 
