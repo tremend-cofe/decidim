@@ -11,7 +11,7 @@ checks:
     enabled: false
 
   identical-code:
-    enabled: false
+    enabled: true
 
   method-complexity:
     enabled: false
@@ -115,7 +115,7 @@ plugins:
       severity: minor
 
   stylelint:
-    enabled: true
+    enabled: false
     exclude_patterns:
       - "decidim-admin/app/assets/stylesheets/decidim/admin/bundle.scss"
       - "decidim-core/app/assets/stylesheets/decidim/email.css"
