@@ -3,6 +3,7 @@
 require "decidim/meetings/admin"
 require "decidim/meetings/api"
 require "decidim/meetings/engine"
+require "decidim/meetings/config"
 require "decidim/meetings/admin_engine"
 require "decidim/meetings/directory"
 require "decidim/meetings/directory_engine"
