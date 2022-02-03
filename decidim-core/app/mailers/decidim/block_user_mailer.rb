@@ -9,14 +9,13 @@ module Decidim
         @user = user
         @organization = user.organization
         @justification = justification
-        mail(
-          to: user.email,
-          subject: I18n.t(
-            "decidim.block_user_mailer.notify.subject",
-            organization_name: @organization.name,
-            justification: @justification
-          )
+        subject = I18n.t(
+          "decidim.block_user_mailer.notify.subject",
+          organization_name: @organization.name,
+          justification: @justification
         )
+
+        mail(to: user.email, subject: subject)
       end
     end
   end

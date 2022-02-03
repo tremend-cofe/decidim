@@ -5,12 +5,12 @@ module Decidim
   # that they have been reported
   class UserReportMailer < ApplicationMailer
     def notify(admin, token, reason, user)
+      @user = user
+      @organization = user.organization
+      @token = token
+      @reason = reason
+      @admin = admin
       with_user(admin) do
-        @user = user
-        @organization = user.organization
-        @token = token
-        @reason = reason
-        @admin = admin
         mail(to: admin.email, subject: I18n.t(
           "decidim.user_report_mailer.notify.subject",
           organization_name: @organization.name,
