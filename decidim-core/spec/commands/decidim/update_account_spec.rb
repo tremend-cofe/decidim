@@ -8,7 +8,6 @@ module Decidim
     let(:user) { create(:user, :confirmed) }
     let(:data) do
       {
-        language_preference: "en",
         name: user.name,
         nickname: user.nickname,
         email: user.email,
@@ -24,7 +23,6 @@ module Decidim
 
     let(:form) do
       AccountForm.from_params(
-        language_preference: data[:language_preference],
         name: data[:name],
         nickname: data[:nickname],
         email: data[:email],
@@ -77,11 +75,6 @@ module Decidim
       it "updates the language preference" do
         expect { command.call }.to broadcast(:ok)
         expect(user.reload.locale).to eq("es")
-      end
-
-      it "updates the language preference" do
-        expect { command.call }.to broadcast(:ok)
-        expect(user.reload.language_preference).to eq("en")
       end
 
       describe "updating the email" do
