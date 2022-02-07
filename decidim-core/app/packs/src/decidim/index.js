@@ -1,5 +1,3 @@
-/* eslint-disable no-invalid-this */
-
 import svg4everybody from "svg4everybody"
 import formDatePicker from "src/decidim/form_datepicker"
 import fixDropdownMenus from "src/decidim/dropdowns_menus"
@@ -15,14 +13,24 @@ import FormFilterComponent from "src/decidim/form_filter"
 import addInputEmoji from "src/decidim/input_emoji"
 import dialogMode from "src/decidim/dialog_mode"
 
-window.Decidim = window.Decidim || {};
-window.Decidim.config = new Configuration()
 window.Decidim.ExternalLink = ExternalLink;
 window.Decidim.InputCharacterCounter = InputCharacterCounter;
 window.Decidim.FormValidator = FormValidator;
 window.Decidim.DataPicker = DataPicker;
 window.Decidim.CommentsComponent = CommentsComponent;
 window.Decidim.addInputEmoji = addInputEmoji;
+
+if (typeof DecidimCharacterCounter !== "undefined") {
+  Decidim.InputCharacterCounter.configureMessages(DecidimCharacterCounter);
+}
+
+if (typeof DecidimExternalLinkMessages !== "undefined") {
+  Decidim.ExternalLink.configureMessages(DecidimExternalLinkMessages);
+}
+
+if (typeof DecidimFormValidatorMessages !== "undefined") {
+  Decidim.FormValidator.configureMessages(DecidimFormValidatorMessages);
+}
 
 $(() => {
   window.theDataPicker = new DataPicker($(".data-picker"));
