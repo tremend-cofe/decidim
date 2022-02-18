@@ -12,30 +12,31 @@ module Decidim
       helper Decidim::TranslationsHelper
       helper Decidim::ApplicationHelper
 
-      def first_notification(meeting, user)
-        notify(meeting, user)
-      end
+      helper_method :routes
 
-      def reminder_notification(meeting, user)
-        notify(meeting, user)
+      # Send the user an email reminder to close the meetings
+      #
+      # record - the reminder record specific to a past meeting.
+      def close_meeting_reminder(record)
+        @reminder = record.reminder
+        @user = record.reminder.user
+        with_user(@user) do
+          @meeting = record.remindable
+          @organization = @user.organization
+          mail(
+            to: @user.email,
+            subject: I18n.t(
+              "decidim.meetings.close_meeting_reminder_mailer.close_meeting_reminder.subject",
+              organization_name: @organization.name
+            )
+          )
+        end
       end
 
       private
 
-      def notify(meeting, user)
-        with_user(user) do
-          @user = user
-          @meeting = meeting
-          @organization = user.organization
-          mail(
-            to: user.email,
-            subject: I18n.t(
-              "decidim.meetings.close_meeting_reminder_mailer.first_notification.subject",
-              organization_name: @organization.name
-            ),
-            template_name: "first_notification"
-          )
-        end
+      def routes
+        @routes ||= Decidim::EngineRouter.main_proxy(@reminder.component)
       end
     end
   end

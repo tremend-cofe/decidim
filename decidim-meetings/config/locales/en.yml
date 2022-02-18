@@ -395,7 +395,7 @@ en:
         close_window: Close window
         export_calendar: Export calendar
       close_meeting_reminder_mailer:
-        first_notification:
+        close_meeting_reminder:
           body: The meeting <a href="%{meeting_path}">"%{meeting_title}"</a> is pending to be closed. Please add a report of the meeting using the "Close meeting" button.
           greetings: Greetings,<br/>%{organization_name}<br/><a href="%{organization_url}">%{organization_url}</a>
           hello: Hello %{username},

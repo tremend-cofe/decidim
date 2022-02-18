@@ -11,21 +11,11 @@ module Decidim::Meetings
     let(:component) { create(:component, :published, manifest_name: :meetings, participatory_space: participatory_process) }
     let(:user) { create(:user, organization: organization, email: "user@example.org") }
     let(:meeting) { create(:meeting, :published, component: component) }
+    let(:reminder) { create(:reminder, user: user, component: component) }
+    let!(:reminder_record) { create(:reminder_record, reminder: reminder, remindable: meeting) }
 
-    describe "first_notification" do
-      let(:mail) { described_class.first_notification(meeting, user) }
-
-      it "sends to the correct email address" do
-        expect(mail.to).to eq(["user@example.org"])
-      end
-
-      it "parses the subject" do
-        expect(mail.subject).to eq("You can now close your meeting with a report on the #{organization.name} platform")
-      end
-    end
-
-    describe "reminder_notification" do
-      let(:mail) { described_class.reminder_notification(meeting, user) }
+    describe "when sending the email" do
+      let(:mail) { described_class.close_meeting_reminder(reminder_record) }
 
       it "sends to the correct email address" do
         expect(mail.to).to eq(["user@example.org"])
