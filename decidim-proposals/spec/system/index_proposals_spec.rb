@@ -25,8 +25,6 @@ describe "Index proposals", type: :system do
         click_link "See all withdrawn proposals"
       end
 
-      # it_behaves_like "accessible page"
-
       it "shows an empty page with a message" do
         expect(page).to have_content("There isn't any proposal with this criteria")
         within ".callout.warning" do
@@ -43,8 +41,6 @@ describe "Index proposals", type: :system do
         visit_component
         click_link "See all withdrawn proposals"
       end
-
-      # it_behaves_like "accessible page"
 
       it "shows all the withdrawn proposals" do
         expect(page).to have_css(".card--proposal.alert", count: 3)
