@@ -26,6 +26,7 @@ module Decidim
       def finder_query(component_id, interval)
         Decidim::Meetings::Meeting
           .published
+          .not_hidden
           .except_withdrawn
           .where(
             "decidim_component_id = ? AND end_time >= ? AND end_time <= ? AND closed_at IS NULL",
@@ -43,7 +44,7 @@ module Decidim
           finder_query(component.id, interval).find_each do |meeting|
             authors = meeting.official? ? space_admins : [meeting.author]
             authors.each do |author|
-              send_notif = author.component_notification_settings.fetch("close_meeting_reminder", "1")
+              send_notif = author.notification_settings.fetch("close_meeting_reminder", "1")
               next unless send_notif == "1"
 
               reminder = Decidim::Reminder.find_or_create_by(user: author, component: component)
