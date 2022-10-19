@@ -20,10 +20,6 @@ module Decidim
           def search_field_predicate
             :name_or_nickname_or_email_cont
           end
-
-          def filters
-            [:officialized_at_null]
-          end
         end
       end
     end

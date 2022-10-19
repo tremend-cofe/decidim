@@ -257,6 +257,28 @@ module Decidim
     ransacker :last_sign_in_at do
       Arel.sql(%{("decidim_users"."last_sign_in_at")::text})
     end
+    def self.ransackable_scopes(_auth_object = nil)
+      [:moderation_status]
+    end
+
+    def self.moderation_status(value)
+      case value
+      when "blank"
+        left_joins(:user_reports).where(user_reports: { id: nil })
+      when "any"
+        joins(:user_reports)
+      else
+        joins(:user_reports).where(user_reports: { reason: value })
+      end
+    end
+
+    def self.sort_by_user_moderation_report_reasons_desc
+      left_joins(:user_reports).order("reason desc")
+    end
+
+    def self.sort_by_user_moderation_report_reasons_asc
+      left_joins(:user_reports).order("reason asc")
+    end
 
     def notifications_subscriptions
       notification_settings.fetch("subscriptions", {})

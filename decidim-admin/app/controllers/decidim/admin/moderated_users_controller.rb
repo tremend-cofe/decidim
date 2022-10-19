@@ -3,15 +3,7 @@
 module Decidim
   module Admin
     class ModeratedUsersController < Decidim::Admin::ApplicationController
-      include Decidim::ModeratedUsers::Admin::Filterable
-
       layout "decidim/admin/users"
-
-      def index
-        enforce_permission_to :read, :moderate_users
-
-        @moderated_users = filtered_collection
-      end
 
       def ignore
         enforce_permission_to :unreport, :moderate_users
@@ -19,12 +11,12 @@ module Decidim
         Admin::UnreportUser.call(reportable, current_user) do
           on(:ok) do
             flash[:notice] = I18n.t("reportable.unreport.success", scope: "decidim.moderations.admin")
-            redirect_to moderated_users_path
+            redirect_to officializations_path
           end
 
           on(:invalid) do
             flash.now[:alert] = I18n.t("reportable.unreport.invalid", scope: "decidim.moderations.admin")
-            redirect_to moderated_users_path
+            redirect_to officializations_path
           end
         end
       end

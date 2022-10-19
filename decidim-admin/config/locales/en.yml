@@ -369,6 +369,11 @@ en:
           JSON: JSON
         notice: Your export is currently in progress. You'll receive an email when it's complete.
       filters:
+        blocked_at_null:
+          label: Blocked
+          values:
+            'false': Blocked
+            'true': Not blocked
         category_id_eq:
           label: Category
         filter_label: Filter
@@ -389,6 +394,14 @@ en:
               does_not_belong: Does not belong
               offensive: Offensive
               spam: Spam
+        moderation_status:
+          label: Is reported
+          values:
+            any: Present
+            blank: Empty
+            does_not_belong: Does not belong
+            offensive: Offensive
+            spam: Spam
         moderations:
           reportable_type_string_eq:
             label: Type
@@ -549,7 +562,6 @@ en:
         moderation: Global moderations
         newsletters: Newsletters
         participants: Participants
-        reported_users: Reported Users
         scope_types: Scope types
         scopes: Scopes
         settings: Settings
@@ -637,26 +649,6 @@ en:
             phone: Phone
             state: State
             users_count: Participants count
-      moderated_users:
-        index:
-          actions:
-            block: Block User
-            title: Actions
-            unblock: Unblock User
-            unreport: Unreport
-          name: Name
-          nickname: Nickname
-          reason: Reason
-          reports: Reports count
-          title: Listing reported users
-        report:
-          reasons:
-            does_not_belong: Does not belong
-            offensive: Offensive
-            spam: Spam
-        tabs:
-          blocked: Blocked
-          unblocked: Not Blocked
       moderations:
         index:
           title: Moderations
@@ -763,15 +755,22 @@ en:
           officialize: Officialize
           officialized: Officialized
           reofficialize: Reofficialize
+          report_reasons: Report reasons
           reports: Reports
           show_email: Show email address
           status: Status
           unblock: Unblock User
           unofficialize: Unofficialize
+          unreport: Unreport
         new:
           badge: Officialization badge
           officialize: Officialize
           title: Officialize participant "%{name}"
+        report:
+          reasons:
+            does_not_belong: Does not belong
+            offensive: Offensive
+            spam: Spam
         show_email_modal:
           close_modal: Close modal
           description: If you need to contact a participant directly, you can click on the Show button to see their email address. This action will be logged.

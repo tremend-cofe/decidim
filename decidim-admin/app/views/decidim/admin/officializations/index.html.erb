@@ -14,6 +14,7 @@
             <th><%= sort_link(query, :officialized_at, t(".status"), default_order: :desc) %></th>
             <th><%= t(".badge") %></th>
             <th><%= sort_link(query, :user_moderation_report_count, t(".reports"), default_order: :desc) %></th>
+            <th><%= sort_link(query, :user_moderation_report_reasons, t(".report_reasons"), default_order: :desc) %></th>
             <th><%= t(".actions") %></th>
           </tr>
         </thead>
@@ -31,8 +32,12 @@
               <td><%= user.officialized? ? t(".officialized") : t(".not_officialized") %></td>
               <td><%= translated_attribute(user.officialized_as) %></td>
               <td><%= user.report_count %></td>
-
+              <td><%= user.user_moderation.present? ? safe_join(user.user_moderation.reports.map { |report| render "report", report: report }, ",") : ''%></td>
               <td class="table-list__actions">
+                <% if allowed_to?(:unreport, :moderate_users) && user.user_moderation.present? %>
+                  <%= icon_link_to "action-undo", ignore_moderated_user_path(id: user.user_moderation), t(".unreport"), class: "action-icon--unreport", method: :put %>
+                <% end %>
+
                 <% if allowed_to?(:block, :admin_user) %>
                   <% if user.blocked? %>
                     <%= icon_link_to "ban", user_block_path(user_id: user.id), t(".unblock"), class: "action-icon action-icon--disabled", method: :delete %>

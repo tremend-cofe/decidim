@@ -14,7 +14,7 @@ module Decidim
 
       def index
         enforce_permission_to :read, :officialization
-        @users = filtered_collection
+        @users = filtered_collection.includes(user_moderation: :reports)
       end
 
       def new
@@ -68,6 +68,18 @@ module Decidim
           id: params[:user_id],
           organization: current_organization
         )
+      end
+
+      def filters
+        [:officialized_at_null, :blocked_at_null, :moderation_status]
+      end
+
+      def filters_with_values
+        {
+          officialized_at_null: %w(true false),
+          blocked_at_null: %w(true false),
+          moderation_status: %w(blank any does_not_belong offensive spam)
+        }
       end
     end
   end

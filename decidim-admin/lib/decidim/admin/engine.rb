@@ -88,11 +88,6 @@ module Decidim
                         active: is_active_link?(decidim_admin.impersonatable_users_path),
                         if: allowed_to?(:index, :impersonatable_user),
                         submenu: { target_menu: :impersonate_menu }
-
-          menu.add_item :moderated_users,
-                        I18n.t("menu.reported_users", scope: "decidim.admin"), decidim_admin.moderated_users_path,
-                        active: is_active_link?(decidim_admin.moderated_users_path),
-                        if: allowed_to?(:index, :moderate_users)
           menu.add_item :authorization_workflows,
                         I18n.t("menu.authorization_workflows", scope: "decidim.admin"), decidim_admin.authorization_workflows_path,
                         active: is_active_link?(decidim_admin.authorization_workflows_path),
