@@ -22,7 +22,7 @@ module Decidim
             description: @form.description,
             organization: @form.current_organization,
             field_values:,
-            target: target
+            target:
           )
 
           assign_template!
