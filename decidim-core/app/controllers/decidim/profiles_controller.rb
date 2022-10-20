@@ -14,6 +14,7 @@ module Decidim
     before_action :ensure_profile_holder_is_a_group, only: [:members]
     before_action :ensure_profile_holder_is_a_user, only: [:groups, :following]
     before_action :ensure_user_not_blocked
+    before_action :add_no_index_meta
 
     redesign active: true
 
@@ -64,6 +65,10 @@ module Decidim
     end
 
     private
+
+    def add_no_index_meta
+      snippets.add(:head, helpers.no_index_tag)
+    end
 
     def ensure_user_not_blocked
       raise ActionController::RoutingError, "Blocked User" if profile_holder&.blocked? && !current_user&.admin?

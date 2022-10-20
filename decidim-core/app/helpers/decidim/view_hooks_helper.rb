@@ -14,5 +14,11 @@ module Decidim
     def render_hook(hook_name)
       Decidim.view_hooks.render(hook_name, deep_dup)
     end
+
+    # Public: Creates the robots no index meta tag that is added to the head snippets
+    # using the snippets.display(:head)
+    def no_index_tag
+      tag.meta(name: "robots", content: "noindex")
+    end
   end
 end
