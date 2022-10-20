@@ -28,6 +28,11 @@ describe "Admin manages officializations", type: :system do
       end
     end
 
+    let!(:first_user) { create(:user, :confirmed, organization:) }
+    let!(:second_user) { create(:user, :confirmed, organization:) }
+    let!(:third_user) { create(:user, :confirmed, organization:) }
+    let!(:fourth_user) { create(:user, :confirmed, organization:) }
+
     let!(:first_moderation) { create(:user_moderation, user: first_user, report_count: 1) }
     let!(:second_moderation) { create(:user_moderation, user: second_user, report_count: 1) }
     let!(:third_moderation) { create(:user_moderation, user: third_user, report_count: 1) }
@@ -51,11 +56,6 @@ describe "Admin manages officializations", type: :system do
     end
 
     context "when filtering by report reason" do
-      let!(:first_user) { create(:user, :confirmed, organization:) }
-      let!(:second_user) { create(:user, :confirmed, organization:) }
-      let!(:third_user) { create(:user, :confirmed, organization:) }
-      let!(:fourth_user) { create(:user, :confirmed, organization:) }
-
       context "when sorting" do
         context "with report count" do
           it "sorts reported users by report count" do
