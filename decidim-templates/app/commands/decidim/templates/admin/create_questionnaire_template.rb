@@ -11,6 +11,9 @@ module Decidim
           @questionnaire = Decidim::Forms::Questionnaire.create!(questionnaire_for: @template)
           @template.update!(templatable: @questionnaire)
         end
+        def target
+          :questionnaire
+        end
       end
     end
   end
