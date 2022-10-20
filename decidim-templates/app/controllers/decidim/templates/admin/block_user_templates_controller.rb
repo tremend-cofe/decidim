@@ -4,7 +4,22 @@ module Decidim
   module Templates
     module Admin
       class BlockUserTemplatesController < Decidim::Templates::Admin::ApplicationController
+        include Decidim::TranslatableAttributes
         include Decidim::Paginable
+
+        def fetch
+          enforce_permission_to :read, :template, template: template
+
+          response_object = {
+            template: translated_attribute(template.description)
+          }
+
+          respond_to do |format|
+            format.json do
+              render json: response_object.to_json
+            end
+          end
+        end
 
         def copy
           enforce_permission_to :copy, :template
@@ -21,6 +36,7 @@ module Decidim
             end
           end
         end
+
         def destroy
           enforce_permission_to :destroy, :template, template: template
 
@@ -31,6 +47,7 @@ module Decidim
             end
           end
         end
+
         def update
           enforce_permission_to :update, :template, template: template
           @form = form(TemplateForm).from_params(params)
@@ -78,7 +95,7 @@ module Decidim
 
         def index
           enforce_permission_to :index, :templates
-          @templates =  paginate(collection)
+          @templates = paginate(collection)
 
           respond_to do |format|
             format.html { render :index }
@@ -91,6 +108,7 @@ module Decidim
             end
           end
         end
+
         private
 
         def template
@@ -100,7 +118,6 @@ module Decidim
         def collection
           @collection ||= current_organization.templates.where(target: :user_block)
         end
-
       end
     end
   end

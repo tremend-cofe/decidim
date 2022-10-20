@@ -51,7 +51,6 @@ describe "Admin manages officializations", type: :system do
     end
 
     context "when filtering by report reason" do
-
       let!(:first_user) { create(:user, :confirmed, organization:) }
       let!(:second_user) { create(:user, :confirmed, organization:) }
       let!(:third_user) { create(:user, :confirmed, organization:) }
@@ -93,6 +92,7 @@ describe "Admin manages officializations", type: :system do
           expect(page).not_to have_content(third_user.name)
           expect(page).not_to have_content(fourth_user.name)
         end
+
         it "can be searched by nickname" do
           search_by_text(fourth_user.nickname)
 
@@ -119,6 +119,7 @@ describe "Admin manages officializations", type: :system do
           expect(page).not_to have_content(third_user.name)
           expect(page).to have_content(fourth_user.name)
         end
+
         it "cannot be found by name if has reporting" do
           search_by_text(first_user.name)
 
@@ -158,7 +159,6 @@ describe "Admin manages officializations", type: :system do
         let(:not_in_filter) { second_user.name }
       end
     end
-
   end
 
   describe "listing officializations" do

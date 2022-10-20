@@ -21,8 +21,8 @@ module Decidim
             name: @form.name,
             description: @form.description,
             organization: @form.current_organization,
-            field_values: field_values,
-            target: target
+            field_values:,
+            target:
           )
 
           assign_template!
@@ -31,10 +31,15 @@ module Decidim
         end
 
         protected
-        def assign_template!; end
-        def field_values;
+
+        def assign_template!
+          @template.update!(templatable: @form.current_organization)
+        end
+
+        def field_values
           {}
         end
+
         def target
           raise "Not implemented"
         end

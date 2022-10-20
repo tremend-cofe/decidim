@@ -44,6 +44,8 @@ en:
     templates:
       admin:
         block_user_templates:
+          template_chooser:
+            select_template: Select a template answer
           form:
             save: Save
             template_title: Template information
