@@ -21,6 +21,146 @@ describe "Admin manages officializations", type: :system do
     click_link "Participants"
   end
 
+  describe "moderation" do
+    before do
+      within ".secondary-nav" do
+        click_link "Participants"
+      end
+    end
+
+    let!(:first_moderation) { create(:user_moderation, user: first_user, report_count: 1) }
+    let!(:second_moderation) { create(:user_moderation, user: second_user, report_count: 1) }
+    let!(:third_moderation) { create(:user_moderation, user: third_user, report_count: 1) }
+    let!(:first_user_report) { create(:user_report, moderation: first_moderation, user: admin, reason: "spam") }
+    let!(:second_user_report) { create(:user_report, moderation: second_moderation, user: admin, reason: "offensive") }
+    let!(:third_user_report) { create(:user_report, moderation: third_moderation, user: admin, reason: "does_not_belong") }
+
+    context "when filtering blocked users" do
+      let!(:first_user) { create(:user, :confirmed, :blocked, organization:) }
+      let!(:fourth_user) { create(:user, :confirmed, organization:) }
+
+      it_behaves_like "a filtered collection", options: "Blocked", filter: "Blocked" do
+        let(:in_filter) { first_user.name }
+        let(:not_in_filter) { fourth_user.name }
+      end
+
+      it_behaves_like "a filtered collection", options: "Blocked", filter: "Not blocked" do
+        let(:in_filter) { fourth_user.name }
+        let(:not_in_filter) { first_user.name }
+      end
+    end
+
+    context "when filtering by report reason" do
+
+      let!(:first_user) { create(:user, :confirmed, organization:) }
+      let!(:second_user) { create(:user, :confirmed, organization:) }
+      let!(:third_user) { create(:user, :confirmed, organization:) }
+      let!(:fourth_user) { create(:user, :confirmed, organization:) }
+
+      context "when sorting" do
+        context "with report count" do
+          it "sorts reported users by report count" do
+            click_link "Reports"
+
+            all("tbody").last do
+              expect(all("tr").first.text).to include(fourth_user.name)
+              expect(all("tr").last.text).to include(third_user.name)
+            end
+          end
+        end
+
+        context "with report reason" do
+          it "sorts reported users by report count" do
+            click_link "Report reasons"
+
+            all("tbody").last do
+              expect(all("tr").first.text).to include(fourth_user.name)
+              expect(all("tr").last.text).to include(first_user.name)
+            end
+          end
+        end
+      end
+
+      it_behaves_like "a filtered collection", options: "Is reported", filter: "Empty" do
+        let(:in_filter) { fourth_user.name }
+        let(:not_in_filter) { second_user.name }
+
+        it "cannot be found by nickname if has reporting" do
+          search_by_text(first_user.nickname)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).not_to have_content(fourth_user.name)
+        end
+        it "can be searched by nickname" do
+          search_by_text(fourth_user.nickname)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).to have_content(fourth_user.name)
+        end
+
+        it "cannot be found by email if has reporting" do
+          search_by_text(first_user.email)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).not_to have_content(fourth_user.name)
+        end
+
+        it "can be searched by email" do
+          search_by_text(fourth_user.email)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).to have_content(fourth_user.name)
+        end
+        it "cannot be found by name if has reporting" do
+          search_by_text(first_user.name)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).not_to have_content(fourth_user.name)
+        end
+
+        it "can be searched by name" do
+          search_by_text(fourth_user.name)
+
+          expect(page).not_to have_content(second_user.name)
+          expect(page).not_to have_content(first_user.name)
+          expect(page).not_to have_content(third_user.name)
+          expect(page).to have_content(fourth_user.name)
+        end
+      end
+
+      it_behaves_like "a filtered collection", options: "Is reported", filter: "Present" do
+        let(:in_filter) { first_user.name }
+        let(:not_in_filter) { fourth_user.name }
+      end
+
+      it_behaves_like "a filtered collection", options: "Is reported", filter: "Spam" do
+        let(:in_filter) { first_user.name }
+        let(:not_in_filter) { second_user.name }
+      end
+
+      it_behaves_like "a filtered collection", options: "Is reported", filter: "Offensive" do
+        let(:in_filter) { second_user.name }
+        let(:not_in_filter) { first_user.name }
+      end
+
+      it_behaves_like "a filtered collection", options: "Is reported", filter: "Does not belong" do
+        let(:in_filter) { third_user.name }
+        let(:not_in_filter) { second_user.name }
+      end
+    end
+
+  end
+
   describe "listing officializations" do
     let!(:officialized) { create(:user, :officialized, organization:) }
     let!(:not_officialized) { create(:user, organization:) }
