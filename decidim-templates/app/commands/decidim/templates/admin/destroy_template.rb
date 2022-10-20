@@ -32,6 +32,7 @@ module Decidim
             template,
             current_user
           ) do
+            template.templatable.try(:destroy!)
             template.destroy!
           end
         end
