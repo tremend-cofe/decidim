@@ -18,7 +18,7 @@ module Decidim
         end
 
         it "destroy the templatable" do
-          described_class.call(template, admin)
+          described_class.call(template, user)
           expect { templatable.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
