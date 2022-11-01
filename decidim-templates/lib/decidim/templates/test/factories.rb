@@ -8,6 +8,7 @@ FactoryBot.define do
     organization
     templatable { build(:dummy_resource) }
     name { Decidim::Faker::Localized.sentence }
+    description { Decidim::Faker::Localized.sentence }
 
     trait :user_block do
       templatable { organization }
