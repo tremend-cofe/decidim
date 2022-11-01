@@ -4,8 +4,7 @@ $(() => {
     $.getJSON(dropDown.data("url"), {
       id: dropDown.val()
     }).done(function(data) {
-      console.log(data);
       $("#block_user_justification").val(data.template);
-    });
+     });
   });
 });

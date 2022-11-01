@@ -33,7 +33,7 @@ module Decidim
       attr_reader :form
 
       def register_justification!
-        @current_blocking ||= UserBlock.create!(
+        @current_blocking = UserBlock.create!(
           justification: form.justification,
           user: form.user,
           blocking_user: form.current_user

@@ -2,7 +2,6 @@
   target: :user_block,
   templatable: [current_organization]
 ).order(:templatable_id) %>
-
 <% if templates.any? %>
   <div class="row column">
     <%= javascript_pack_tag "decidim_templates_admin" %>
