@@ -18,7 +18,6 @@ module Decidim
     #   hash.join(Decidim.cache_key_separator)
     # end
 
-
     private
 
     def modal_id

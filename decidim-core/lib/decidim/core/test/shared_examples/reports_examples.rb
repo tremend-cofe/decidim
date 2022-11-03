@@ -14,7 +14,7 @@ shared_examples "reports" do
   end
 
   context "when the admin is logged in" do
-    let!(:admin) { create(:user, :admin, confirmed: true, organization: user.organization )}
+    let!(:admin) { create(:user, :admin, confirmed: true, organization: user.organization) }
     before do
       login_as admin
     end

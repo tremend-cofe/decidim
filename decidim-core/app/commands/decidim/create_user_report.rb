@@ -44,7 +44,7 @@ module Decidim
         justification: I18n.t("decidim.shared.flag_user_modal.frontend_blocked"),
         user_id: @reportable.id
       }
-      articificial_ctx = { current_user: current_user,  current_organization: current_user.organization }
+      articificial_ctx = { current_user:, current_organization: current_user.organization }
       block_user_form = Decidim::Admin::BlockUserForm.from_params(user_params).with_context(articificial_ctx)
 
       Decidim::Admin::BlockUser.call(block_user_form) do

@@ -16,7 +16,7 @@ module Decidim
       scope :not_hidden, -> { left_outer_joins(:moderation).where(Decidim::Moderation.arel_table[:hidden_at].eq nil) }
 
       def can_be_administred_by?(user)
-        return false unless user.present?
+        return false if user.blank?
 
         [
           user.admin?,

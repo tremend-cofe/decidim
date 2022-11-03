@@ -77,12 +77,13 @@ module Decidim
         ReportedMailer.report(moderator, @report).deliver_later
       end
     end
+
     def hidden_by_admin?
-      form.hide == true && form.context.dig(:can_hide) == true
+      form.hide == true && form.context[:can_hide] == true
     end
 
     def hideable?
-      hidden_by_admin? || !@reportable.hidden? && @moderation.report_count >= Decidim.max_reports_before_hiding
+      hidden_by_admin? || (!@reportable.hidden? && @moderation.report_count >= Decidim.max_reports_before_hiding)
     end
 
     def hide!
