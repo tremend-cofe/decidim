@@ -21,6 +21,11 @@
         <% end %>
       </fieldset>
       <%= f.text_area :details, rows: 4, id: "#{modal_id}_details", label_options: { for: "#{modal_id}_details" } %>
+
+      <% if model.can_be_administred_by?(current_user) %>
+        <%= f.check_box :hide, label: t("decidim.shared.flag_modal.hide") %>
+      <% end  %>
+
       <%= f.submit t("decidim.shared.flag_modal.report") %>
     <% end %>
   <% end %>

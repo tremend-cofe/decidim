@@ -1,5 +1,6 @@
 ---
 en:
+
   activemodel:
     attributes:
       account:
@@ -1411,6 +1412,7 @@ en:
         help: The form below filters the search results dynamically when the search conditions are changed.
         skip: Skip to results
       flag_modal:
+        hide: Hide
         already_reported: This content is already reported and it will be reviewed by an admin.
         close: Close
         description: Is this content inappropriate?
@@ -1421,6 +1423,8 @@ en:
         spam: Contains clickbait, advertising, scams or script bots.
         title: Report inappropriate content
       flag_user_modal:
+        block: Block User
+        hide_and_block: Hide all content and Block user
         already_reported: This content is already reported and it will be reviewed by an admin.
         close: Close
         description: What is inappropriate about the user?
@@ -1429,6 +1433,7 @@ en:
         report: Report
         spam: Contains clickbait, advertising, scams or script bots.
         title: Report inappropriate User
+        frontend_blocked: The user has been blocked from frontent
       floating_help:
         close: Close help
         help: Help

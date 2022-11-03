@@ -28,6 +28,8 @@ module Decidim
         create_report!
         update_report_count!
         send_notification_to_admins!
+        block_user! if form.block == true
+        hide! if form.hide
       end
 
       broadcast(:ok, report)
@@ -36,6 +38,21 @@ module Decidim
     private
 
     attr_reader :form, :report
+
+    def block_user!
+      user_params = {
+        justification: I18n.t("decidim.shared.flag_user_modal.frontend_blocked"),
+        user_id: @reportable.id
+      }
+      articificial_ctx = { current_user: current_user,  current_organization: current_user.organization }
+      block_user_form = Decidim::Admin::BlockUserForm.from_params(user_params).with_context(articificial_ctx)
+
+      Decidim::Admin::BlockUser.call(block_user_form) do
+        on(:invalid) do
+          raise ActiveRecord::Rollback
+        end
+      end
+    end
 
     def find_or_create_moderation!
       @moderation = UserModeration.find_or_create_by!(user: @reportable)
