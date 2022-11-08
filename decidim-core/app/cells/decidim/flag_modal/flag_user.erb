@@ -21,7 +21,7 @@
 
       <% if current_user&.admin? %>
         <%= f.check_box :block, label: t("decidim.shared.flag_user_modal.block") %>
-        <%#= f.check_box :hide, label: t("decidim.shared.flag_user_modal.hide_and_block") %>
+        <%= f.check_box :hide, label: t("decidim.shared.flag_user_modal.hide_and_block") %>
       <% end  %>
 
       <%= f.submit t("decidim.shared.flag_user_modal.report") %>

@@ -29,7 +29,7 @@ module Decidim
         update_report_count!
         send_notification_to_admins!
         block_user! if form.block == true
-        hide! if form.hide
+        publish_hide_event if form.hide
       end
 
       broadcast(:ok, report)
@@ -37,7 +37,11 @@ module Decidim
 
     private
 
-    attr_reader :form, :report
+    attr_reader :form, :report, :reportable
+
+    def publish_hide_event
+      ActiveSupport::Notifications.publish("decidim.system.events.hide_user_created_content", { reportable:, current_user: })
+    end
 
     def block_user!
       user_params = {
@@ -77,10 +81,6 @@ module Decidim
 
         Decidim::UserReportJob.perform_later(admin, report)
       end
-    end
-
-    def hideable?
-      false
     end
   end
 end
