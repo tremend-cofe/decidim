@@ -112,7 +112,7 @@ module Decidim
         end
       end
 
-      initializer "decidim.i18n_exceptions" do
+      initializer "decidim.i18n_exceptions" do |app|
         ActionView::Base.raise_on_missing_translations = true unless Rails.env.production?
       end
 
@@ -711,10 +711,12 @@ module Decidim
       end
 
       initializer "decidim.authorization_transfer" do
-        Decidim::AuthorizationTransfer.register(:core) do |transfer|
-          transfer.move_records(Decidim::Coauthorship, :decidim_author_id)
-          transfer.move_records(Decidim::Endorsement, :decidim_author_id)
-          transfer.move_records(Decidim::Amendment, :decidim_user_id)
+        config.to_prepare do
+          Decidim::AuthorizationTransfer.register(:core) do |transfer|
+            transfer.move_records(Decidim::Coauthorship, :decidim_author_id)
+            transfer.move_records(Decidim::Endorsement, :decidim_author_id)
+            transfer.move_records(Decidim::Amendment, :decidim_user_id)
+          end
         end
       end
 
