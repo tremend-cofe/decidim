@@ -37,10 +37,6 @@ module Decidim
       def install
         route "mount Decidim::Core::Engine => '/'"
       end
-      def patch_application
-        data = "\nrequire 'sprockets/railtie'"
-        inject_into_file "config/application.rb", optimize_indentation(data), after: 'require "rails/all"', verbose: false
-      end
 
       def add_seeds
         append_file "db/seeds.rb", <<~RUBY
