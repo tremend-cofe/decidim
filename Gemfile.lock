@@ -96,7 +96,7 @@ PATH
       psych (< 4)
       rack (~> 2.2, >= 2.2.3)
       rack-attack (~> 6.0)
-      rails (~> 7.0.4)
+      rails (~> 7.0)
       rails-i18n (~> 7.0)
       ransack (~> 3.2.1)
       redis (~> 4.1)
