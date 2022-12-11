@@ -8,8 +8,10 @@ module Decidim
       engine_name "decidim_dev"
 
       initializer "decidim_dev.tools" do
-        ActiveSupport.on_load :action_controller do
-          ActionController::Base.include Decidim::Dev::NeedsDevelopmentTools
+        Rails.application.reloader.to_prepare do
+          ActiveSupport.on_load :action_controller do
+            ActionController::Base.include Decidim::Dev::NeedsDevelopmentTools
+          end
         end
       end
 
