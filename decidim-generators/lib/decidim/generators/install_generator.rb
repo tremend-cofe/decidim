@@ -94,7 +94,6 @@ module Decidim
           require "rails/test_unit/railtie"
         RUBY
 
-
         gsub_file "config/environments/development.rb", /config\.assets.*$/, ""
         gsub_file "config/environments/test.rb", /config\.assets.*$/, ""
         gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
