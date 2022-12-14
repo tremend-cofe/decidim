@@ -25,6 +25,7 @@ module Decidim
         return broadcast(:invalid) if form.invalid? || !comment.authored_by?(current_user)
 
         update_comment
+        dispatch_system_event
 
         broadcast(:ok)
       end
@@ -32,6 +33,15 @@ module Decidim
       private
 
       attr_reader :form, :comment, :current_user
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.comments.comment.updated",
+          resource: comment,
+          author: current_user,
+          locale: I18n.locale
+        )
+      end
 
       def update_comment
         parsed = Decidim::ContentProcessor.parse(form.body, current_organization: form.current_organization)

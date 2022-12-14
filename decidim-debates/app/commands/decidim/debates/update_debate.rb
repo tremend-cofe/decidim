@@ -22,12 +22,22 @@ module Decidim
         return broadcast(:invalid) unless form.debate.editable_by?(form.current_user)
 
         update_debate
+        dispatch_system_event
         broadcast(:ok, @debate)
       end
 
       private
 
-      attr_reader :form
+      attr_reader :form, :debate
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.debates.debate.updated",
+          resource: debate,
+          author: form.current_user,
+          locale: I18n.locale
+        )
+      end
 
       def update_debate
         @debate = Decidim.traceability.update!(

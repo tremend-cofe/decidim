@@ -1,0 +1,64 @@
+---
+en:
+  decidim:
+    admin:
+      forbidden_keyword:
+        create:
+          error: There was a problem
+          success: Successfully created
+        destroy:
+          success: The element was successfully deleted
+        update:
+          error: There was a problem
+          success: Successfully update
+      menu:
+        ai_tools: Ai Tools
+        forbidden_keywords: Forbidden Keywords
+        stopwords: Ignored Words
+      stopword:
+        create:
+          error: There was a problem
+          success: Successfully created
+        destroy:
+          success: The element was successfully deleted
+        update:
+          error: There was a problem
+          success: Successfully update
+    models:
+      forbidden_keyword:
+        fields:
+          created_at: Created At
+        name: Forbidden Keywords
+      stopword:
+        fields:
+          created_at: Created At
+        name: Ignored Word
+    tools:
+      ai:
+        admin:
+          forbidden_keywords:
+            edit:
+              update: Update
+            form:
+              word: Word
+            index:
+              announcement: Adding words in this interface tells the AntiSpam Engine to increase the spam score for resources containing those words
+              confirm_delete: Are you sure you want to delete?
+              empty: There are no records yet
+              title: Forbidden Keywords
+              word: Word
+            new:
+              create: Create
+          stopwords:
+            edit:
+              update: Update
+            form:
+              word: Word
+            index:
+              announcement: Adding words in this interface tells the AntiSpam Engine to ignore the presence of those words
+              confirm_delete: Are you sure you want to delete?
+              empty: There are no records yet
+              title: Ignored words
+              word: Word
+            new:
+              create: Create

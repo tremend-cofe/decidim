@@ -29,6 +29,7 @@ module Decidim
 
         transaction do
           update_collaborative_draft
+          dispatch_system_event
         end
 
         broadcast(:ok, collaborative_draft)
@@ -37,6 +38,15 @@ module Decidim
       private
 
       attr_reader :form, :collaborative_draft, :current_user
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.proposals.collaborative_draft.created",
+          resource: collaborative_draft,
+          author: current_user,
+          locale: I18n.locale
+        )
+      end
 
       def update_collaborative_draft
         Decidim.traceability.update!(

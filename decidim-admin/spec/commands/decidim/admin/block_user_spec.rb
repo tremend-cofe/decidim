@@ -17,7 +17,7 @@ module Decidim::Admin
           double(
             user: user_to_block,
             current_user:,
-            justification: :justification,
+            justification:,
             valid?: true
           )
         end

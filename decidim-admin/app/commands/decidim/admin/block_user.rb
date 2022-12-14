@@ -23,6 +23,7 @@ module Decidim
           register_justification!
           block!
           notify_user!
+          dispatch_system_event
         end
 
         broadcast(:ok, form.user)
@@ -31,6 +32,15 @@ module Decidim
       private
 
       attr_reader :form
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.core.user.blocked",
+          resource: form.user,
+          author: form.current_user,
+          locale: I18n.locale
+        )
+      end
 
       def register_justification!
         @current_blocking = UserBlock.create!(

@@ -1,0 +1,7 @@
+<%= decidim_form_for(@form, url: forbidden_keyword_path(word), html: { class: "form edit_forbidden_keyword" }) do |f| %>
+  <%= render partial: "form", object: f %>
+
+  <div class="button--double form-general-submit">
+    <%= f.submit t(".update") %>
+  </div>
+<% end %>

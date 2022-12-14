@@ -194,6 +194,10 @@ PATH
     decidim-templates (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
       decidim-forms (= 0.28.0.dev)
+    decidim-tools-ai (0.28.0.dev)
+      classifier-reborn (~> 2.3.0)
+      cld (~> 0.11)
+      decidim-core (>= 0.25)
     decidim-verifications (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
 
@@ -314,6 +318,11 @@ GEM
       cells (>= 4.1.6, < 5.0.0)
     charlock_holmes (0.7.7)
     childprocess (4.1.0)
+    classifier-reborn (2.3.0)
+      fast-stemmer (~> 1.0)
+      matrix (~> 0.4)
+    cld (0.12.0)
+      ffi
     colorize (0.8.1)
     commonmarker (0.23.8)
     concurrent-ruby (1.2.0)
@@ -349,7 +358,7 @@ GEM
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.5.0)
-    diffy (3.4.2)
+    diffy (3.4.1)
     digest (3.1.1)
     doc2text (0.4.5)
       nokogiri (>= 1.13.2, < 1.14.0)
@@ -405,6 +414,7 @@ GEM
     faraday-retry (1.0.3)
     faraday_middleware (1.2.0)
       faraday (~> 1.0)
+    fast-stemmer (1.0.2)
     ffi (1.15.5)
     file_validators (3.0.0)
       activemodel (>= 3.2)
@@ -574,7 +584,7 @@ GEM
     parallel (1.22.1)
     parallel_tests (3.7.3)
       parallel
-    parser (3.1.2.0)
+    parser (3.2.1.0)
       ast (~> 2.4.1)
     pg (1.4.1)
     pg_search (2.3.6)
@@ -587,7 +597,7 @@ GEM
     premailer-rails (1.11.1)
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
-    psych (4.0.6)
+    psych (4.0.3)
       stringio
     public_suffix (4.0.7)
     puma (5.6.4)
@@ -696,8 +706,8 @@ GEM
       rubocop-ast (>= 1.19.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.24.1)
-      parser (>= 3.1.1.0)
+    rubocop-ast (1.26.0)
+      parser (>= 3.2.1.0)
     rubocop-faker (1.1.0)
       faker (>= 2.12.0)
       rubocop (>= 0.82.0)
@@ -763,7 +773,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    unicode-display_width (2.1.0)
+    unicode-display_width (2.4.2)
     valid_email2 (4.0.3)
       activemodel (>= 3.2)
       mail (~> 2.5)
@@ -827,6 +837,7 @@ DEPENDENCIES
   decidim-elections!
   decidim-initiatives!
   decidim-templates!
+  decidim-tools-ai!
   faker (~> 2.14)
   letter_opener_web (~> 2.0)
   listen (~> 3.1)

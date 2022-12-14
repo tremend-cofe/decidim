@@ -45,7 +45,7 @@ module Decidim
           else
             update_proposal
           end
-
+          dispatch_system_event
           photo_cleanup!
           document_cleanup!
 
@@ -59,6 +59,15 @@ module Decidim
       private
 
       attr_reader :form, :proposal, :current_user, :attachment
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.proposals.proposal.updated",
+          resource: proposal,
+          author: current_user,
+          locale: I18n.locale
+        )
+      end
 
       def invalid?
         form.invalid? || !proposal.editable_by?(current_user) || proposal_limit_reached?

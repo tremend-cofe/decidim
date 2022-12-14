@@ -1,0 +1,7 @@
+<%= decidim_form_for(@form, url: stopwords_path, html: { class: "form new_stopword" }) do |f| %>
+  <%= render partial: "form", object: f %>
+
+  <div class="button--double form-general-submit">
+    <%= f.submit t(".create") %>
+  </div>
+<% end %>

@@ -34,6 +34,7 @@ module Decidim
 
         transaction do
           create_proposal
+          dispatch_system_event
         end
 
         broadcast(:ok, proposal)
@@ -42,6 +43,15 @@ module Decidim
       private
 
       attr_reader :form, :proposal, :attachment
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.proposals.proposal.created",
+          resource: proposal,
+          author: @current_user,
+          locale: I18n.locale
+        )
+      end
 
       # Prevent PaperTrail from creating an additional version
       # in the proposal multi-step creation process (step 1: create)

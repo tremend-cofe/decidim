@@ -25,11 +25,19 @@ module Decidim
         hide!
 
         send_hide_notification_to_author
+        dispatch_system_event
 
         broadcast(:ok, @reportable)
       end
 
       private
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.core.resource.hidden",
+          resource: @reportable
+        )
+      end
 
       def hideable?
         !@reportable.hidden? && @reportable.reported?

@@ -33,6 +33,7 @@ module Decidim
 
         transaction do
           create_collaborative_draft
+          dispatch_system_event
           create_attachments if process_attachments?
         end
 
@@ -42,6 +43,15 @@ module Decidim
       private
 
       attr_reader :form, :collaborative_draft, :attachment
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.proposals.collaborative_draft.created",
+          resource: collaborative_draft,
+          author: @form.current_user,
+          locale: I18n.locale
+        )
+      end
 
       def create_collaborative_draft
         @collaborative_draft = Decidim.traceability.perform_action!(

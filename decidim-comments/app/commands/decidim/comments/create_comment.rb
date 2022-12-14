@@ -22,6 +22,7 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
 
         create_comment
+        dispatch_system_event
 
         broadcast(:ok, comment)
       end
@@ -29,6 +30,15 @@ module Decidim
       private
 
       attr_reader :form, :comment
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.comments.comment.created",
+          resource: comment,
+          author: @author,
+          locale: I18n.locale
+        )
+      end
 
       def create_comment
         parsed = Decidim::ContentProcessor.parse(form.body, current_organization: form.current_organization)

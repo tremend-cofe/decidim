@@ -17,6 +17,7 @@ module Decidim
 
         transaction do
           create_debate
+          dispatch_system_event
           send_notification_to_author_followers
           send_notification_to_space_followers
         end
@@ -28,6 +29,15 @@ module Decidim
       private
 
       attr_reader :debate, :form
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.debates.debate.created",
+          resource: debate,
+          author: form.current_user,
+          locale: I18n.locale
+        )
+      end
 
       def create_debate
         parsed_title = Decidim::ContentProcessor.parse_with_processor(:hashtag, form.title, current_organization: form.current_organization).rewrite

@@ -26,6 +26,7 @@ module Decidim
           update_meeting!
           send_notification if should_notify_followers?
           schedule_upcoming_meeting_notification if start_time_changed?
+          dispatch_system_event if content_changed?
         end
 
         broadcast(:ok, meeting)
@@ -34,6 +35,15 @@ module Decidim
       private
 
       attr_reader :form, :current_user, :meeting
+
+      def dispatch_system_event
+        ActiveSupport::Notifications.publish(
+          "decidim.system.meetings.meeting.updated",
+          resource: meeting,
+          author: current_user,
+          locale: I18n.locale
+        )
+      end
 
       def update_meeting!
         parsed_title = Decidim::ContentProcessor.parse_with_processor(:hashtag, form.title, current_organization: form.current_organization).rewrite
@@ -89,6 +99,10 @@ module Decidim
 
       def start_time_changed?
         meeting.previous_changes["start_time"].present?
+      end
+
+      def content_changed?
+        %w(title description location_hints closing_report registration_terms).any? { |attr| meeting.previous_changes[attr].present? }
       end
 
       def schedule_upcoming_meeting_notification

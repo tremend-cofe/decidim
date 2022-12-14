@@ -194,6 +194,10 @@ PATH
     decidim-templates (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
       decidim-forms (= 0.28.0.dev)
+    decidim-tools-ai (0.28.0.dev)
+      classifier-reborn (~> 2.3.0)
+      cld (~> 0.11)
+      decidim-core (>= 0.25)
     decidim-verifications (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
 
@@ -314,6 +318,11 @@ GEM
       cells (>= 4.1.6, < 5.0.0)
     charlock_holmes (0.7.7)
     childprocess (4.1.0)
+    classifier-reborn (2.3.0)
+      fast-stemmer (~> 1.0)
+      matrix (~> 0.4)
+    cld (0.12.0)
+      ffi
     colorize (0.8.1)
     commonmarker (0.23.8)
     concurrent-ruby (1.2.0)
@@ -405,6 +414,7 @@ GEM
     faraday-retry (1.0.3)
     faraday_middleware (1.2.0)
       faraday (~> 1.0)
+    fast-stemmer (1.0.2)
     ffi (1.15.5)
     file_validators (3.0.0)
       activemodel (>= 3.2)
@@ -827,6 +837,7 @@ DEPENDENCIES
   decidim-elections!
   decidim-initiatives!
   decidim-templates!
+  decidim-tools-ai!
   faker (~> 2.14)
   letter_opener_web (~> 2.0)
   listen (~> 3.1)
