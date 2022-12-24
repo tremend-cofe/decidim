@@ -81,6 +81,15 @@ module Decidim
         app.config.exceptions_app = Decidim::Core::Engine.routes
       end
 
+      # Rails 7 uses VIPS as default processor, and this may add up to 140 MB on a docker image.
+      # Please refer to:
+      # https://github.com/rails/rails/blob/7-0-stable/activestorage/CHANGELOG.md#rails-700alpha1-september-15-2021
+      # https://github.com/libvips/ruby-vips/issues/219
+      # https://github.com/libvips/ruby-vips/issues/219#issuecomment-1006370293
+      initializer "decidim.active_storage" do |app|
+        app.config.active_storage.variant_processor = :mini_magick unless Decidim.which("vips")
+      end
+
       initializer "decidim.locales" do |app|
         app.config.i18n.fallbacks = true
       end
