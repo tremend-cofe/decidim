@@ -4,8 +4,8 @@ source "https://rubygems.org"
 
 ruby RUBY_VERSION
 
-gem "decidim-bulletin_board", github: "alecslupu-pfa/decidim-bulletin-board", glob: "bulletin_board/ruby-client/*.gemspec", branch: "ale-rails-7-server"
 gem "decidim", path: "."
+gem "decidim-bulletin_board", github: "alecslupu-pfa/decidim-bulletin-board", glob: "bulletin_board/ruby-client/*.gemspec", branch: "ale-rails-7-server"
 gem "decidim-conferences", path: "."
 gem "decidim-consultations", path: "."
 gem "decidim-elections", path: "."
