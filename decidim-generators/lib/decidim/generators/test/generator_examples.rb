@@ -47,7 +47,8 @@ shared_examples_for "a new development application" do
     expect(Pathname.new("#{test_app}/node_modules/@rails/webpacker")).to be_directory
 
     # Check that the configuration tweaks are applied properly
-    expect(File.read("#{test_app}/config/spring.rb")).to match(%r{^require "decidim/spring"})
+    # Spring is no longer On by default
+    # expect(File.read("#{test_app}/config/spring.rb")).to match(%r{^require "decidim/spring"})
   end
 end
 
@@ -676,7 +677,7 @@ shared_examples_for "an application with configurable env vars" do
     {
       "Rails.logger.level" => 1,
       "Rails.application.config.log_level" => "info",
-      "Rails.application.config.action_controller.asset_host" => nil,
+      "Rails.application.config.asset_host" => nil,
       "Rails.application.config.active_storage.service" => "local",
       "Decidim::EngineRouter.new(nil, {}).send(:configured_default_url_options)" => { "protocol" => "https" }
     }
@@ -686,7 +687,7 @@ shared_examples_for "an application with configurable env vars" do
     {
       "Rails.logger.level" => 4,
       "Rails.application.config.log_level" => "fatal",
-      "Rails.application.config.action_controller.asset_host" => "http://assets.example.org",
+      "Rails.application.config.asset_host" => "http://assets.example.org",
       "Rails.application.config.active_storage.service" => "test",
       "Decidim::AssetRouter.new(nil).send(:default_options)" => { "host" => "https://cdn.example.org" },
       "Decidim::Api::Schema.default_max_page_size" => 31,
