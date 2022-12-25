@@ -4,6 +4,8 @@
 
 ### Added
 
+* decidim-core: Rails 7.0 Upgrade. Set `Decidim.key_generator_hash_digest_class = OpenSSL::Digest::SHA1` when upgrading from older versions
+
 ### Changed
 
 ### Fixed

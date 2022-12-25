@@ -90,6 +90,10 @@ module Decidim
         app.config.active_storage.variant_processor = :mini_magick unless Decidim.which("vips")
       end
 
+      initializer "decidim.active_support" do |app|
+        app.config.active_support.key_generator_hash_digest_class = Decidim.key_generator_hash_digest_class if Decidim.key_generator_hash_digest_class.present?
+      end
+
       initializer "decidim.locales" do |app|
         app.config.i18n.fallbacks = true
       end

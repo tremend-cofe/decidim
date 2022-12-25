@@ -191,6 +191,11 @@ module Decidim
     nil
   end
 
+  # This configuration allows you to set a custom encryptor since the older versions of Rails is Using SHA1, yet
+  # Rails 7 is using SHA256. You may encounter issues on the encrypted attributes from the database.
+  config_accessor :key_generator_hash_digest_class do
+    nil
+  end
   # Exposes a configuration option: The application name String.
   config_accessor :application_name
 

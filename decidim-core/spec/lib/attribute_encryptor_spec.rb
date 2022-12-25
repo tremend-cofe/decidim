@@ -62,7 +62,7 @@ module Decidim
       end
 
       context "when the passed value is a correctly encrypted string" do
-        let(:value) { "+7Mv1nXW5obXnkaDUW+9Bqg=--qgiVKMTttTRKwd6f--Bx1yDcuZYwNv7Oj55MnE3g==" }
+        let(:value) { "o1ugJChodKMGI/m9rwiNiS4=--l6SAC0P3IHHvH2QS--vFIWDv2JAFSHTepxQ4qOxg==" }
 
         before do
           # Temporarily change the secret so that it matches the secret used
