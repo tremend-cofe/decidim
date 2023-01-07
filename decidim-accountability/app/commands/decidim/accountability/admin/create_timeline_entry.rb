@@ -6,9 +6,9 @@ module Decidim
       # This command is executed when the user creates a TimelineEntry
       # for a Result from the admin panel.
       class CreateTimelineEntry < Decidim::Command
-        def initialize(form, user)
+        def initialize(form)
           @form = form
-          @user = user
+          @user = form.current_user
         end
 
         # Creates the timeline_entry if valid.

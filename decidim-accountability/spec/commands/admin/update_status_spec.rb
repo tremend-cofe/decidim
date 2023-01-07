@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim::Accountability
   describe Admin::UpdateStatus do
-    subject { described_class.new(form, status, user) }
+    subject { described_class.new(form, status) }
 
     let(:organization) { create :organization, available_locales: [:en] }
     let(:user) { create :user, organization: }
@@ -24,7 +24,8 @@ module Decidim::Accountability
         key:,
         name: { en: name },
         description: { en: description },
-        progress:
+        progress:,
+        current_user: user
       )
     end
     let(:invalid) { false }

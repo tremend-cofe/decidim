@@ -10,10 +10,10 @@ module Decidim
         #
         # form - The form from which to get the data.
         # status - The current instance of the status to be updated.
-        def initialize(form, status, user)
+        def initialize(form, status)
           @form = form
           @status = status
-          @user = user
+          @user = form.current_user
         end
 
         # Updates the status if valid.

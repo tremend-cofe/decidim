@@ -10,10 +10,10 @@ module Decidim
         #
         # form - The form from which to get the data.
         # timeline_entry - The current instance of the timeline_entry to be updated.
-        def initialize(form, timeline_entry, user)
+        def initialize(form, timeline_entry)
           @form = form
           @timeline_entry = timeline_entry
-          @user = user
+          @user = form.current_user
         end
 
         # Updates the timeline_entry if valid.

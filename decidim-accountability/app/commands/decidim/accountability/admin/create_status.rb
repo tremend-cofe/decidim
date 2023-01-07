@@ -6,9 +6,9 @@ module Decidim
       # This command is executed when the user creates a Status from the admin
       # panel.
       class CreateStatus < Decidim::Command
-        def initialize(form, user)
+        def initialize(form)
           @form = form
-          @user = user
+          @user = form.current_user
         end
 
         # Creates the status if valid.
