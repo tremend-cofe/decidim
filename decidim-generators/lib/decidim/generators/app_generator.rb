@@ -96,7 +96,7 @@ module Decidim
       def webpacker_gemfile_entry
         return [] if options[:skip_javascript]
 
-        GemfileEntry.version "shakapacker", "~> 5.0", "Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker"
+        GemfileEntry.version "shakapacker", "~> 6.5", "Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker"
       end
 
       def database_yml
