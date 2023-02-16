@@ -38,8 +38,8 @@ namespace :decidim do
       system! "npm uninstall #{webpacker_packages.join(" ")}"
 
       # Modify the webpack binstubs
-      add_binstub_load_path "bin/webpack"
-      add_binstub_load_path "bin/webpack-dev-server"
+      add_binstub_load_path "bin/webpacker"
+      add_binstub_load_path "bin/webpacker-dev-server"
 
       # Add the Browserslist configuration to the project
       add_decidim_browserslist_configuration

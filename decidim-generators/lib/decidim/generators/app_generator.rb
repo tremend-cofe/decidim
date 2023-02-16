@@ -93,6 +93,12 @@ module Decidim
                              default: false,
                              desc: "Don't add Puma development SSL configuration options"
 
+      def webpacker_gemfile_entry
+        return [] if options[:skip_javascript]
+
+        GemfileEntry.version "shakapacker", "~> 5.0", "Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker"
+      end
+
       def database_yml
         template "database.yml.erb", "config/database.yml", force: true
       end

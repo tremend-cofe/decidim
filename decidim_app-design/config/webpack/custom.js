@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const path = require("path");
-const { config } = require("@rails/webpacker");
+const { config } = require("shakapacker");
 
 module.exports = {
   module: {
