@@ -24,10 +24,8 @@ describe "Accessibility tool", type: :system do
         <html lang="en">
         <head>
           <title>Accessibility Test</title>
-          #{stylesheet_pack_tag "decidim_core"}
-          #{javascript_pack_tag "decidim_core", defer: false}
-          #{stylesheet_pack_tag "decidim_dev"}
-          #{javascript_pack_tag "decidim_dev", defer: false}
+          #{stylesheet_pack_tag "decidim_core", "decidim_dev" }
+          #{javascript_pack_tag "decidim_core", "decidim_dev", defer: false}
         </head>
         <body>
           #{document_inner}
