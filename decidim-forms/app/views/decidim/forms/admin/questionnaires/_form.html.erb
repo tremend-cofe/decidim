@@ -117,7 +117,7 @@
   <% end %>
 </div>
 
-<%= javascript_pack_tag "decidim_forms_admin", defer: false %>
+<%= append_javascript_pack_tag "decidim_forms_admin", defer: false %>
 
 <% if questionnaire.questions_editable? %>
   <script>
