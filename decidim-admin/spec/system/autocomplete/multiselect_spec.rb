@@ -53,7 +53,7 @@ describe "Autocomplete multiselect", type: :system do
           <head>
             <title>Autocomplete multiselect Test</title>
             #{stylesheet_pack_tag "decidim_admin"}
-            #{javascript_pack_tag "decidim_admin"}
+            #{append_javascript_pack_tag "decidim_admin"}
             #{head_extra}
           </head>
           <body>
