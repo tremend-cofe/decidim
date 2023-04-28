@@ -7,7 +7,6 @@ require "action_view/railtie"
 require "pg"
 require "redis"
 
-require "acts_as_list"
 require "devise"
 require "devise-i18n"
 require "devise_invitable"

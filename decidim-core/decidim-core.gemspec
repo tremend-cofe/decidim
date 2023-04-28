@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "Rakefile", "README.md"]
 
   s.add_dependency "active_link_to", "~> 1.0"
-  s.add_dependency "acts_as_list", "~> 1.0"
   s.add_dependency "batch-loader", "~> 1.2"
   s.add_dependency "browser", "~> 2.7"
   s.add_dependency "carrierwave", "~> 2.2.1"

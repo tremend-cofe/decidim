@@ -112,8 +112,6 @@ module Decidim
           .where(decidim_proposals_valuation_assignments: { valuator_role_id: valuator_roles })
       end
 
-      acts_as_list scope: :decidim_component_id
-
       searchable_fields({
                           scope_id: :decidim_scope_id,
                           participatory_space: { component: :participatory_space },
