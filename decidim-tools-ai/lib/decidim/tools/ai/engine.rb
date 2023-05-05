@@ -8,15 +8,17 @@ module Decidim
 
         initializer "decidim_tools_ai.create_overrides" do
           Rails.application.reloader.to_prepare do
-            Decidim::Meetings::CreateMeeting.prepend Decidim::Tools::Ai::Overrides::CreateMeeting
-            Decidim::Meetings::UpdateMeeting.prepend Decidim::Tools::Ai::Overrides::UpdateMeeting
-            Decidim::Comments::CreateComment.prepend Decidim::Tools::Ai::Overrides::CreateComment
-            Decidim::Comments::UpdateComment.prepend Decidim::Tools::Ai::Overrides::UpdateComment
-            Decidim::Proposals::CreateCollaborativeDraft.prepend Decidim::Tools::Ai::Overrides::CreateCollaborativeDraft
-            Decidim::Proposals::UpdateCollaborativeDraft.prepend Decidim::Tools::Ai::Overrides::UpdateCollaborativeDraft
-            Decidim::Proposals::CreateProposal.prepend Decidim::Tools::Ai::Overrides::CreateProposal
-            Decidim::Proposals::UpdateProposal.prepend Decidim::Tools::Ai::Overrides::UpdateProposal
-            Decidim::Admin::BlockUser.prepend Decidim::Tools::Ai::Overrides::BlockUser
+            if Decidim::Tools::Ai.enable_override
+              Decidim::Meetings::CreateMeeting.prepend Decidim::Tools::Ai::Overrides::CreateMeeting
+              Decidim::Meetings::UpdateMeeting.prepend Decidim::Tools::Ai::Overrides::UpdateMeeting
+              Decidim::Comments::CreateComment.prepend Decidim::Tools::Ai::Overrides::CreateComment
+              Decidim::Comments::UpdateComment.prepend Decidim::Tools::Ai::Overrides::UpdateComment
+              Decidim::Proposals::CreateCollaborativeDraft.prepend Decidim::Tools::Ai::Overrides::CreateCollaborativeDraft
+              Decidim::Proposals::UpdateCollaborativeDraft.prepend Decidim::Tools::Ai::Overrides::UpdateCollaborativeDraft
+              Decidim::Proposals::CreateProposal.prepend Decidim::Tools::Ai::Overrides::CreateProposal
+              Decidim::Proposals::UpdateProposal.prepend Decidim::Tools::Ai::Overrides::UpdateProposal
+              Decidim::Admin::BlockUser.prepend Decidim::Tools::Ai::Overrides::BlockUser
+            end
           end
         end
 

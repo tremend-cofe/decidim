@@ -23,7 +23,7 @@
           <tbody>
           <% collection.each do |word| %>
             <tr data-keyword-id="<%= word.id %>">
-              <td><%= link_to_if allowed_to?(:update, :stopwords, word: word) , word.word, edit_stopword_path(word) %></td>
+              <td><%= link_to_if allowed_to?(:update, :stopwords, word:) , word.word, edit_stopword_path(word) %></td>
               <td><%= l word.created_at, format: :long %></td>
               <td class="table-list__actions">
                 <% if allowed_to?(:update, :stopwords, word: word) %>

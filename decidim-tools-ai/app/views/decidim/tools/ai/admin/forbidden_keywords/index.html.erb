@@ -24,7 +24,7 @@
           <tbody>
           <% collection.each do |word| %>
             <tr data-keyword-id="<%= word.id %>">
-              <td><%= link_to_if allowed_to?(:update, :forbidden_keywords, word: word) , word.word, edit_forbidden_keyword_path(word) %></td>
+              <td><%= link_to_if allowed_to?(:update, :forbidden_keywords, word:) , word.word, edit_forbidden_keyword_path(word) %></td>
               <td><%= l word.created_at, format: :long %></td>
               <td class="table-list__actions">
                 <% if allowed_to?(:update, :forbidden_keywords, word: word) %>
