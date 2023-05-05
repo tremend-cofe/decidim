@@ -22,9 +22,9 @@ module Decidim
       def call
         return broadcast(:invalid) unless hideable?
 
-        hide!
-
-        send_hide_notification_to_author
+        tool = Decidim::ModerationTools.new(@reportable, @current_user)
+        tool.hide!
+        tool.send_notification_to_author
         dispatch_system_event
 
         broadcast(:ok, @reportable)
@@ -41,38 +41,6 @@ module Decidim
 
       def hideable?
         !@reportable.hidden? && @reportable.reported?
-      end
-
-      def hide!
-        Decidim.traceability.perform_action!(
-          "hide",
-          @reportable.moderation,
-          @current_user,
-          extra: {
-            reportable_type: @reportable.class.name
-          }
-        ) do
-          @reportable.moderation.update!(hidden_at: Time.current)
-          @reportable.try(:touch)
-        end
-      end
-
-      def send_hide_notification_to_author
-        data = {
-          event: "decidim.events.reports.resource_hidden",
-          event_class: Decidim::ResourceHiddenEvent,
-          resource: @reportable,
-          extra: {
-            report_reasons:
-          },
-          affected_users: @reportable.try(:authors) || [@reportable.try(:normalized_author)]
-        }
-
-        Decidim::EventsManager.publish(**data)
-      end
-
-      def report_reasons
-        @reportable.moderation.reports.pluck(:reason).uniq
       end
     end
   end

@@ -178,7 +178,7 @@ module Decidim::Meetings
         subject.call
       end
 
-      it "doesn't schedule an upcoming meeting notification if start time is in the past" do
+      it "does not schedule an upcoming meeting notification if start time is in the past" do
         dummy_meeting.start_time = 2.days.ago
         allow(Decidim.traceability)
           .to receive(:create!)
