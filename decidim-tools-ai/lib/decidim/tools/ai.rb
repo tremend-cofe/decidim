@@ -21,6 +21,10 @@ module Decidim
         0.5
       end
 
+      config_accessor :spam_classifier do
+        "Decidim::Tools::Ai::SpamContent::Classifier"
+      end
+
       config_accessor :enable_override do
         false
       end

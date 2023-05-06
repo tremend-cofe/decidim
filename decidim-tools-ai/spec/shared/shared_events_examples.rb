@@ -122,7 +122,7 @@ shared_examples "debates spam analysis" do
 
   context "when spam content is added" do
     let(:description) { "Claim your prize today so you can win." }
-    let(:title) { "You're the Lucky winner" }
+    let(:title) { "You are the Lucky winner" }
 
     include_examples "content submitted to spam analysis" do
       let(:queue_size) { 1 }
@@ -171,7 +171,7 @@ shared_examples "meetings spam analysis" do
 
   context "when spam content is added" do
     let(:description) { "Claim your prize today so you can win." }
-    let(:title) { "You're the Lucky winner" }
+    let(:title) { "You are the Lucky winner" }
 
     include_examples "content submitted to spam analysis" do
       let(:queue_size) { 1 }
@@ -220,7 +220,7 @@ shared_examples "proposal spam analysis" do
 
   context "when spam content is added" do
     let(:body) { "Claim your prize today so you can win." }
-    let(:title) { "You're the Lucky winner" }
+    let(:title) { "You are the Lucky winner" }
 
     include_examples "content submitted to spam analysis" do
       let(:queue_size) { 1 }
@@ -289,7 +289,7 @@ shared_examples "Collaborative draft spam analysis" do
 
   context "when spam content is added" do
     let(:body) { "Claim your prize today so you can win." }
-    let(:title) { "You're the Lucky winner" }
+    let(:title) { "You are the Lucky winner" }
 
     include_examples "content submitted to spam analysis" do
       let(:queue_size) { 1 }

@@ -26,7 +26,7 @@ module Decidim
         private
 
         def classifier
-          @classifier ||= Decidim::Tools::Ai::SpamContent::Classifier.new(@author.organization)
+          @classifier ||= Decidim::Tools::Ai.spam_classifier.constantize.new(@author.organization)
         end
 
         def form

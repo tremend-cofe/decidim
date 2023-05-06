@@ -14,7 +14,8 @@ describe "User is being blocked by admin", type: :system do
       user: user_to_block,
       current_user:,
       justification: "justification for blocking the user",
-      valid?: true
+      valid?: true,
+      hide?: true
     )
   end
 
