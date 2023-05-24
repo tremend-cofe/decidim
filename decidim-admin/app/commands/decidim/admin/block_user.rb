@@ -20,11 +20,13 @@ module Decidim
         return broadcast(:invalid) unless form.valid?
 
         transaction do
-          find_or_create_moderation!
-          register_justification!
-          block!
-          notify_user!
-          dispatch_system_event
+          event_arguments = { resource: form.user, author: form.current_user, locale: I18n.locale }
+          with_events "decidim.system.core.user.blocked", **event_arguments do
+            find_or_create_moderation!
+            register_justification!
+            block!
+            notify_user!
+          end
         end
         publish_hide_event if form.hide?
 
@@ -46,15 +48,6 @@ module Decidim
 
       def find_or_create_moderation!
         Decidim::UserModeration.find_or_create_by!(user: form.user)
-      end
-
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.core.user.blocked",
-          resource: form.user,
-          author: form.current_user,
-          locale: I18n.locale
-        )
       end
 
       def register_justification!

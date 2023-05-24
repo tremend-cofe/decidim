@@ -40,5 +40,11 @@ module Decidim
     def respond_to_missing?(method_name, include_private = false)
       @caller.respond_to?(method_name, include_private)
     end
+
+    def with_events(name, *args)
+      ActiveSupport::Notifications.publish("#{name}:before", *args)
+      yield
+      ActiveSupport::Notifications.publish("#{name}:after", *args)
+    end
   end
 end
