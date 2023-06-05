@@ -27,9 +27,10 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
         return broadcast(:invalid) unless collaborative_draft.editable_by?(current_user)
 
-        transaction do
-          update_collaborative_draft
-          dispatch_system_event
+        with_event_around do
+          transaction do
+            update_collaborative_draft
+          end
         end
 
         broadcast(:ok, collaborative_draft)
@@ -39,13 +40,12 @@ module Decidim
 
       attr_reader :form, :collaborative_draft, :current_user
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.proposals.collaborative_draft.created",
+      def event_arguments
+        {
           resource: collaborative_draft,
           author: current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def update_collaborative_draft

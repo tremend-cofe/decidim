@@ -15,11 +15,12 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        transaction do
-          create_meeting!
-          schedule_upcoming_meeting_notification
-          send_notification
-          dispatch_system_event
+        with_event_after do
+          transaction do
+            create_meeting!
+            schedule_upcoming_meeting_notification
+            send_notification
+          end
         end
 
         create_follow_form_resource(form.current_user)
@@ -30,13 +31,12 @@ module Decidim
 
       attr_reader :meeting, :form
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.meetings.meeting.created",
+      def event_arguments
+        {
           resource: meeting,
           author: form.current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def create_meeting!

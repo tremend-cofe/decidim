@@ -24,8 +24,9 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid? || !comment.authored_by?(current_user)
 
-        update_comment
-        dispatch_system_event
+        with_event_around do
+          update_comment
+        end
 
         broadcast(:ok)
       end
@@ -34,13 +35,12 @@ module Decidim
 
       attr_reader :form, :comment, :current_user
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.comments.comment.updated",
+      def event_arguments
+        {
           resource: comment,
           author: current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def update_comment

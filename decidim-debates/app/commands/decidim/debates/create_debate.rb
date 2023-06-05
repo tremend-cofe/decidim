@@ -15,9 +15,10 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        transaction do
-          create_debate
-          dispatch_system_event
+        with_event_after do
+          transaction do
+            create_debate
+          end
           send_notification_to_author_followers
           send_notification_to_space_followers
         end
@@ -30,13 +31,12 @@ module Decidim
 
       attr_reader :debate, :form
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.debates.debate.created",
+      def event_arguments
+        {
           resource: debate,
           author: form.current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def create_debate

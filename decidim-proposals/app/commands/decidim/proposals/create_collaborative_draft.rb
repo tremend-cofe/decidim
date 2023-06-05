@@ -31,10 +31,11 @@ module Decidim
           return broadcast(:invalid) if attachments_invalid?
         end
 
-        transaction do
-          create_collaborative_draft
-          dispatch_system_event
-          create_attachments if process_attachments?
+        with_event_after do
+          transaction do
+            create_collaborative_draft
+            create_attachments if process_attachments?
+          end
         end
 
         broadcast(:ok, collaborative_draft)
@@ -44,13 +45,12 @@ module Decidim
 
       attr_reader :form, :collaborative_draft, :attachment
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.proposals.collaborative_draft.created",
+      def event_arguments
+        {
           resource: collaborative_draft,
           author: @form.current_user,
           locale: I18n.locale
-        )
+        }
       end
 
       def create_collaborative_draft

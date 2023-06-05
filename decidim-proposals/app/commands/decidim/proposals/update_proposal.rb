@@ -39,18 +39,19 @@ module Decidim
           return broadcast(:invalid) if gallery_invalid?
         end
 
-        transaction do
-          if @proposal.draft?
-            update_draft
-          else
-            update_proposal
-          end
-          dispatch_system_event
-          photo_cleanup!
-          document_cleanup!
+        with_event_around do
+          transaction do
+            if @proposal.draft?
+              update_draft
+            else
+              update_proposal
+            end
+            photo_cleanup!
+            document_cleanup!
 
-          create_gallery if process_gallery?
-          create_attachments(first_weight: first_attachment_weight) if process_attachments?
+            create_gallery if process_gallery?
+            create_attachments(first_weight: first_attachment_weight) if process_attachments?
+          end
         end
 
         broadcast(:ok, proposal)
@@ -60,13 +61,12 @@ module Decidim
 
       attr_reader :form, :proposal, :current_user, :attachment
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.proposals.proposal.updated",
+      def event_arguments
+        {
           resource: proposal,
           author: current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def invalid?

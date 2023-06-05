@@ -21,8 +21,10 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
         return broadcast(:invalid) unless form.debate.editable_by?(form.current_user)
 
-        update_debate
-        dispatch_system_event
+        with_event_around do
+          update_debate
+        end
+
         broadcast(:ok, @debate)
       end
 
@@ -30,13 +32,12 @@ module Decidim
 
       attr_reader :form, :debate
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.debates.debate.updated",
+      def event_arguments
+        {
           resource: debate,
           author: form.current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def update_debate

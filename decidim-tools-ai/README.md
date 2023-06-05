@@ -5,7 +5,7 @@
 ## Usage
 
 The Decidim::Tools::AI is a library that aims to privide Artificial Inteligence tools for Decidim. This plugin has been initially developed aiming to analyze the content and provide spam classification using Naive Bayes algorithm.
-In the future it may receive other improvements like recommendations, Natural Language Processing (text summarization, feature extraction etc)
+All AI related functionality provided by Decidim should be included in this same module.
 
 ## Installation
 

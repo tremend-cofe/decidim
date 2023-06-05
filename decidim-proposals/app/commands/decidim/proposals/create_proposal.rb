@@ -31,9 +31,10 @@ module Decidim
           return broadcast(:invalid)
         end
 
-        transaction do
-          create_proposal
-          dispatch_system_event
+        with_event_around do
+          transaction do
+            create_proposal
+          end
         end
 
         broadcast(:ok, proposal)
@@ -43,13 +44,12 @@ module Decidim
 
       attr_reader :form, :proposal, :attachment
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.proposals.proposal.created",
+      def event_arguments
+        {
           resource: proposal,
           author: @current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       # Prevent PaperTrail from creating an additional version

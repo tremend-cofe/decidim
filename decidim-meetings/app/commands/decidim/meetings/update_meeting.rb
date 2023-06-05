@@ -22,11 +22,12 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        transaction do
-          update_meeting!
-          send_notification if should_notify_followers?
-          schedule_upcoming_meeting_notification if start_time_changed?
-          dispatch_system_event if content_changed?
+        with_event_around do
+          transaction do
+            update_meeting!
+            send_notification if should_notify_followers?
+            schedule_upcoming_meeting_notification if start_time_changed?
+          end
         end
 
         broadcast(:ok, meeting)
@@ -36,13 +37,12 @@ module Decidim
 
       attr_reader :form, :current_user, :meeting
 
-      def dispatch_system_event
-        ActiveSupport::Notifications.publish(
-          "decidim.system.meetings.meeting.updated",
+      def event_arguments
+        {
           resource: meeting,
           author: current_user,
-          locale: I18n.locale
-        )
+          locale:
+        }
       end
 
       def update_meeting!

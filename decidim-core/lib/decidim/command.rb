@@ -8,6 +8,7 @@
 module Decidim
   class Command
     include ::Wisper::Publisher
+    delegate :locale, to: :I18n
 
     def self.call(*args, **kwargs, &)
       event_recorder = Decidim::EventRecorder.new
@@ -41,10 +42,30 @@ module Decidim
       @caller.respond_to?(method_name, include_private)
     end
 
-    def with_events(name, *args)
-      ActiveSupport::Notifications.publish("#{name}:before", *args)
+    def with_event_before
+      ActiveSupport::Notifications.subscribe("#{event_namespace}:before", **event_arguments)
       yield
-      ActiveSupport::Notifications.publish("#{name}:after", *args)
+    end
+
+    def with_event_after
+      yield
+      ActiveSupport::Notifications.subscribe("#{event_namespace}:after", **event_arguments)
+    end
+
+    def with_event_around
+      ActiveSupport::Notifications.publish("#{event_namespace}:before", **event_arguments)
+      yield
+      ActiveSupport::Notifications.publish("#{event_namespace}:after", **event_arguments)
+    end
+
+    private
+
+    def event_arguments
+      raise "#{self.class} must implement #event_arguments"
+    end
+
+    def event_namespace
+      @event_namespace ||= self.class.name.to_s.underscore.parameterize(separator: ".")
     end
   end
 end

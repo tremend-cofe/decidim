@@ -19,9 +19,8 @@ module Decidim
       def call
         return broadcast(:invalid) unless form.valid?
 
-        transaction do
-          event_arguments = { resource: form.user, author: form.current_user, locale: I18n.locale }
-          with_events "decidim.system.core.user.blocked", **event_arguments do
+        with_event_around do
+          transaction do
             find_or_create_moderation!
             register_justification!
             block!
@@ -36,6 +35,14 @@ module Decidim
       private
 
       attr_reader :form, :current_blocking
+
+      def event_arguments
+        {
+          resource: form.user,
+          author: form.current_user,
+          locale:
+        }
+      end
 
       def publish_hide_event
         event_name = "decidim.system.events.hide_user_created_content"
