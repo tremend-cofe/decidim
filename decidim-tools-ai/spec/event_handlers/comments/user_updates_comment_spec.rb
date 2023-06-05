@@ -21,6 +21,6 @@ describe "User updates comment", type: :system do
   let(:command) { Decidim::Comments::UpdateComment.new(comment, author, form) }
 
   include_examples "comments spam analysis" do
-    let(:comment) { create :comment, author:, commentable: }
+    let(:comment) { create(:comment, author:, commentable:) }
   end
 end

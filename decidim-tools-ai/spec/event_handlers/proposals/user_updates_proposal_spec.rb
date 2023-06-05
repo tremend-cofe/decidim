@@ -27,13 +27,13 @@ describe "User updates proposal", type: :system do
 
   context "when proposal is published" do
     include_examples "proposal spam analysis" do
-      let!(:proposal) { create :proposal, :published, component:, users: [author], title: "Some proposal that is not blocked", body: "The body for the proposal." }
+      let!(:proposal) { create(:proposal, :published, component:, users: [author], title: "Some proposal that is not blocked", body: "The body for the proposal.") }
     end
   end
 
   context "when proposal is draft" do
     include_examples "proposal spam analysis" do
-      let!(:proposal) { create :proposal, :draft, component:, users: [author], title: "Some draft that is not blocked", body: "The body for the proposal." }
+      let!(:proposal) { create(:proposal, :draft, component:, users: [author], title: "Some draft that is not blocked", body: "The body for the proposal.") }
     end
   end
 end

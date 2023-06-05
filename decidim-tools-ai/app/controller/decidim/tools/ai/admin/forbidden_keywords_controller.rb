@@ -10,7 +10,7 @@ module Decidim
           helper_method :collection, :word
 
           def update
-            enforce_permission_to :create, :forbidden_keywords, word: word
+            enforce_permission_to(:create, :forbidden_keywords, word:)
 
             @form = form(Decidim::Tools::Ai::Admin::ForbiddenKeywordForm).from_params(params)
 
@@ -28,12 +28,12 @@ module Decidim
           end
 
           def edit
-            enforce_permission_to :update, :forbidden_keywords, word: word
+            enforce_permission_to(:update, :forbidden_keywords, word:)
             @form = form(Decidim::Tools::Ai::Admin::ForbiddenKeywordForm).from_model(word)
           end
 
           def destroy
-            enforce_permission_to :destroy, :forbidden_keywords, word: word
+            enforce_permission_to(:destroy, :forbidden_keywords, word:)
 
             DestroyForbiddenKeyword.call(word, current_user) do
               on(:ok) do

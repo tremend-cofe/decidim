@@ -10,7 +10,7 @@ module Decidim
           helper_method :collection, :word
 
           def update
-            enforce_permission_to :create, :stopwords, word: word
+            enforce_permission_to(:create, :stopwords, word:)
 
             @form = form(Decidim::Tools::Ai::Admin::StopwordForm).from_params(params)
 
@@ -28,12 +28,12 @@ module Decidim
           end
 
           def edit
-            enforce_permission_to :update, :stopwords, word: word
+            enforce_permission_to(:update, :stopwords, word:)
             @form = form(Decidim::Tools::Ai::Admin::StopwordForm).from_model(word)
           end
 
           def destroy
-            enforce_permission_to :destroy, :stopwords, word: word
+            enforce_permission_to(:destroy, :stopwords, word:)
 
             DestroyStopword.call(word, current_user) do
               on(:ok) do

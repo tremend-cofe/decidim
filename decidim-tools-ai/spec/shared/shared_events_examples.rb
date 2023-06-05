@@ -52,7 +52,7 @@ shared_examples "comments spam analysis" do
   let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
   let(:participatory_process) { create(:participatory_process, organization:) }
   let(:component) { create(:component, participatory_space: participatory_process) }
-  let(:dummy_resource) { create :dummy_resource, component: }
+  let(:dummy_resource) { create(:dummy_resource, component:) }
   let(:commentable) { dummy_resource }
   let(:author) { create(:user, organization:) }
   let!(:unreported_resource) { create(:comment, author:, commentable:, body: { en: "This is a very good ideea! " }) }
@@ -96,13 +96,13 @@ shared_examples "comments spam analysis" do
 end
 
 shared_examples "debates spam analysis" do
-  let(:organization) { create :organization, available_locales: [:en] }
-  let(:participatory_process) { create :participatory_process, organization: }
-  let(:component) { create :component, participatory_space: participatory_process, manifest_name: "debates" }
-  let(:author) { create :user, organization: }
+  let(:organization) { create(:organization, available_locales: [:en]) }
+  let(:participatory_process) { create(:participatory_process, organization:) }
+  let(:component) { create(:component, participatory_space: participatory_process, manifest_name: "debates") }
+  let(:author) { create(:user, organization:) }
   let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
-  let(:scope) { create :scope, organization: }
-  let(:category) { create :category, participatory_space: participatory_process }
+  let(:scope) { create(:scope, organization:) }
+  let(:category) { create(:category, participatory_space: participatory_process) }
 
   let!(:unreported_resource) { create(:debate, component:, author:, title: { en: "This is a very good ideea!" }, description: { en: "This is a very good ideea! " }) }
   let!(:reported_resource) { create(:debate, component:, author:, title: { en: "Winner, Blody Winner" }, description: { en: "You are the lucky winner! Claim your holiday prize." }) }
@@ -148,11 +148,11 @@ shared_examples "debates spam analysis" do
 end
 
 shared_examples "meetings spam analysis" do
-  let(:organization) { create :organization, available_locales: [:en] }
+  let(:organization) { create(:organization, available_locales: [:en]) }
   let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
-  let(:participatory_process) { create :participatory_process, organization: }
-  let(:author) { create :user, :admin, :confirmed, organization: }
-  let(:component) { create :meeting_component, participatory_space: participatory_process }
+  let(:participatory_process) { create(:participatory_process, organization:) }
+  let(:author) { create(:user, :admin, :confirmed, organization:) }
+  let(:component) { create(:meeting_component, participatory_space: participatory_process) }
   let!(:unreported_resource) { create(:meeting, component:, author:, title: { en: "This is a very good ideea!" }, description: { en: "This is a very good ideea! " }) }
   let!(:reported_resource) { create(:meeting, component:, author:, title: { en: "Winner, Blody Winner" }, description: { en: "You are the lucky winner! Claim your holiday prize." }) }
   let(:moderation) do

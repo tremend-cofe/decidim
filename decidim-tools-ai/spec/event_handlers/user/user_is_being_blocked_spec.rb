@@ -5,9 +5,9 @@ require "spec_helper"
 describe "User is being blocked by admin", type: :system do
   subject { Decidim::Admin::BlockUser.new(form) }
 
-  let(:organization) { create :organization }
-  let(:user_to_block) { create :user, :confirmed, organization: }
-  let(:current_user) { create :user, :admin, organization: }
+  let(:organization) { create(:organization) }
+  let(:user_to_block) { create(:user, :confirmed, organization:) }
+  let(:current_user) { create(:user, :admin, organization:) }
 
   let(:form) do
     double(

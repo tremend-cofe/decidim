@@ -22,9 +22,9 @@ describe "User updates meeting", type: :system do
 
   include_examples "debates spam analysis" do
     let!(:debate) do
-      create :debate, author:, component:,
+      create(:debate, author:, component:,
                       title: { en: "Some proposal that is not blocked" },
-                      description: { en: "The body for the meeting." }
+                      description: { en: "The body for the meeting." })
     end
   end
 end
