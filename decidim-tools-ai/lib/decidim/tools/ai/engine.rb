@@ -11,7 +11,7 @@ module Decidim
             Decidim::EventsManager.subscribe(/^decidim\.events\.users\.profile_updated$/) do |_event_name, data|
               Decidim::Tools::Ai::UserSpamAnalyzerJob.perform_later(data[:resource])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.core\.user\.blocked:after$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.admin\.block_user:after$/) do |_event_name, data|
               Decidim::Tools::Ai::TrainUserDataJob.perform_later(data[:resource])
             end
           end
@@ -31,10 +31,10 @@ module Decidim
 
         initializer "decidim_tools_ai.subscribe_comments_events" do
           config.to_prepare do
-            Decidim::EventsManager.subscribe(/^decidim\.system\.comments\.comment\.created$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim.comments.create_comment:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.comments\.comment\.updated$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim.comments.update_comment:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body])
             end
           end
@@ -42,10 +42,10 @@ module Decidim
 
         initializer "decidim_tools_ai.subscribe_meeting_events" do
           config.to_prepare do
-            Decidim::EventsManager.subscribe(/^decidim\.system\.meetings\.meeting\.created$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.meetings\.create_meeting:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:description, :title, :location_hints, :registration_terms])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.meetings\.meeting\.updated$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.meetings\.update_meeting:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale],
                                                                        [:description, :title, :location_hints, :registration_terms, :closing_report])
             end
@@ -54,10 +54,10 @@ module Decidim
 
         initializer "decidim_tools_ai.subscribe_debate_events" do
           config.to_prepare do
-            Decidim::EventsManager.subscribe(/^decidim\.system\.debates\.debate\.created$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.debates\.create_debate:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:description, :title])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.debates\.debate\.updated$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.debates\.update_debate:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:description, :title])
             end
           end
@@ -65,16 +65,16 @@ module Decidim
 
         initializer "decidim_tools_ai.subscribe_proposals_events" do
           config.to_prepare do
-            Decidim::EventsManager.subscribe(/^decidim\.system\.proposals\.proposal\.created$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.proposals\.create_proposal:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body, :title])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.proposals\.proposal\.updated$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.proposals\.update_proposal:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body, :title])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.proposals\.collaborative_draft\.created$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.proposals\.create_collaborative_draft:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body, :title])
             end
-            Decidim::EventsManager.subscribe(/^decidim\.system\.proposals\.collaborative_draft\.updated$/) do |_event_name, data|
+            Decidim::EventsManager.subscribe(/^decidim\.proposals\.update_collaborative_draft:after$/) do |_event_name, data|
               Decidim::Tools::Ai::GenericSpamAnalyzerJob.perform_later(data[:resource], data[:author], data[:locale], [:body, :title])
             end
           end
