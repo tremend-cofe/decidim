@@ -6,6 +6,7 @@ module Decidim
       # Controller that allows managing assemblies.
       #
       class AssembliesController < Decidim::Assemblies::Admin::ApplicationController
+        include Concerns::AssemblyAdmin
         include Decidim::Assemblies::Admin::Filterable
         helper_method :current_assembly, :parent_assembly, :current_participatory_space
         layout "decidim/admin/assemblies"
@@ -70,17 +71,7 @@ module Decidim
 
         private
 
-        def collection
-          @collection ||= OrganizationAssemblies.new(current_user.organization).query
-        end
-
-        def current_assembly
-          @current_assembly ||= collection.where(slug: params[:slug]).or(
-            collection.where(id: params[:slug])
-          ).first
-        end
-
-        alias current_participatory_space current_assembly
+        alias collection organization_assemblies
 
         def parent_assembly
           @parent_assembly ||= collection.find_by(id: ransack_params[:parent_id_eq])

@@ -32,7 +32,7 @@ module Decidim
             alias_method :current_participatory_space, :current_assembly
 
             def organization_assemblies
-              @organization_assemblies ||= OrganizationAssemblies.new(current_organization).query
+              @organization_assemblies ||= OrganizationAssemblies.new(current_user.organization).query
             end
 
             def permissions_context

@@ -4,6 +4,8 @@ module Decidim
   module Assemblies
     module Admin
       class AssemblyImportsController < Decidim::Assemblies::Admin::ApplicationController
+        include Concerns::AssemblyAdmin
+
         def new
           enforce_permission_to :import, :assembly
           @form = form(AssemblyImportForm).instance
