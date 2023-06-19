@@ -15,7 +15,7 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        transaction do
+        with_events(with_transaction: true, before: false) do
           create_debate
           send_notification_to_author_followers
           send_notification_to_space_followers
@@ -28,6 +28,14 @@ module Decidim
       private
 
       attr_reader :debate, :form
+
+      def event_arguments
+        {
+          resource: debate,
+          current_user: form.current_user,
+          locale:
+        }
+      end
 
       def create_debate
         parsed_title = Decidim::ContentProcessor.parse_with_processor(:hashtag, form.title, current_organization: form.current_organization).rewrite

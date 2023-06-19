@@ -61,6 +61,13 @@ describe Decidim::Debates::UpdateDebate do
   end
 
   context "when everything is ok" do
+    it_behaves_like "fires an ActiveSupport::Notification event", "decidim.debates.update_debate:before" do
+      let(:command) { subject }
+    end
+    it_behaves_like "fires an ActiveSupport::Notification event", "decidim.debates.update_debate:after" do
+      let(:command) { subject }
+    end
+
     it "updates the debate" do
       expect do
         subject.call
