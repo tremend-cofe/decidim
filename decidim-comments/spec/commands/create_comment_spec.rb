@@ -43,6 +43,9 @@ module Decidim
         end
 
         describe "when the form is valid and the nesting is not too deep" do
+          it_behaves_like "does not fire an ActiveSupport::Notification event", "decidim.comments.create_comment:before"
+          it_behaves_like "fires an ActiveSupport::Notification event", "decidim.comments.create_comment:after"
+
           it "broadcasts ok" do
             expect { command.call }.to broadcast(:ok)
           end

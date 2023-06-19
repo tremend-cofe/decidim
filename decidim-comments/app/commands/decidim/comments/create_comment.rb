@@ -21,14 +21,24 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        create_comment
+        with_events(before: false) do
+          create_comment
+        end
 
         broadcast(:ok, comment)
       end
 
       private
 
-      attr_reader :form, :comment
+      attr_reader :form, :comment, :author
+
+      def event_arguments
+        {
+          resource: comment,
+          current_user: author,
+          locale:
+        }
+      end
 
       def create_comment
         parsed = Decidim::ContentProcessor.parse(form.body, current_organization: form.current_organization)
