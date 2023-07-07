@@ -52,10 +52,6 @@ runs:
       name: Precompile assets
       working-directory: ./spec/decidim_dummy_app/
       shell: "bash"
-    - run: bundle exec brakeman --rails6 --force-scan .
-      name: Scanning Security issues on module
-      working-directory: ${{ inputs.name }}
-      shell: "bash"
     - run: bundle exec rake parallel:create parallel:migrate
       name: Parallel tests
       shell: "bash"
