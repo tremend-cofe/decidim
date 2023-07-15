@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "decidim-accountability", Decidim.version
   s.add_dependency "decidim-admin", Decidim.version
+  s.add_dependency "decidim-ai", Decidim.version
   s.add_dependency "decidim-api", Decidim.version
   s.add_dependency "decidim-assemblies", Decidim.version
   s.add_dependency "decidim-blogs", Decidim.version

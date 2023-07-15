@@ -10,6 +10,7 @@ gem "decidim-consultations", path: "."
 gem "decidim-elections", path: "."
 gem "decidim-initiatives", path: "."
 gem "decidim-templates", path: "."
+gem "decidim-ai", path: "."
 
 gem "bootsnap", "~> 1.4"
 
