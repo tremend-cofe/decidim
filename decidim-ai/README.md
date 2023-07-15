@@ -1,10 +1,10 @@
-# Decidim::Tools-ai
+# Decidim-ai
 
 .
 
 ## Usage
 
-The Decidim::Tools::AI is a library that aims to privide Artificial Inteligence tools for Decidim. This plugin has been initially developed aiming to analyze the content and provide spam classification using Naive Bayes algorithm.
+The Decidim::AI is a library that aims to privide Artificial Inteligence tools for Decidim. This plugin has been initially developed aiming to analyze the content and provide spam classification using Naive Bayes algorithm.
 All AI related functionality provided by Decidim should be included in this same module.
 
 ## Installation
@@ -28,8 +28,8 @@ After that, add an initializer file inside your project, having the following co
 ```ruby
 # config/initializers/decidim_ai.rb
 
-if defined?(Decidim::Tools::Ai)
-  Decidim::Tools::Ai.configure do |config|
+if defined?(Decidim::Ai)
+  Decidim::Ai.configure do |config|
     # This is the email address used by user that is going to report the content
     config.reporting_user_email = "aaa.reporting.user@domain.tld"
     # those are the available models that can be used for training

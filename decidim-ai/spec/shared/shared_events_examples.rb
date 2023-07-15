@@ -3,7 +3,7 @@
 shared_examples "content submitted to spam analysis" do
   context "when override is enabled" do
     before do
-      Decidim::Tools::Ai.enable_override = true
+      Decidim::Ai.enable_override = true
     end
 
     it "updates the about text" do
@@ -21,7 +21,7 @@ shared_examples "content submitted to spam analysis" do
 
   context "when override is disabled" do
     before do
-      Decidim::Tools::Ai.enable_override = false
+      Decidim::Ai.enable_override = false
     end
 
     it "updates the about text" do
@@ -49,7 +49,7 @@ end
 
 shared_examples "comments spam analysis" do
   let(:organization) { create(:organization) }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
   let(:participatory_process) { create(:participatory_process, organization:) }
   let(:component) { create(:component, participatory_space: participatory_process) }
   let(:dummy_resource) { create(:dummy_resource, component:) }
@@ -63,11 +63,11 @@ shared_examples "comments spam analysis" do
   end
   let!(:report) { create(:report, moderation:, user: system_user, reason: "spam") }
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Comment)
-    Decidim::Tools::Ai::SpamContent::Repository.train!
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Comment)
+    Decidim::Ai::SpamContent::Repository.train!
   end
 
   context "when spam content is added" do
@@ -100,7 +100,7 @@ shared_examples "debates spam analysis" do
   let(:participatory_process) { create(:participatory_process, organization:) }
   let(:component) { create(:component, participatory_space: participatory_process, manifest_name: "debates") }
   let(:author) { create(:user, organization:) }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
   let(:scope) { create(:scope, organization:) }
   let(:category) { create(:category, participatory_space: participatory_process) }
 
@@ -113,11 +113,11 @@ shared_examples "debates spam analysis" do
   let!(:report) { create(:report, moderation:, user: system_user, reason: "spam") }
 
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Debate)
-    Decidim::Tools::Ai::SpamContent::Repository.train!
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Debate)
+    Decidim::Ai::SpamContent::Repository.train!
   end
 
   context "when spam content is added" do
@@ -149,7 +149,7 @@ end
 
 shared_examples "meetings spam analysis" do
   let(:organization) { create(:organization, available_locales: [:en]) }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
   let(:participatory_process) { create(:participatory_process, organization:) }
   let(:author) { create(:user, :admin, :confirmed, organization:) }
   let(:component) { create(:meeting_component, participatory_space: participatory_process) }
@@ -162,11 +162,11 @@ shared_examples "meetings spam analysis" do
   let!(:report) { create(:report, moderation:, user: system_user, reason: "spam") }
 
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Meeting)
-    Decidim::Tools::Ai::SpamContent::Repository.train!
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Meeting)
+    Decidim::Ai::SpamContent::Repository.train!
   end
 
   context "when spam content is added" do
@@ -199,7 +199,7 @@ end
 shared_examples "proposal spam analysis" do
   let(:component) { create(:proposal_component) }
   let(:organization) { component.organization }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
   let(:author) { create(:user, organization:) }
   let(:user_group) { create(:user_group, :verified, organization:, users: [author]) }
   let!(:unreported_resource) { create(:proposal, component:, users: [author], title: { en: "This is a very good ideea!" }, body: { en: "This is a very good ideea! " }) }
@@ -211,11 +211,11 @@ shared_examples "proposal spam analysis" do
   let!(:report) { create(:report, moderation:, user: system_user, reason: "spam") }
 
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Proposal)
-    Decidim::Tools::Ai::SpamContent::Repository.train!
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Proposal)
+    Decidim::Ai::SpamContent::Repository.train!
   end
 
   context "when spam content is added" do
@@ -248,7 +248,7 @@ end
 shared_examples "Collaborative draft spam analysis" do
   let(:component) { create(:proposal_component, :with_collaborative_drafts_enabled) }
   let(:organization) { component.organization }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
   let(:author) { create(:user, organization:) }
   let(:user_group) { create(:user_group, :verified, organization:, users: [author]) }
 
@@ -280,10 +280,10 @@ shared_examples "Collaborative draft spam analysis" do
   end
 
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::CollaborativeDraft)
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::CollaborativeDraft)
     Decidim::Tools::Ai::SpamContent::Repository.train!
   end
 

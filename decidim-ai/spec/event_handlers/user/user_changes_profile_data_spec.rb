@@ -6,7 +6,7 @@ describe "User changes own data", type: :system do
   shared_examples "user content submitted to spam analysis" do
     context "when override is enabled" do
       before do
-        Decidim::Tools::Ai.enable_override = true
+        Decidim::Ai.enable_override = true
       end
 
       it "updates the about text" do
@@ -24,7 +24,7 @@ describe "User changes own data", type: :system do
 
     context "when override is disabled" do
       before do
-        Decidim::Tools::Ai.enable_override = false
+        Decidim::Ai.enable_override = false
       end
 
       it "updates the about text" do
@@ -65,7 +65,7 @@ describe "User changes own data", type: :system do
     }
   end
   let(:organization) { create(:organization) }
-  let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+  let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
 
   let!(:unreported_resource) { create(:user, :confirmed, organization:, about: "This is a very good ideea!") }
   let!(:reported_resource) { create(:user, :blocked, :confirmed, organization:, about: "You are the lucky winner! Claim your holiday prize.") }
@@ -80,11 +80,11 @@ describe "User changes own data", type: :system do
   end
 
   before do
-    Decidim::Tools::Ai.backend = :memory
-    Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-    Decidim::Tools::Ai.load_vendor_data = false
-    Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::UserBaseEntity)
-    Decidim::Tools::Ai::SpamContent::Repository.train!
+    Decidim::Ai.backend = :memory
+    Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+    Decidim::Ai.load_vendor_data = false
+    Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::UserBaseEntity)
+    Decidim::Ai::SpamContent::Repository.train!
   end
 
   context "when spam content is added" do

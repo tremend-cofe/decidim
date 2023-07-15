@@ -19,11 +19,11 @@ module Decidim
           let!(:report) { create(:user_report, moderation:, user: blocked_user, reason: "spam") }
 
           before do
-            Decidim::Tools::Ai.backend = :memory
-            Decidim::Tools::Ai.load_vendor_data = false
-            Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::UserBaseEntity)
+            Decidim::Ai.backend = :memory
+            Decidim::Ai.load_vendor_data = false
+            Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::UserBaseEntity)
 
-            Decidim::Tools::Ai::SpamContent::Repository.train!
+            Decidim::Ai::SpamContent::Repository.train!
           end
 
           describe "compute_classification_score" do

@@ -12,9 +12,9 @@ module Decidim
 
           describe "classify" do
             before do
-              Decidim::Tools::Ai.backend = :memory
-              Decidim::Tools::Ai.load_vendor_data = false
-              Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Comment)
+              Decidim::Ai.backend = :memory
+              Decidim::Ai.load_vendor_data = false
+              Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Comment)
             end
 
             let(:organization) { create(:organization) }
@@ -35,20 +35,20 @@ module Decidim
 
           describe "backend" do
             after do
-              Decidim::Tools::Ai.backend = :memory
+              Decidim::Ai.backend = :memory
             end
 
             context "when memory backend provided" do
               it "expected to raise error" do
-                Decidim::Tools::Ai.backend = :memory
+                Decidim::Ai.backend = :memory
                 expect(subject.backend).to be_an_instance_of(ClassifierReborn::BayesMemoryBackend)
               end
             end
 
             context "when redis backend provided" do
               it "expected to raise error" do
-                Decidim::Tools::Ai.backend = :redis
-                Decidim::Tools::Ai.redis_configuration = {
+                Decidim::Ai.backend = :redis
+                Decidim::Ai.redis_configuration = {
                   host: ENV.fetch("DECIDIM_SPAM_REDIS_HOST", nil)
                 }
                 expect(subject.backend).to be_an_instance_of(ClassifierReborn::BayesRedisBackend)
@@ -57,7 +57,7 @@ module Decidim
 
             context "when invalid backend provided" do
               it "expected to raise error" do
-                Decidim::Tools::Ai.backend = :invalid
+                Decidim::Ai.backend = :invalid
                 expect { subject.backend }.to raise_error(InvalidBackendError)
               end
             end
@@ -68,8 +68,8 @@ module Decidim
             let(:participatory_process) { create(:participatory_process, organization:) }
 
             before do
-              Decidim::Tools::Ai.backend = :memory
-              Decidim::Tools::Ai.load_vendor_data = false
+              Decidim::Ai.backend = :memory
+              Decidim::Ai.load_vendor_data = false
             end
 
             context "when having comments" do
@@ -78,8 +78,8 @@ module Decidim
               let!(:resources) { create_list(:comment, 2, commentable:) }
 
               before do
-                Decidim::Tools::Ai.backend = :memory
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Comment)
+                Decidim::Ai.backend = :memory
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Comment)
                 subject.train!
               end
 
@@ -93,7 +93,7 @@ module Decidim
               let!(:resources) { create_list(:meeting, 2, component:) }
 
               before do
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Meeting)
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Meeting)
                 subject.train!
               end
 
@@ -107,7 +107,7 @@ module Decidim
               let!(:resources) { create_list(:proposal, 2, component:) }
 
               before do
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Proposal)
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Proposal)
                 subject.train!
               end
 
@@ -121,7 +121,7 @@ module Decidim
               let!(:resources) { create_list(:collaborative_draft, 2, component:) }
 
               before do
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::CollaborativeDraft)
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::CollaborativeDraft)
                 subject.train!
               end
 
@@ -135,7 +135,7 @@ module Decidim
               let!(:resources) { create_list(:debate, 2, component:) }
 
               before do
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Debate)
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Debate)
                 subject.train!
               end
 
@@ -148,7 +148,7 @@ module Decidim
               let!(:resources) { create_list(:user, 2, organization:) }
 
               before do
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::UserBaseEntity)
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::UserBaseEntity)
                 subject.train!
               end
 
@@ -161,8 +161,8 @@ module Decidim
               let!(:resources) { create_list(:user_group, 2, organization:) }
 
               before do
-                Decidim::Tools::Ai.load_vendor_data = false
-                Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::UserBaseEntity)
+                Decidim::Ai.load_vendor_data = false
+                Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::UserBaseEntity)
                 subject.train!
               end
 
@@ -175,12 +175,12 @@ module Decidim
           describe "load_sample_data!" do
             context "when is enabled" do
               before do
-                Decidim::Tools::Ai.load_vendor_data = true
+                Decidim::Ai.load_vendor_data = true
                 subject.train!
               end
 
               after do
-                Decidim::Tools::Ai.load_vendor_data = false
+                Decidim::Ai.load_vendor_data = false
               end
 
               it "add the data to classifier" do
@@ -194,7 +194,7 @@ module Decidim
             let!(:file) { "spec/support/test.csv" }
 
             before do
-              Decidim::Tools::Ai.load_vendor_data = false
+              Decidim::Ai.load_vendor_data = false
               subject.train!
             end
 

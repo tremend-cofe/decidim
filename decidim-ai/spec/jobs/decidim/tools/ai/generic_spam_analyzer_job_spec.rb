@@ -8,7 +8,7 @@ module Decidim
       describe GenericSpamAnalyzerJob do
         subject { described_class }
 
-        let!(:system_user) { create(:user, :confirmed, email: Decidim::Tools::Ai.reporting_user_email, organization:) }
+        let!(:system_user) { create(:user, :confirmed, email: Decidim::Ai.reporting_user_email, organization:) }
         let(:organization) { create(:organization) }
         let(:participatory_process) { create(:participatory_process, organization:) }
         let(:component) { create(:dummy_component, participatory_space: participatory_process) }
@@ -27,13 +27,13 @@ module Decidim
         let!(:report) { create(:report, moderation:, user:, reason: "spam") }
 
         before do
-          Decidim::Tools::Ai.backend = :memory
-          Decidim::Tools::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
-          Decidim::Tools::Ai.load_vendor_data = false
-          Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Comment)
+          Decidim::Ai.backend = :memory
+          Decidim::Ai.spam_treshold = 0.2 # it has to be lower or equal to 0.25
+          Decidim::Ai.load_vendor_data = false
+          Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Comment)
 
           expect(Decidim::Comments::Comment.count).to eq(2)
-          Decidim::Tools::Ai::SpamContent::Repository.train!
+          Decidim::Ai::SpamContent::Repository.train!
         end
 
         it "successfully calls the job" do

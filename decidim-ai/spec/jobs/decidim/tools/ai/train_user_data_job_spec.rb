@@ -10,12 +10,12 @@ module Decidim
         let(:organization) { create(:organization) }
         let!(:user) { create(:user, :confirmed, organization:, about: "This is a short info about me") }
 
-        let(:engine_backend) { Decidim::Tools::Ai::SpamContent::Repository.new }
+        let(:engine_backend) { Decidim::Ai::SpamContent::Repository.new }
 
         before do
-          Decidim::Tools::Ai.backend = :memory
-          Decidim::Tools::Ai.load_vendor_data = false
-          Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::UserBaseEntity)
+          Decidim::Ai.backend = :memory
+          Decidim::Ai.load_vendor_data = false
+          Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::UserBaseEntity)
 
           engine_backend.train!
         end

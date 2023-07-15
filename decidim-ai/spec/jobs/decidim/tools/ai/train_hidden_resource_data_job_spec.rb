@@ -15,12 +15,12 @@ module Decidim
         let(:author) { create(:user, organization:) }
 
         let!(:comment) { create(:comment, author:, commentable:, body: { en: "This is a very good ideea! " }) }
-        let(:engine_backend) { Decidim::Tools::Ai::SpamContent::Repository.new }
+        let(:engine_backend) { Decidim::Ai::SpamContent::Repository.new }
 
         before do
-          Decidim::Tools::Ai.backend = :memory
-          Decidim::Tools::Ai.load_vendor_data = false
-          Decidim::Tools::Ai.trained_models = %w(Decidim::Tools::Ai::Resource::Comment)
+          Decidim::Ai.backend = :memory
+          Decidim::Ai.load_vendor_data = false
+          Decidim::Ai.trained_models = %w(Decidim::Ai::Resource::Comment)
 
           engine_backend.train!
         end
