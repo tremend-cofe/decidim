@@ -37,6 +37,7 @@ module Decidim
           allow! if read_metrics_action?
           allow! if static_page_action?
           allow! if templates_action?
+          allow! if tools_ai_action?
           allow! if organization_action?
           allow! if user_action?
           allow! if admin_user_action?
@@ -155,6 +156,11 @@ module Decidim
 
       def templates_action?
         permission_action.subject == :templates &&
+          permission_action.action == :read
+      end
+
+      def tools_ai_action?
+        permission_action.subject == :tools_ai &&
           permission_action.action == :read
       end
 

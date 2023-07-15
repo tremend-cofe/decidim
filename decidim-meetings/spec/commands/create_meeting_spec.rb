@@ -56,6 +56,7 @@ module Decidim::Meetings
         iframe_access_level:
       )
     end
+    let(:dummy_meeting) { create(:meeting, start_time:, component: current_component) }
 
     context "when the form is not valid" do
       let(:invalid) { true }
@@ -163,21 +164,21 @@ module Decidim::Meetings
       end
 
       it "schedules a upcoming meeting notification job 48h before start time" do
-        meeting = instance_double(Meeting, id: 1, start_time:, participatory_space: participatory_process, author: current_user)
+        dummy_meeting = instance_double(Meeting, id: 1, start_time:, participatory_space: participatory_process, author: current_user)
         allow(Decidim.traceability)
           .to receive(:create!)
-          .and_return(meeting)
+          .and_return(dummy_meeting)
 
-        expect(meeting).to receive(:valid?)
-        expect(meeting).to receive(:publish!)
-        allow(meeting).to receive(:to_signed_global_id).and_return "gid://Decidim::Meetings::Meeting/1"
+        expect(dummy_meeting).to receive(:valid?)
+        expect(dummy_meeting).to receive(:publish!)
+        allow(dummy_meeting).to receive(:to_signed_global_id).and_return "gid://Decidim::Meetings::Meeting/#{dummy_meeting.id}"
 
         allow(UpcomingMeetingNotificationJob)
           .to receive(:generate_checksum).and_return "1234"
 
         expect(UpcomingMeetingNotificationJob)
           .to receive_message_chain(:set, :perform_later) # rubocop:disable RSpec/MessageChain
-          .with(set: start_time - Decidim::Meetings.upcoming_meeting_notification).with(1, "1234")
+          .with(set: start_time - Decidim::Meetings.upcoming_meeting_notification).with(dummy_meeting.id, "1234")
 
         allow(Decidim::EventsManager).to receive(:publish).and_return(true)
 
@@ -185,14 +186,14 @@ module Decidim::Meetings
       end
 
       it "does not schedule an upcoming meeting notification if start time is in the past" do
-        meeting = instance_double(Meeting, id: 1, start_time: 2.days.ago, participatory_space: participatory_process, author: current_user)
+        dummy_meeting = instance_double(Meeting, id: 1, start_time: 2.days.ago, participatory_space: participatory_process, author: current_user)
         allow(Decidim.traceability)
           .to receive(:create!)
-          .and_return(meeting)
+          .and_return(dummy_meeting)
 
-        expect(meeting).to receive(:valid?)
-        expect(meeting).to receive(:publish!)
-        allow(meeting).to receive(:to_signed_global_id).and_return "gid://Decidim::Meetings::Meeting/1"
+        expect(dummy_meeting).to receive(:valid?)
+        expect(dummy_meeting).to receive(:publish!)
+        allow(dummy_meeting).to receive(:to_signed_global_id).and_return "gid://Decidim::Meetings::Meeting/#{dummy_meeting.id}"
 
         expect(UpcomingMeetingNotificationJob).not_to receive(:generate_checksum)
         expect(UpcomingMeetingNotificationJob).not_to receive(:set)
