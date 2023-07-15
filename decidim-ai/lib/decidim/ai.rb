@@ -6,14 +6,24 @@ require "decidim/ai/admin"
 require "decidim/ai/engine"
 require "decidim/ai/admin_engine"
 require "decidim/ai/spam_content"
-require "decidim/ai/resource"
-require "decidim/ai/overrides"
 
 module Decidim
   # This namespace holds the logic of the `Tools::Ai` module. This module
   # allows admins to perform various Artificial Inteligence activities like
   # spam detection.
   module Ai
+    module Resource
+      autoload :Base, "decidim/ai/resource/base"
+      autoload :Comment, "decidim/ai/resource/comment"
+      autoload :Meeting, "decidim/ai/resource/meeting"
+      autoload :Proposal, "decidim/ai/resource/proposal"
+      autoload :CollaborativeDraft, "decidim/ai/resources/collaborative_draft"
+      autoload :Debate, "decidim/ai/resources/debate"
+      autoload :UserBaseEntity, "decidim/ai/resources/user_base_entity"
+      autoload :ProvidedFile, "decidim/ai/resources/provided_file"
+      autoload :Wrapper, "decidim/ai/resources/wrapper"
+    end
+
     include ActiveSupport::Configurable
 
     # This is the email address used by the spam engine to
