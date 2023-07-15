@@ -27,10 +27,8 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
         return broadcast(:invalid) unless collaborative_draft.editable_by?(current_user)
 
-        with_event_around do
-          transaction do
-            update_collaborative_draft
-          end
+        with_events(with_transaction: true) do
+          update_collaborative_draft
         end
 
         broadcast(:ok, collaborative_draft)
@@ -43,8 +41,10 @@ module Decidim
       def event_arguments
         {
           resource: collaborative_draft,
-          author: current_user,
-          locale:
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 

@@ -69,6 +69,13 @@ module Decidim::Meetings
     context "when everything is ok" do
       let(:meeting) { Meeting.last }
 
+      it_behaves_like "fires an ActiveSupport::Notification event", "decidim.meetings.create_meeting:before" do
+        let(:command) { subject }
+      end
+      it_behaves_like "fires an ActiveSupport::Notification event", "decidim.meetings.create_meeting:after" do
+        let(:command) { subject }
+      end
+
       it "creates and publishes the meeting and log both actions" do
         subject.call
         meeting.reload
@@ -157,7 +164,7 @@ module Decidim::Meetings
       end
 
       it "schedules a upcoming meeting notification job 48h before start time" do
-        # meeting = instance_double(Meeting, id: 1, start_time:, participatory_space: participatory_process)
+        dummy_meeting = instance_double(Meeting, id: 1, start_time:, participatory_space: participatory_process, author: current_user)
         allow(Decidim.traceability)
           .to receive(:create!)
           .and_return(dummy_meeting)
@@ -179,7 +186,7 @@ module Decidim::Meetings
       end
 
       it "does not schedule an upcoming meeting notification if start time is in the past" do
-        dummy_meeting.start_time = 2.days.ago
+        dummy_meeting = instance_double(Meeting, id: 1, start_time: 2.days.ago, participatory_space: participatory_process, author: current_user)
         allow(Decidim.traceability)
           .to receive(:create!)
           .and_return(dummy_meeting)

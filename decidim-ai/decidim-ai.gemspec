@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.description = "."
 
   s.files = Dir["{app,config,lib}/**/*", "LICENSE-AGPLv3.txt", "Rakefile", "README.md"]
-
   # alternative to consider https://github.com/ankane/eps
   s.add_dependency "classifier-reborn", "~> 2.3.0"
   s.add_dependency "cld", "~> 0.11"

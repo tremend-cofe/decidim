@@ -31,6 +31,10 @@ PATH
       devise (~> 4.7)
       devise-i18n (~> 1.2)
       devise_invitable (~> 2.0)
+    decidim-ai (0.28.0.dev)
+      classifier-reborn (~> 2.3.0)
+      cld (~> 0.11)
+      decidim-core (= 0.28.0.dev)
     decidim-api (0.28.0.dev)
       commonmarker (~> 0.23.0, >= 0.23.9)
       graphql (~> 2.0)
@@ -195,10 +199,6 @@ PATH
     decidim-templates (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
       decidim-forms (= 0.28.0.dev)
-    decidim-tools-ai (0.28.0.dev)
-      classifier-reborn (~> 2.3.0)
-      cld (~> 0.11)
-      decidim-core (>= 0.25)
     decidim-verifications (0.28.0.dev)
       decidim-core (= 0.28.0.dev)
 
@@ -828,13 +828,13 @@ DEPENDENCIES
   brakeman (~> 5.4)
   byebug (~> 11.0)
   decidim!
+  decidim-ai!
   decidim-conferences!
   decidim-consultations!
   decidim-dev!
   decidim-elections!
   decidim-initiatives!
   decidim-templates!
-  decidim-tools-ai!
   letter_opener_web (~> 2.0)
   listen (~> 3.1)
   net-imap (~> 0.2.3)

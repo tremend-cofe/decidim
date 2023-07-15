@@ -31,10 +31,8 @@ module Decidim
           return broadcast(:invalid)
         end
 
-        with_event_around do
-          transaction do
-            create_proposal
-          end
+        with_events(with_transaction: true) do
+          create_proposal
         end
 
         broadcast(:ok, proposal)
@@ -47,8 +45,10 @@ module Decidim
       def event_arguments
         {
           resource: proposal,
-          author: @current_user,
-          locale:
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 

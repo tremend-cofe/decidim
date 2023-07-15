@@ -21,7 +21,7 @@ module Decidim
         return broadcast(:invalid) if form.invalid?
         return broadcast(:invalid) unless form.debate.editable_by?(form.current_user)
 
-        with_event_around do
+        with_events(with_transaction: true) do
           update_debate
         end
 
@@ -30,13 +30,15 @@ module Decidim
 
       private
 
-      attr_reader :form, :debate
+      attr_reader :form
 
       def event_arguments
         {
-          resource: debate,
-          author: form.current_user,
-          locale:
+          resource: @debate,
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 

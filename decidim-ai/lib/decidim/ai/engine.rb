@@ -79,6 +79,8 @@ module Decidim
         end
       end
 
+      paths["db/migrate"] = nil
+
       def load_seed
         nil
       end

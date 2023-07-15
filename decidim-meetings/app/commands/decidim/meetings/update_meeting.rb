@@ -22,14 +22,12 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        with_event_around do
-          transaction do
-            update_meeting!
-            send_notification if should_notify_followers?
-            schedule_upcoming_meeting_notification if start_time_changed?
-          end
+        with_events(with_transaction: true) do
+          update_meeting!
         end
 
+        send_notification if should_notify_followers?
+        schedule_upcoming_meeting_notification if start_time_changed?
         broadcast(:ok, meeting)
       end
 
@@ -40,8 +38,10 @@ module Decidim
       def event_arguments
         {
           resource: meeting,
-          author: current_user,
-          locale:
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 
@@ -99,10 +99,6 @@ module Decidim
 
       def start_time_changed?
         meeting.previous_changes["start_time"].present?
-      end
-
-      def content_changed?
-        %w(title description location_hints closing_report registration_terms).any? { |attr| meeting.previous_changes[attr].present? }
       end
 
       def schedule_upcoming_meeting_notification

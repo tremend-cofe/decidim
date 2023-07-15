@@ -24,7 +24,7 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid? || !comment.authored_by?(current_user)
 
-        with_event_around do
+        with_events do
           update_comment
         end
 
@@ -38,8 +38,10 @@ module Decidim
       def event_arguments
         {
           resource: comment,
-          author: current_user,
-          locale:
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 

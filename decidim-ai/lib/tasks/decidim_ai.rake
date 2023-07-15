@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 namespace :decidim do
+  namespace :ai do
+    desc "Create reporting user"
+    task create_reporting_user: :environment do
+      Decidim::Ai.create_reporting_users!
+    end
+  end
+
   namespace :spam do
     desc "Reset the whole spam detection algorithm"
     task reset: :environment do
@@ -16,13 +23,6 @@ namespace :decidim do
       desc "Train spam detection filter using a custom file "
       task :file, [:file] do |_, args|
         Decidim::Ai::SpamContent::Repository.load_from_file!(Rails.root, args[:file])
-      end
-    end
-
-    namespace :data do
-      desc "Create the user used for reporting data"
-      task create_reporting_user: :environment do
-        Decidim::Ai.create_reporting_user
       end
     end
 

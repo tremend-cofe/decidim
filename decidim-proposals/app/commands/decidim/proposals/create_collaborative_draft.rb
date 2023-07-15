@@ -31,11 +31,9 @@ module Decidim
           return broadcast(:invalid) if attachments_invalid?
         end
 
-        with_event_after do
-          transaction do
-            create_collaborative_draft
-            create_attachments if process_attachments?
-          end
+        with_events(with_transaction: true) do
+          create_collaborative_draft
+          create_attachments if process_attachments?
         end
 
         broadcast(:ok, collaborative_draft)
@@ -48,8 +46,10 @@ module Decidim
       def event_arguments
         {
           resource: collaborative_draft,
-          author: @form.current_user,
-          locale: I18n.locale
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
         }
       end
 
