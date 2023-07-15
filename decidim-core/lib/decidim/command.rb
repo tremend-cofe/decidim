@@ -42,23 +42,15 @@ module Decidim
       @caller.respond_to?(method_name, include_private)
     end
 
-    def with_event_before
-      ActiveSupport::Notifications.subscribe("#{event_namespace}:before", **event_arguments)
-      yield
-    end
-
-    def with_event_after
-      yield
-      ActiveSupport::Notifications.subscribe("#{event_namespace}:after", **event_arguments)
-    end
-
-    def with_event_around
+    def with_events(with_transaction: false, &block)
       ActiveSupport::Notifications.publish("#{event_namespace}:before", **event_arguments)
-      yield
+
+      with_transaction ? transaction(&block) : yield
+
       ActiveSupport::Notifications.publish("#{event_namespace}:after", **event_arguments)
     end
 
-    private
+    protected
 
     def event_arguments
       raise "#{self.class} must implement #event_arguments"

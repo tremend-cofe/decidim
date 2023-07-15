@@ -22,7 +22,7 @@ module Decidim
       def call
         return broadcast(:invalid) unless hideable?
 
-        with_event_around do
+        with_events do
           tool = Decidim::ModerationTools.new(@reportable, @current_user)
           tool.hide!
           tool.send_notification_to_author
