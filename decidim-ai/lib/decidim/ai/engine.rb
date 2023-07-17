@@ -9,8 +9,11 @@ module Decidim
       # paths["lib/tasks"] = nil
 
       initializer "decidim_ai.classifiers" do |_app|
-        Decidim::Ai.spam_detection_registry.register_analyzer(:bayes, Decidim::Ai::SpamContent::BayesStrategy)
+        Decidim::Ai.registered_analyzers.each do |analyzer|
+          Decidim::Ai.spam_detection_registry.register_analyzer(**analyzer)
+        end
       end
+
       def load_seed
         nil
       end
