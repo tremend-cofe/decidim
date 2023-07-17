@@ -10,9 +10,9 @@ module Decidim
 
         def classify(content); end
 
-        def train!(classification, content); end
+        def train(classification, content); end
 
-        def untrain!(classification, content); end
+        def untrain(classification, content); end
       end
     end
   end

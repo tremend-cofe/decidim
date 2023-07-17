@@ -10,6 +10,7 @@ module Decidim
 
     module SpamContent
       autoload :BaseStrategy, "decidim/ai/spam_content/base_strategy"
+      autoload :BayesStrategy, "decidim/ai/spam_content/bayes_strategy"
     end
 
     include ActiveSupport::Configurable
