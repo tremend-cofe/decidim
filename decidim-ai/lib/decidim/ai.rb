@@ -7,12 +7,51 @@ module Decidim
     autoload :LanguageDetectionService, "decidim/ai/language_detection_service"
     autoload :SpamDetectionService, "decidim/ai/spam_detection_service"
     autoload :StrategyRegistry, "decidim/ai/strategy_registry"
+    autoload :LoadDataset, "decidim/ai/load_dataset"
 
     module SpamContent
       autoload :BaseStrategy, "decidim/ai/spam_content/base_strategy"
+      autoload :BayesStrategy, "decidim/ai/spam_content/bayes_strategy"
     end
 
     include ActiveSupport::Configurable
+
+    # Registered analyzers.
+    # You can register your own analyzer by adding a new entry to this array.
+    # The entry must be a hash with the following keys:
+    # - name: the name of the analyzer
+    # - strategy: the class of the strategy to use
+    # - options: a hash with the options to pass to the strategy
+    # Example:
+    # config.registered_analyzers = [
+    #   {
+    #     name: :bayes,
+    #     strategy: Decidim::Ai::SpamContent::BayesStrategy,
+    #     options: {
+    #       adapter: :redis,
+    #       params: {
+    #         url:                lambda { ENV["REDIS_URL"] }
+    #         scheme:             "redis"
+    #         host:               "127.0.0.1"
+    #         port:               6379
+    #         path:               nil
+    #         timeout:            5.0
+    #         password:           nil
+    #         db:                 0
+    #         driver:             nil
+    #         id:                 nil
+    #         tcp_keepalive:      0
+    #         reconnect_attempts: 1
+    #         inherit_socket:     false
+    #       }
+    #     }
+    #   }
+    # ]
+    config_accessor :registered_analyzers do
+      [
+        { name: :bayes, strategy: Decidim::Ai::SpamContent::BayesStrategy, options: { adapter: :memory, params: {} } }
+      ]
+    end
 
     # Language detection service class.
     #
@@ -63,6 +102,10 @@ module Decidim
     # properly identify the user that will report users and content
     config_accessor :reporting_user_email do
       "reporting.user@domain.tld"
+    end
+
+    def self.spam_detection_instance
+      @spam_detection_instance ||= spam_detection_service.constantize.new
     end
 
     def self.spam_detection_registry
