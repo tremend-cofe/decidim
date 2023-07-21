@@ -18,23 +18,12 @@ module Decidim
           reset
           load_sample_data!
 
-          classifier = Decidim::Ai.spam_detection_service.constantize.new(user.organization)
+          classifier = Decidim::Ai.spam_detection_instance
           config.trained_models.each do |model|
             wrapped = Decidim::Ai::Resource::Wrapper.new(model.constantize)
             wrapped.train(classifier)
           end
           save_model!
-        end
-
-        def backend
-          @backend ||= case config.backend
-                       when :memory
-                         ClassifierReborn::BayesMemoryBackend.new
-                       when :redis
-                         ClassifierReborn::BayesRedisBackend.new(**config.redis_configuration)
-                       else
-                         raise InvalidBackendError, "Unknown backend for classifier. Available options are  :memory, :redis but #{config.backend.inspect} provided"
-                       end
         end
 
         def self.load_from_file!(file)

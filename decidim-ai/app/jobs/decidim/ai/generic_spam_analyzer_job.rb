@@ -25,7 +25,7 @@ module Decidim
       private
 
       def classifier
-        @classifier ||= Decidim::Ai.spam_detection_service.constantize.new(@author.organization)
+        @classifier ||= Decidim::Ai.spam_detection_instance
       end
 
       def form

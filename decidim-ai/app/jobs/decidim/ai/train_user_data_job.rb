@@ -6,7 +6,7 @@ module Decidim
       def perform(user)
         user.reload
 
-        spam_backend = Decidim::Ai.spam_detection_service.constantize.new(user.organization)
+        spam_backend = Decidim::Ai.spam_detection_instance
 
         if user.blocked?
           spam_backend.untrain "normal", user.about

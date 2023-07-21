@@ -27,6 +27,7 @@ module Decidim
     autoload :LanguageDetectionService, "decidim/ai/language_detection_service"
     autoload :SpamDetectionService, "decidim/ai/spam_detection_service"
     autoload :StrategyRegistry, "decidim/ai/strategy_registry"
+    autoload :LoadDataset, "decidim/ai/load_dataset"
 
     module SpamContent
       autoload :BaseStrategy, "decidim/ai/spam_content/base_strategy"
@@ -188,6 +189,10 @@ module Decidim
       )
     end
     # EOF old config
+
+    def self.spam_detection_instance
+      @spam_detection_instance ||= spam_detection_service.constantize.new
+    end
 
     def self.spam_detection_registry
       @spam_detection ||= Decidim::Ai::StrategyRegistry.new

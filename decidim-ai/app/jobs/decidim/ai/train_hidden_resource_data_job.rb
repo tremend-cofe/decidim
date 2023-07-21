@@ -9,7 +9,7 @@ module Decidim
         return unless resource.respond_to?(:hidden?)
 
         resource.reload
-        spam_backend = Decidim::Ai.spam_detection_service.constantize.new(resource.organization)
+        spam_backend = Decidim::Ai.spam_detection_instance
 
         wrapped = Decidim::Ai::Resource::Wrapper.new(resource.class)
 
