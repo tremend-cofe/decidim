@@ -49,8 +49,8 @@ module Decidim
         def compute_language_scope(text, _locale)
           return if text.empty?
 
-          detected_language = CLD.detect_language(text)
-          return if @available_locales.include?(detected_language[:code])
+          detected_language = Decidim::Ai.language_detection_service.constantize.new(text).language_code
+          return if @available_locales.include?(detected_language)
 
           @reasons[:language] = true
           @messages << "The content has been detected as #{detected_language.inspect}."

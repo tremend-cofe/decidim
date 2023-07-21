@@ -18,6 +18,7 @@ module Decidim
           reset
           load_sample_data!
 
+          classifier = Decidim::Ai.spam_detection_service.constantize.new(user.organization)
           config.trained_models.each do |model|
             wrapped = Decidim::Ai::Resource::Wrapper.new(model.constantize)
             wrapped.train(classifier)
@@ -36,12 +37,12 @@ module Decidim
                        end
         end
 
-        def self.load_from_file!(path, file)
-          new.load_from_file!(path, file)
+        def self.load_from_file!(file)
+          new.load_from_file!(file)
         end
 
-        def load_from_file!(path, file)
-          Decidim::Ai::Resource::ProvidedFile.new.add_training_data!(classifier, path, file)
+        def load_from_file!(file)
+          Decidim::Ai::LoadDataset.call(file)
         end
 
         private
@@ -50,59 +51,12 @@ module Decidim
           Gem.loaded_specs["decidim-tools-ai"].full_gem_path
         end
 
-        def files
-          %w(
-            data/blocked_accounts.csv
-            data/spam_comments.csv
-            data/sms-spam.csv
-          )
-        end
-
         def load_sample_data!
           return unless config.load_vendor_data
 
-          files.each do |file|
-            load_from_file!(plugin_path, file)
+          Dir.glob("#{plugin_path}/data/*.csv").each do |file|
+            Decidim::Ai::LoadDataset.call(file)
           end
-        end
-
-        def persisted_file
-          Rails.root.join("bayes-classifier.dat")
-        end
-
-        def save_model!
-          return unless memory_backend?
-
-          File.binwrite(persisted_file, Marshal.dump(classifier))
-        end
-
-        def config
-          Decidim::Ai
-        end
-
-        def options
-          { backend: }.merge(config.spam_classifier_options)
-        end
-
-        def categories
-          %w(normal spam)
-        end
-
-        def classifier
-          @classifier ||=
-            if memory_backend? && File.exist?(persisted_file)
-              # rubocop:disable Security/MarshalLoad
-              internal_classifier = Marshal.load(File.binread(persisted_file))
-              # rubocop:enable Security/MarshalLoad
-              @backend = internal_classifier.instance_variable_get(:@backend)
-              internal_classifier
-            else
-              ClassifierReborn::Bayes.new categories, **options
-            end
-        end
-
-        def memory_backend?
-          config.backend == :memory
         end
       end
     end

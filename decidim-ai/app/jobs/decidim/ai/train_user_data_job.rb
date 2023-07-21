@@ -3,8 +3,10 @@
 module Decidim
   module Ai
     class TrainUserDataJob < ApplicationJob
-      def perform(user, spam_backend = Decidim::Ai::SpamContent::Repository.new)
+      def perform(user)
         user.reload
+
+        spam_backend = Decidim::Ai.spam_detection_service.constantize.new(user.organization)
 
         if user.blocked?
           spam_backend.untrain "normal", user.about

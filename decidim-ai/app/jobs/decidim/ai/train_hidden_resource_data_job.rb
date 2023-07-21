@@ -5,10 +5,11 @@ module Decidim
     class TrainHiddenResourceDataJob < ApplicationJob
       include Decidim::TranslatableAttributes
 
-      def perform(resource, spam_backend = Decidim::Ai::SpamContent::Repository.new)
+      def perform(resource)
         return unless resource.respond_to?(:hidden?)
 
         resource.reload
+        spam_backend = Decidim::Ai.spam_detection_service.constantize.new(resource.organization)
 
         wrapped = Decidim::Ai::Resource::Wrapper.new(resource.class)
 

@@ -9,7 +9,7 @@ module Decidim
         @author = author
         fields.each do |field|
           I18n.with_locale(locale) do
-            classifier.classify!(translated_attribute(reportable.send(field)), locale)
+            classifier.classify(translated_attribute(reportable.send(field)), locale)
           end
         end
 
@@ -25,7 +25,7 @@ module Decidim
       private
 
       def classifier
-        @classifier ||= Decidim::Ai.spam_classifier.constantize.new(@author.organization)
+        @classifier ||= Decidim::Ai.spam_detection_service.constantize.new(@author.organization)
       end
 
       def form

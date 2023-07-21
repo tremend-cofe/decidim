@@ -22,7 +22,7 @@ namespace :decidim do
 
       desc "Train spam detection filter using a custom file "
       task :file, [:file] do |_, args|
-        Decidim::Ai::SpamContent::Repository.load_from_file!(Rails.root, args[:file])
+        Decidim::Ai::SpamContent::Repository.load_from_file!(Rails.root.join(args[:file]))
       end
     end
 

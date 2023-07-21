@@ -199,7 +199,7 @@ module Decidim
             end
 
             it "add the data to classifier" do
-              subject.load_from_file!(path, file)
+              subject.load_from_file!("#{path}/#{file}")
               expect(backend.total_trainings).to eq(4)
             end
           end
