@@ -4,6 +4,32 @@ require "spec_helper"
 
 module Decidim
   module Ai
+    describe ".spam_detection_service" do
+      subject { Decidim::Ai.spam_detection_service.constantize.new }
+
+      it "returns a spam detection service" do
+        expect(subject).to be_a(Decidim::Ai::SpamDetectionService)
+      end
+    end
+
+    describe ".language_detection_service" do
+      subject { Decidim::Ai.language_detection_service.constantize.new("This is a test") }
+
+      it "returns a language detection service" do
+        expect(subject).to be_a(Decidim::Ai::LanguageDetectionService)
+      end
+
+      it "returns the corect language code" do
+        expect(subject.language_code).to eq("en")
+      end
+    end
+
+    describe ".spam_detection_strategy" do
+      it "return strategy class" do
+        expect(Decidim::Ai.spam_detection_registry).to be_a(Decidim::Ai::StrategyRegistry)
+      end
+    end
+
     describe ".create_reporting_users" do
       let!(:organization) { create(:organization) }
 

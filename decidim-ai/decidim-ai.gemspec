@@ -21,10 +21,9 @@ Gem::Specification.new do |s|
 
   s.name = "decidim-ai"
   s.summary = "A Decidim module with AI tools"
-  s.description = "."
+  s.description = "A Decidim module with AI tools"
 
-  s.files = Dir["{app,config,lib}/**/*", "LICENSE-AGPLv3.txt", "Rakefile", "README.md"]
-  # alternative to consider https://github.com/ankane/eps
+  s.files = Dir["{app,config,db,lib,vendor}/**/*", "Rakefile", "README.md"]
   s.add_dependency "classifier-reborn", "~> 2.3.0"
   s.add_dependency "cld", "~> 0.11"
   s.add_dependency "decidim-core", Decidim::Ai.version
