@@ -36,7 +36,7 @@ module Decidim
         #       =>  {"Uninteresting"=>-12.6997928013932, "Interesting"=>-18.4206807439524}
         #   The largest of these scores (the one closest to 0) is the one picked out by #classify
         def score
-          category.presence == "Spam" ? 1 : 0
+          category.presence == "spam" ? 1 : 0
         end
 
         private

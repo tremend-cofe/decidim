@@ -38,9 +38,9 @@ describe Decidim::Ai::SpamContent::BayesStrategy do
 
     context "when category is spam" do
       it "returns a log" do
-        allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["Spam", -12.6997])
+        allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["spam", -12.6997])
         subject.classify("text")
-        expect(subject.log).to eq("The Classification engine marked this as Spam")
+        expect(subject.log).to eq("The Classification engine marked this as spam")
       end
     end
   end
@@ -51,13 +51,13 @@ describe Decidim::Ai::SpamContent::BayesStrategy do
     end
 
     it "returns 0 when is ham" do
-      allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["Ham", -12.6997])
+      allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["ham", -12.6997])
       subject.classify("text")
       expect(subject.score).to eq(0)
     end
 
     it "returns 1 when is spam" do
-      allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["Spam", -12.6997])
+      allow(subject.send(:backend)).to receive(:classify_with_score).with("text").and_return(["spam", -12.6997])
       subject.classify("text")
       expect(subject.score).to eq(1)
     end
