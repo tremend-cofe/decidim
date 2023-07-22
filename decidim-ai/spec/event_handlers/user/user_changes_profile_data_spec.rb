@@ -52,6 +52,11 @@ describe "User changes own data", type: :system do
   end
 
   before do
+    Decidim::Ai.spam_detection_registry.clear
+    Decidim::Ai.spam_detection_registry.register_analyzer(name: :bayes,
+                                                          strategy: Decidim::Ai::SpamContent::BayesStrategy,
+                                                          options: { adapter: :memory, params: {} })
+
     Decidim::Ai.spam_detection_instance.train :ham, "I am a passionate Decidim Maintainer. It is nice to be here."
     Decidim::Ai.spam_detection_instance.train :ham, "Yet I do not have an idea about what I am doing here."
     Decidim::Ai.spam_detection_instance.train :ham, "Maybe You would understand better, and you would not get blocked as i did."
@@ -69,7 +74,7 @@ describe "User changes own data", type: :system do
   end
 
   context "when regular content content is added" do
-    let(:about) { "Very nice ideea that is not going to be blocked" }
+    let(:about) { "Very nice idea that is not going to be blocked" }
 
     include_examples "user content submitted to spam analysis" do
       let(:spam_count) { 0 }

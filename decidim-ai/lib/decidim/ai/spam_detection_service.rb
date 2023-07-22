@@ -8,7 +8,7 @@ module Decidim
       end
 
       def train(category, text)
-        return if text.present?
+        return if text.blank?
 
         @registry.each do |strategy|
           strategy.train(category, text)
@@ -16,7 +16,7 @@ module Decidim
       end
 
       def classify(text)
-        return if text.present?
+        return if text.blank?
 
         @registry.each do |strategy|
           strategy.classify(text)
@@ -24,7 +24,7 @@ module Decidim
       end
 
       def untrain(category, text)
-        return if text.present?
+        return if text.blank?
 
         @registry.each do |strategy|
           strategy.untrain(category, text)
