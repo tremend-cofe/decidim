@@ -15,8 +15,8 @@ describe "User updates meeting", type: :system do
       address: "address",
       latitude: 40.1234,
       longitude: 2.1234,
-      scope: create(:scope, organization:),
-      category: meeting.category,
+      scope:,
+      category:,
       user_group_id: nil,
       current_user: author,
       current_component: component,
@@ -36,9 +36,10 @@ describe "User updates meeting", type: :system do
 
   include_examples "meetings spam analysis" do
     let!(:meeting) do
-      create(:meeting, component:,
-                       title: { en: "Some proposal that is not blocked" },
-                       description: { en: "The body for the meeting." })
+      create(:meeting,
+             component:,
+             title: { en: "Some proposal that is not blocked" },
+             description: { en: "The body for the meeting." })
     end
   end
 end

@@ -11,7 +11,7 @@ describe "User creates proposal", type: :system do
     ).with_context(
       current_user: author,
       current_organization: organization,
-      current_participatory_space: component.participatory_space,
+      current_participatory_space: participatory_space,
       current_component: component
     )
   end

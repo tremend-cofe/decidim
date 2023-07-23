@@ -12,7 +12,7 @@ describe "User updates meeting", type: :system do
       id: debate.id
     ).with_context(
       current_organization: organization,
-      current_participatory_space: participatory_process,
+      current_participatory_space: participatory_space,
       current_component: component,
       current_user: author
     )

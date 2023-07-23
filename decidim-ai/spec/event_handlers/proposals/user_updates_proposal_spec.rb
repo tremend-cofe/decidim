@@ -19,7 +19,7 @@ describe "User updates proposal", type: :system do
       errors: double.as_null_object
     ).with_context(
       current_organization: organization,
-      current_participatory_space: component.participatory_space,
+      current_participatory_space: participatory_space,
       current_component: component
     )
   end
@@ -27,13 +27,27 @@ describe "User updates proposal", type: :system do
 
   context "when proposal is published" do
     include_examples "proposal spam analysis" do
-      let!(:proposal) { create(:proposal, :published, component:, users: [author], title: "Some proposal that is not blocked", body: "The body for the proposal.") }
+      let!(:proposal) do
+        create(:proposal,
+               :published,
+               component:,
+               users: [author],
+               title: "Some proposal that is not blocked",
+               body: "The body for the proposal.")
+      end
     end
   end
 
   context "when proposal is draft" do
     include_examples "proposal spam analysis" do
-      let!(:proposal) { create(:proposal, :draft, component:, users: [author], title: "Some draft that is not blocked", body: "The body for the proposal.") }
+      let!(:proposal) do
+        create(:proposal,
+               :draft,
+               component:,
+               users: [author],
+               title: "Some draft that is not blocked",
+               body: "The body for the proposal.")
+      end
     end
   end
 end

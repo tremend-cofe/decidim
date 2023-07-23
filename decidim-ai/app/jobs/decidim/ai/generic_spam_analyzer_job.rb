@@ -7,29 +7,24 @@ module Decidim
 
       def perform(reportable, author, locale, fields)
         @author = author
-        fields.each do |field|
-          I18n.with_locale(locale) do
-            classifier.classify(translated_attribute(reportable.send(field)), locale)
+        overall_score = I18n.with_locale(locale) do
+          fields.map do |field|
+            classifier.classify(translated_attribute(reportable.send(field)))
+            classifier.score
           end
         end
 
-        return unless classifier.score >= Decidim::Ai.spam_treshold
+        overall_score = overall_score.inject(0.0, :+) / overall_score.size
+
+        return unless overall_score >= Decidim::Ai.spam_treshold
 
         Decidim::CreateReport.call(form, reportable, reporting_user)
-        # do
-        #   on(:ok) { ; }
-        #   on(:invalid) { ; }
-        # end
       end
 
       private
 
-      def classifier
-        @classifier ||= Decidim::Ai.spam_detection_instance
-      end
-
       def form
-        @form ||= Decidim::ReportForm.new(reason: "spam", details: classifier.details)
+        @form ||= Decidim::ReportForm.new(reason: "spam", details: classifier.classification_log)
       end
 
       def reporting_user

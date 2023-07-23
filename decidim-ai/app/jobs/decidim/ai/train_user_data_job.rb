@@ -6,14 +6,12 @@ module Decidim
       def perform(user)
         user.reload
 
-        spam_backend = Decidim::Ai.spam_detection_instance
-
         if user.blocked?
-          spam_backend.untrain "normal", user.about
-          spam_backend.train "spam", user.about
+          classifier.untrain "ham", user.about
+          classifier.train "spam", user.about
         else
-          spam_backend.untrain "spam", user.about
-          spam_backend.train "normal", user.about
+          classifier.untrain "spam", user.about
+          classifier.train "ham", user.about
         end
       end
     end
