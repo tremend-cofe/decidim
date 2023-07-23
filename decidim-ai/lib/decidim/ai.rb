@@ -5,7 +5,16 @@ require "decidim/ai/engine"
 module Decidim
   module Ai
     autoload :StrategyRegistry, "decidim/ai/strategy_registry"
-    autoload :File, "decidim/ai/load_dataset"
+
+    module Resource
+      autoload :Base, "decidim/ai/resource/base"
+      autoload :Comment, "decidim/ai/resource/comment"
+      autoload :Debate, "decidim/ai/resource/debate"
+      autoload :Proposal, "decidim/ai/resource/proposal"
+      autoload :CollaborativeDraft, "decidim/ai/resource/collaborative_draft"
+      autoload :Meeting, "decidim/ai/resource/meeting"
+      autoload :Wrapper, "decidim/ai/resource/wrapper"
+    end
 
     module LanguageDetection
       autoload :Service, "decidim/ai/language_detection/service"

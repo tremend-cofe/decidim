@@ -9,7 +9,7 @@ module Decidim
         class Bayes < Base
           def initialize(options = {})
             super
-            @options = { adapter: :memory, categories: %w(ham spam), params: {} }.deep_merge(options)
+            @options = { adapter: :memory, categories: [:ham, :spam], params: {} }.deep_merge(options)
 
             @available_categories = options[:categories]
             @backend = ClassifierReborn::Bayes.new(*available_categories, backend: configured_backend)
