@@ -14,13 +14,20 @@ module Decidim
           @backend = ClassifierReborn::Bayes.new(*available_categories, backend: configured_backend)
         end
 
-        delegate :train, :untrain, to: :backend
-
         def log
           return unless category
 
           "The Classification engine marked this as #{category}"
         end
+
+        # Calling this method without any trained categories will throw an error
+        def untrain(category, content)
+          return unless backend.categories.include?(category)
+
+          backend.untrain(category, content)
+        end
+
+        delegate :train, to: :backend
 
         def classify(content)
           @category, @internal_score = backend.classify_with_score(content)
