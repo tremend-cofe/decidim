@@ -41,6 +41,57 @@ describe "Answer a survey", type: :system do
     end
   end
 
+  context "when the survey allows multiple answers" do
+    let(:last_answer) { questionnaire.answers.last }
+
+    before do
+      component.update!(
+        step_settings: {
+          component.participatory_space.active_step.id => {
+            allow_multiple_answers: true,
+            allow_answers: true,
+            allow_unregistered: true
+          }
+        }
+      )
+    end
+
+    it "allows answering the questionnaire" do
+      visit_component
+
+      expect(page).to have_i18n_content(questionnaire.title)
+      expect(page).to have_i18n_content(questionnaire.description)
+
+      fill_in question.body["en"], with: "My first answer"
+
+      check "questionnaire_tos_agreement"
+
+      expect(questionnaire.answers.count).to eq(0)
+
+      accept_confirm { click_button "Submit" }
+
+      expect(questionnaire.answers.count).to eq(1)
+
+      within ".success.flash" do
+        expect(page).to have_content("Survey successfully answered")
+      end
+
+      expect(page).to have_i18n_content(questionnaire.title)
+      expect(page).to have_i18n_content(questionnaire.description)
+
+      fill_in question.body["en"], with: "My first answer"
+
+      check "questionnaire_tos_agreement"
+
+      accept_confirm { click_button "Submit" }
+
+      expect(questionnaire.answers.count).to eq(2)
+
+      expect(last_answer.session_token).not_to be_empty
+      expect(last_answer.ip_hash).not_to be_empty
+    end
+  end
+
   context "when the survey allow answers" do
     let(:last_answer) { questionnaire.answers.last }
 

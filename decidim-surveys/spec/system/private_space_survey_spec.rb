@@ -70,24 +70,74 @@ describe "Private Space Answer a survey", type: :system do
           login_as another_user, scope: :user
         end
 
-        it "allows answering the survey" do
-          visit_component
+        context "when the survey does not allow multiple answers" do
+          it "allows answering the survey" do
+            visit_component
 
-          expect(page).to have_i18n_content(questionnaire.title)
-          expect(page).to have_i18n_content(questionnaire.description)
+            expect(page).to have_i18n_content(questionnaire.title)
+            expect(page).to have_i18n_content(questionnaire.description)
 
-          fill_in question.body["en"], with: "My first answer"
+            fill_in question.body["en"], with: "My first answer"
 
-          check "questionnaire_tos_agreement"
+            check "questionnaire_tos_agreement"
 
-          accept_confirm { click_button "Submit" }
+            accept_confirm { click_button "Submit" }
 
-          within ".success.flash" do
-            expect(page).to have_content("successfully")
+            within ".success.flash" do
+              expect(page).to have_content("successfully")
+            end
+
+            expect(page).to have_content("You have already answered this form.")
+            expect(page).to have_no_i18n_content(question.body)
+          end
+        end
+
+        context "when the survey allows multiple answers" do
+          let(:last_answer) { questionnaire.answers.last }
+
+          before do
+            component.update!(
+              settings: {
+                allow_multiple_answers: true,
+                allow_answers: true
+              }
+            )
           end
 
-          expect(page).to have_content("You have already answered this form.")
-          expect(page).to have_no_i18n_content(question.body)
+          it "allows answering the questionnaire" do
+            visit_component
+
+            expect(page).to have_i18n_content(questionnaire.title)
+            expect(page).to have_i18n_content(questionnaire.description)
+
+            fill_in question.body["en"], with: "My first answer"
+
+            check "questionnaire_tos_agreement"
+
+            expect(questionnaire.answers.count).to eq(0)
+
+            accept_confirm { click_button "Submit" }
+
+            expect(questionnaire.answers.count).to eq(1)
+
+            within ".success.flash" do
+              expect(page).to have_content("Survey successfully answered")
+            end
+
+            expect(page).to have_i18n_content(questionnaire.title)
+            expect(page).to have_i18n_content(questionnaire.description)
+
+            fill_in question.body["en"], with: "My first answer"
+
+            check "questionnaire_tos_agreement"
+
+            accept_confirm { click_button "Submit" }
+
+            expect(questionnaire.answers.count).to eq(2)
+
+            expect(last_answer.session_token).not_to be_empty
+            expect(last_answer.ip_hash).not_to be_empty
+          end
         end
       end
 
