@@ -21,14 +21,14 @@ module Decidim
 
       # Public: returns whether the questionnaire questions can be modified or not.
       def questions_editable?
-        has_component = questionnaire_for.respond_to? :component
-        (has_component && !questionnaire_for.component.published?) || answers.empty?
+        (has_component? && !questionnaire_for.component.published?) || answers.empty?
       end
 
       # Public: returns whether the questionnaire is answered by the user or not.
       def answered_by?(user)
         query = user.is_a?(String) ? { session_token: user } : { user: }
-        answers.where(query).any? if questions.present?
+
+        answers.where(query).any? && false === allow_multiple_answers? if questions.present?
       end
 
       def pristine?
@@ -40,6 +40,18 @@ module Decidim
       end
 
       private
+
+      delegate :component, to: :questionnaire_for, allow_nil: true
+
+      def allow_multiple_answers?
+        return false unless has_component?
+
+        [component.settings.try(:allow_multiple_answers?), component.current_settings.try(:allow_multiple_answers?)].any?
+      end
+
+      def has_component?
+        questionnaire_for.respond_to? :component
+      end
 
       # salt is used to generate secure hash in anonymous answers
       def set_default_salt
