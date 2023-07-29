@@ -43,12 +43,13 @@ module Decidim
 
       private
 
-      delegate :component, to: :questionnaire_for, allow_nil: true
-
       def allow_multiple_answers?
         return false unless has_component?
 
-        [component.settings.try(:allow_multiple_answers?), component.current_settings.try(:allow_multiple_answers?)].any?
+        [
+          questionnaire_for.component.settings.try(:allow_multiple_answers?),
+          questionnaire_for.component.current_settings.try(:allow_multiple_answers?)
+        ].any?
       end
 
       def has_component?

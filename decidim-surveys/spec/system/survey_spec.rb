@@ -105,9 +105,16 @@ describe "Answer a survey", type: :system do
 
       before do
         component.update!(
+          step_settings: {
+            component.participatory_space.active_step.id => {
+              allow_answers: true,
+              allow_unregistered: true,
+              allow_multiple_answers: true
+            }
+          },
           settings: {
-            allow_multiple_answers: true,
-            allow_answers: true
+            starts_at: 1.week.ago,
+            ends_at: 1.day.from_now
           }
         )
       end
