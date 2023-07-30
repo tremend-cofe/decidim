@@ -132,57 +132,8 @@ module Decidim
     end
 
     # old config
-    config_accessor :spam_treshold do
-      0.5
-    end
-
     config_accessor :spam_classifier do
       "Decidim::Ai::SpamContent::Classifier"
-    end
-
-    config_accessor :enable_override do
-      false
-    end
-
-    # Optional: Allow loading to model some spam data provided by decidim, to have a starting point.
-    config_accessor :load_vendor_data do
-      true
-    end
-
-    # Options available are
-    # :memory
-    # :redis
-    config_accessor :backend do
-      :memory
-    end
-
-    # Options available are:
-    #   language:         'en'   Used to select language specific stop words
-    #   auto_categorize:  false  When true, enables ability to dynamically declare a category; the default is true if no initial categories are provided
-    #   enable_threshold: false  When true, enables a threshold requirement for classifition
-    #   threshold:        0.0    Default threshold, only used when enabled
-    #   enable_stemmer:   true   When false, disables word stemming
-    #   stopwords:        nil    Accepts path to a text file or an array of words, when supplied, overwrites the default list; assign empty string or array to disable stopwords
-    config_accessor :spam_classifier_options do
-      {}
-    end
-
-    # Options available are:
-    #   url:                lambda { ENV["REDIS_URL"] }
-    #   scheme:             "redis"
-    #   host:               "127.0.0.1"
-    #   port:               6379
-    #   path:               nil
-    #   timeout:            5.0
-    #   password:           nil
-    #   db:                 0
-    #   driver:             nil
-    #   id:                 nil
-    #   tcp_keepalive:      0
-    #   reconnect_attempts: 1
-    #   inherit_socket:     false
-    config_accessor :redis_configuration do
-      {}
     end
 
     config_accessor :trained_models do
