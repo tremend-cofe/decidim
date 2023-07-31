@@ -2,8 +2,8 @@
 
 module Decidim
   module Ai
-    module SpamContent
-      class BaseStrategy
+    module SpamDetection
+      class Base
         attr_reader :name
 
         def initialize(options = {})

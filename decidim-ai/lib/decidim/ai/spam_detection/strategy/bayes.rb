@@ -4,8 +4,8 @@ require "classifier-reborn"
 
 module Decidim
   module Ai
-    module SpamContent
-      class BayesStrategy < BaseStrategy
+    module SpamDetection
+      class BayesStrategy < Base
         def initialize(options = {})
           super
           @options = { adapter: :memory, categories: %w(ham spam), params: {} }.deep_merge(options)
