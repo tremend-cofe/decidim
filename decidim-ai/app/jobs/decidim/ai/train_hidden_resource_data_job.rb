@@ -10,7 +10,7 @@ module Decidim
 
         resource.reload
 
-        wrapped = Decidim::Ai::Resource::Wrapper.new(resource.class)
+        wrapped = Decidim::Ai.trained_models[resource.class.name].constantize.new(classifier)
 
         if resource.hidden?
           wrapped.fields.each do |field|

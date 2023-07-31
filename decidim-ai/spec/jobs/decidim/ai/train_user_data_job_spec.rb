@@ -28,7 +28,6 @@ module Decidim
         user.blocked = true
         user.save!
         subject.perform_now(user)
-        pp backend.inspect
         expect(backend.category_word_count(:ham)).to eq(0)
         expect(backend.category_word_count(:spam)).to eq(3)
       end

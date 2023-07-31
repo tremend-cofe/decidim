@@ -23,7 +23,7 @@ module Decidim
 
           # Calling this method without any trained categories will throw an error
           def untrain(category, content)
-            return unless backend.categories.collect(&:downcase).include?(category)
+            return unless backend.categories.collect(&:downcase).collect(&:to_sym).include?(category)
 
             backend.untrain(category, content)
           end
