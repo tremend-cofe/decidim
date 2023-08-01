@@ -5,14 +5,6 @@ module Decidim
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::Ai
 
-      initializer "decidim_tools_ai.subscribe_resource_events" do
-        config.to_prepare do
-          Decidim::EventsManager.subscribe(/^decidim\.system\.core\.resource\.hidden:after$/) do |_event_name, data|
-            Decidim::Ai::TrainHiddenResourceDataJob.perform_later(data[:resource])
-          end
-        end
-      end
-
       initializer "decidim_ai.classifiers" do |_app|
         Decidim::Ai.registered_analyzers.each do |analyzer|
           Decidim::Ai.spam_detection_registry.register_analyzer(**analyzer)

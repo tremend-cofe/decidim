@@ -18,16 +18,8 @@ module Decidim
           reset
           load_sample_data!
 
-          classifier = Decidim::Ai.spam_detection_instance
-          config.trained_models.each do |model|
-            wrapped = Decidim::Ai::Resource::Wrapper.new(model.constantize)
-            wrapped.train(classifier)
-          end
+          Decidim::Ai::SpamDetection::Importer::Database.call
           save_model!
-        end
-
-        def self.load_from_file!(file)
-          new.load_from_file!(file)
         end
 
         def load_from_file!(file)

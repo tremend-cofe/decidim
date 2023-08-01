@@ -5,7 +5,6 @@ require "cld"
 require "decidim/ai/admin"
 require "decidim/ai/engine"
 require "decidim/ai/admin_engine"
-require "decidim/ai/spam_content"
 
 module Decidim
   # This namespace holds the logic of the `Tools::Ai` module. This module
@@ -139,12 +138,6 @@ module Decidim
       "reporting.user@domain.tld"
     end
 
-    # old config
-    config_accessor :spam_classifier do
-      "Decidim::Ai::SpamContent::Classifier"
-    end
-
-    # EOF old config
     config_accessor :trained_models do
       {
         "Decidim::Comments::Comment" => "Decidim::Ai::SpamDetection::Resource::Comment",
