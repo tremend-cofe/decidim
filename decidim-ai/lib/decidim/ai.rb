@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
+require "classifier-reborn"
+require "cld"
+require "decidim/ai/admin"
 require "decidim/ai/engine"
+require "decidim/ai/admin_engine"
 
 module Decidim
+  # This namespace holds the logic of the `Tools::Ai` module. This module
+  # allows admins to perform various Artificial Inteligence activities like
+  # spam detection.
   module Ai
     autoload :StrategyRegistry, "decidim/ai/strategy_registry"
 
@@ -159,7 +166,6 @@ module Decidim
         password = SecureRandom.hex(10)
         user.password = password
         user.password_confirmation = password
-
         user.deleted_at = Time.current
         user.tos_agreement = true
         user.name = ""

@@ -5,16 +5,12 @@ module Decidim
     class Engine < ::Rails::Engine
       isolate_namespace Decidim::Ai
 
-      paths["db/migrate"] = nil
-      # paths["lib/tasks"] = nil
-
       initializer "decidim_ai.classifiers" do |_app|
         Decidim::Ai.registered_analyzers.each do |analyzer|
           Decidim::Ai.spam_detection_registry.register_analyzer(**analyzer)
         end
       end
 
-      # # initializer "decidim_tools_ai.subscribe_resource_events" do
       initializer "decidim_ai.events.hide_resource" do
         config.to_prepare do
           Decidim::EventsManager.subscribe("decidim.admin.hide_resource:after") do |_event_name, data|
@@ -23,7 +19,6 @@ module Decidim
         end
       end
 
-      # initializer "decidim_tools_ai.subscribe_profile_events" do
       initializer "decidim_ai.events.subscribe_profile" do
         config.to_prepare do
           Decidim::EventsManager.subscribe("decidim.update_account:after") do |_event_name, data|
@@ -35,7 +30,6 @@ module Decidim
         end
       end
 
-      # initializer "decidim_tools_ai.subscribe_comments_events" do
       initializer "decidim_ai.events.subscribe_comments" do
         config.to_prepare do
           ActiveSupport::Notifications.subscribe("decidim.comments.create_comment:after") do |_event_name, data|
@@ -47,7 +41,6 @@ module Decidim
         end
       end
 
-      # initializer "decidim_tools_ai.subscribe_meeting_events" do
       initializer "decidim_ai.events.subscribe_meeting" do
         config.to_prepare do
           ActiveSupport::Notifications.subscribe("decidim.meetings.create_meeting:after") do |_event_name, data|
@@ -59,7 +52,6 @@ module Decidim
         end
       end
 
-      # initializer "decidim_tools_ai.subscribe_debate_events" do
       initializer "decidim_ai.events.subscribe_debate" do
         config.to_prepare do
           ActiveSupport::Notifications.subscribe("decidim.debates.create_debate:after") do |_event_name, data|
@@ -71,7 +63,6 @@ module Decidim
         end
       end
 
-      # initializer "decidim_tools_ai.subscribe_proposals_events" do
       initializer "decidim_ai.events.subscribe_proposals" do
         config.to_prepare do
           ActiveSupport::Notifications.subscribe("decidim.proposals.create_proposal:after") do |_event_name, data|
@@ -89,6 +80,7 @@ module Decidim
         end
       end
 
+      paths["db/migrate"] = nil
       def load_seed
         nil
       end

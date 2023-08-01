@@ -24,11 +24,12 @@ Gem::Specification.new do |s|
   s.description = "A Decidim module with AI tools"
 
   s.files = Dir["{app,config,db,lib,vendor}/**/*", "Rakefile", "README.md"]
-
   s.add_dependency "classifier-reborn", "~> 2.3.0"
   s.add_dependency "cld", "~> 0.11"
   s.add_dependency "decidim-core", Decidim::Ai.version
+  s.add_development_dependency "decidim-comments", Decidim::Ai.version
   s.add_development_dependency "decidim-debates", Decidim::Ai.version
+  s.add_development_dependency "decidim-dev", Decidim::Ai.version
   s.add_development_dependency "decidim-meetings", Decidim::Ai.version
   s.add_development_dependency "decidim-proposals", Decidim::Ai.version
 end

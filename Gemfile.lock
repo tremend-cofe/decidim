@@ -319,7 +319,7 @@ GEM
     classifier-reborn (2.3.0)
       fast-stemmer (~> 1.0)
       matrix (~> 0.4)
-    cld (0.13.0)
+    cld (0.12.0)
       ffi
     cmdparse (3.0.7)
     commonmarker (0.23.9)

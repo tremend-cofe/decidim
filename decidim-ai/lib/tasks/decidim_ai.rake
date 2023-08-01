@@ -30,4 +30,15 @@ namespace :decidim do
       Gem.loaded_specs["decidim-ai"].full_gem_path
     end
   end
+
+  namespace :spam do
+    desc "Reset the whole spam detection algorithm"
+    task reset: :environment do
+      Decidim::Ai::SpamContent::Repository.reset!
+    end
+  end
+end
+
+Rake::Task["decidim:choose_target_plugins"].enhance do
+  Rake::Task["decidim:spam:choose_target_plugins"].invoke
 end

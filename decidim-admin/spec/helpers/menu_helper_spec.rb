@@ -18,7 +18,7 @@ module Decidim
 
         it "renders the default main menu" do
           expect(default_main_menu).to \
-            have_selector("li", count: 14) &
+            have_selector("li", count: 15) &
             have_link("Dashboard", href: "/admin/") &
             have_link("Processes", href: "/admin/participatory_processes") &
             have_link("Conferences", href: "/admin/conferences") &
@@ -33,6 +33,7 @@ module Decidim
             have_link("Settings", href: "/admin/organization/edit") &
             have_link("Admin activity log", href: "/admin/logs") &
             have_link("Templates", href: "/admin/templates/questionnaire_templates")
+          have_link("Ai Tools", href: "/admin/ai")
         end
 
         it "selects the correct default active option in Dashboard" do
