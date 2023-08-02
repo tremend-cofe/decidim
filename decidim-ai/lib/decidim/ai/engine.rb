@@ -75,7 +75,7 @@ module Decidim
           end
         end
       end
-      
+
       initializer "decidim_ai.events.subscribe_proposals" do
         config.to_prepare do
           ActiveSupport::Notifications.subscribe("decidim.proposals.create_proposal:after") do |_event_name, data|

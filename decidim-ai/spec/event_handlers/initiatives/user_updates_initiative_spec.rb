@@ -3,37 +3,44 @@
 require "spec_helper"
 
 describe "User updates meeting", type: :system do
-  let(:uploaded_files) { [] }
-  let(:current_files) { [] }
-  let(:signature_type) { "online" }
-  let(:attachment) { nil }
-  let(:scoped_type) { create(:initiatives_type_scope) }
-  let(:type_id) { scoped_type.type.id}
-
   let(:form) do
     Decidim::Initiatives::InitiativeForm.from_params(
       title:,
       description:,
-      signature_type:,
-      type_id:,
-      attachment:,
-      add_documents: uploaded_files,
-      documents: current_files
+      type_id: initiative&.type&.id,
+      scope_id: initiative&.scope&.id,
+      signature_type: initiative.signature_type,
+      attachment: nil
     ).with_context(
       current_organization: organization,
-      current_user: author
+      initiative_type: initiative&.type
     )
   end
-
   let(:command) { Decidim::Initiatives::UpdateInitiative.new(initiative, form, author) }
 
-  include_examples "initiatives spam analysis" do
-    let!(:author) { create(:user, :confirmed, organization:) }
+  context "when initiative is published" do
+    include_examples "initiatives spam analysis" do
+      let!(:initiative) do
+        create(:initiative,
+               :published,
+               organization:,
+               author:,
+               title: { "en" => "Some proposal that is not blocked" },
+               description: { "en" => "The body for the proposal." })
+      end
+    end
+  end
 
-    let!(:initiative) do
-      create(:initiative, author:,
-                      title: { en: "Some proposal that is not blocked" },
-                      description: { en: "The body for the meeting." })
+  context "when initiative is draft" do
+    include_examples "initiatives spam analysis" do
+      let!(:initiative) do
+        create(:initiative,
+               :created,
+               organization:,
+               author:,
+               title: { "en" => "Some proposal that is not blocked" },
+               description: { "en" => "The body for the proposal." })
+      end
     end
   end
 end

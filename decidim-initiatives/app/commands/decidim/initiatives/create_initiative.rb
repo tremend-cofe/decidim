@@ -24,9 +24,7 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        with_events do
-          create_initiative
-        end
+        create_initiative
 
         if initiative.persisted?
           broadcast(:ok, initiative)
@@ -36,6 +34,7 @@ module Decidim
       end
 
       protected
+
       def event_arguments
         {
           resource: initiative,
@@ -55,7 +54,7 @@ module Decidim
         build_initiative
         return initiative unless initiative.valid?
 
-        initiative.transaction do
+        with_events(with_transaction: true) do
           initiative.save!
 
           create_components_for(initiative)
