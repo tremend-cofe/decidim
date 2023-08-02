@@ -24,7 +24,9 @@ module Decidim
       def call
         return broadcast(:invalid) if form.invalid?
 
-        initiative = create_initiative
+        with_events do
+          create_initiative
+        end
 
         if initiative.persisted?
           broadcast(:ok, initiative)
@@ -33,13 +35,24 @@ module Decidim
         end
       end
 
+      protected
+      def event_arguments
+        {
+          resource: initiative,
+          extra: {
+            event_author: form.current_user,
+            locale:
+          }
+        }
+      end
+
       private
 
-      attr_reader :form, :current_user, :attachment
+      attr_reader :form, :current_user, :attachment, :initiative
 
       # Creates the initiative and all default components
       def create_initiative
-        initiative = build_initiative
+        build_initiative
         return initiative unless initiative.valid?
 
         initiative.transaction do
@@ -55,7 +68,7 @@ module Decidim
       end
 
       def build_initiative
-        Initiative.new(
+        @initiative = Initiative.new(
           organization: form.current_organization,
           title: { current_locale => form.title },
           description: { current_locale => form.description },
