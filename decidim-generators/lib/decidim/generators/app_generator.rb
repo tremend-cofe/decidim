@@ -8,6 +8,83 @@ require_relative "install_generator"
 
 module Decidim
   module Generators
+
+    class AppBuilder < Rails::AppBuilder
+
+      def readme
+        template "README.md"
+      end
+
+      def database_yml
+        inside "config" do
+          template "database.yml"
+        end
+      end
+
+      def config
+        super
+
+        inside "config" do
+          template "initializers_content_security_policy.rb", "initializers/content_security_policy.rb", force: true
+        end
+      end
+
+      def leftovers
+        copy_file "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
+        copy_file ".rubocop.yml", ".rubocop.yml"
+        copy_file ".node-version", ".node-version"
+        template "Dockerfile"
+        template "docker-compose.yml"
+        template "docker-compose-etherpad.yml"
+
+        template "decidim_controller.rb", "app/controllers/decidim_controller.rb"
+      end
+
+      def decidim_active_storage
+        gsub_file "config/environments/production.rb",
+                  /config.active_storage.service = :local/,
+                  "config.active_storage.service = Rails.application.secrets.dig(:storage, :provider) || :local"
+      end
+
+      def decidim_queueing
+        return unless options[:queue] == "sidekiq"
+
+        gsub_file "config/environments/production.rb",
+                  /# config.active_job.queue_adapter     = :resque/,
+                  "config.active_job.queue_adapter = ENV['QUEUE_ADAPTER'] if ENV['QUEUE_ADAPTER'].present?"
+
+        prepend_file "config/routes.rb", "require \"sidekiq/web\"\n\n"
+        route <<~RUBY
+          authenticate :user, ->(u) { u.admin? } do
+            mount Sidekiq::Web => "/sidekiq"
+          end
+        RUBY
+
+        inside "config" do
+          template "sidekiq.yml"
+        end
+      end
+
+      def decidim_performance_config
+        gsub_file "config/environments/development.rb", /^end\n$/, <<~CONFIG
+          # Performance configs for local testing
+          if ENV.fetch("RAILS_BOOST_PERFORMANCE", false).to_s == "true"
+            # Indicate boost performance mode
+            config.boost_performance = true
+            # Enable caching and eager load
+            config.eager_load = true
+            config.cache_classes = true
+            # Logging
+            config.log_level = :info
+            config.action_view.logger = nil
+            # Compress the HTML responses with gzip
+            config.middleware.use Rack::Deflater
+          end
+        end
+        CONFIG
+      end
+    end
+
     # Generates a Rails app and installs decidim to it. Uses the default Rails
     # generator for most of the work.
     #
@@ -93,51 +170,55 @@ module Decidim
                              default: false,
                              desc: "Do not add Puma development SSL configuration options"
 
+      SUPPORTED_QUEUE_ADAPTERS = %w(sidekiq).freeze
+
+      def initialize(*args)
+        super
+        self.options = options.merge(
+          database: :postgres,
+          skip_webpack_install: true,
+          skip_action_mailbox: true,
+          skip_action_cable: true,
+          skip_test: true,
+          skip_system_test: true,
+          skip_sprockets: true
+        )
+
+        providers = options[:storage].split(",")
+
+        raise Error, "#{providers} is not supported as storage provider, please use local, s3, gcs or azure" unless (providers - %w(local s3 gcs azure)).empty?
+
+        @extra_entries.push(GemfileEntry.new("aws-sdk-s3", nil,
+                                             "Amazon S3 ActiveStorage support", { require: false }, !providers.include?("s3")))
+        @extra_entries.push(GemfileEntry.new("azure-storage-blob", nil,
+                                             "Azure ActiveStorage support", { require: false }, !providers.include?("azure")))
+        @extra_entries.push(GemfileEntry.new("google-cloud-storage", "~> 1.11",
+                                             "Google Cloud Storage ActiveStorage support", { require: false }, !providers.include?("gcs")))
+
+        if options[:queue].present?
+          raise Error, "#{adapter} is not supported as a queue adapter, please use sidekiq for the moment" unless SUPPORTED_QUEUE_ADAPTERS.include?(options[:queue])
+
+          @extra_entries.push(GemfileEntry.new("sidekiq", nil,
+                                               "Sidekiq support", { }, adapter != "sidekiq"))
+        end
+      end
       # we disable the webpacker installation as we will use shakapacker
       def webpacker_gemfile_entry
         []
       end
 
-      def database_yml
-        template "database.yml.erb", "config/database.yml", force: true
+      def create_config_files
+        super
+
+        build(:decidim_active_storage)
+        build(:decidim_queueing)
+        build(:decidim_performance_config)
       end
 
-      def decidim_controller
-        template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb", force: true
-      end
-
-      def docker
-        template "Dockerfile.erb", "Dockerfile"
-        template "docker-compose.yml.erb", "docker-compose.yml"
-      end
-
-      def etherpad
-        template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
-      end
-
-      def cable_yml
-        template "cable.yml.erb", "config/cable.yml", force: true
-      end
-
-      def readme
-        template "README.md.erb", "README.md", force: true
-      end
-
-      def license
-        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
-      end
-
-      def rubocop
-        copy_file ".rubocop.yml", ".rubocop.yml"
-      end
-
-      def ruby_version
-        copy_file ".ruby-version", ".ruby-version", force: true
-      end
-
-      def node_version
-        copy_file ".node-version", ".node-version"
-      end
+      #
+      # def cable_yml
+      #   template "cable.yml.erb", "config/cable.yml", force: true
+      # end
 
       def gemfile
         return if options[:skip_gemfile]
@@ -166,136 +247,6 @@ module Decidim
             gsub_file "Gemfile", /gem "decidim-#{component}".*/, "# gem \"decidim-#{component}\", #{gem_modifier}"
           end
         end
-      end
-
-      def add_storage_provider
-        template "storage.yml.erb", "config/storage.yml", force: true
-
-        providers = options[:storage].split(",")
-
-        abort("#{providers} is not supported as storage provider, please use local, s3, gcs or azure") unless (providers - %w(local s3 gcs azure)).empty?
-        gsub_file "config/environments/production.rb",
-                  /config.active_storage.service = :local/,
-                  "config.active_storage.service = Rails.application.secrets.dig(:storage, :provider) || :local"
-
-        add_production_gems do
-          gem "aws-sdk-s3", require: false if providers.include?("s3")
-          gem "azure-storage-blob", require: false if providers.include?("azure")
-          gem "google-cloud-storage", "~> 1.11", require: false if providers.include?("gcs")
-        end
-      end
-
-      def add_queue_adapter
-        adapter = options[:queue]
-
-        abort("#{adapter} is not supported as a queue adapter, please use sidekiq for the moment") unless adapter.in?(["", "sidekiq"])
-
-        return unless adapter == "sidekiq"
-
-        template "sidekiq.yml.erb", "config/sidekiq.yml", force: true
-
-        gsub_file "config/environments/production.rb",
-                  /# config.active_job.queue_adapter     = :resque/,
-                  "config.active_job.queue_adapter = ENV['QUEUE_ADAPTER'] if ENV['QUEUE_ADAPTER'].present?"
-
-        prepend_file "config/routes.rb", "require \"sidekiq/web\"\n\n"
-        route <<~RUBY
-          authenticate :user, ->(u) { u.admin? } do
-            mount Sidekiq::Web => "/sidekiq"
-          end
-        RUBY
-
-        add_production_gems do
-          gem "sidekiq"
-        end
-      end
-
-      def add_production_gems(&block)
-        return if options[:skip_gemfile]
-
-        if block
-          @production_gems ||= []
-          @production_gems << block
-        elsif @production_gems.present?
-          gem_group :production do
-            @production_gems.map(&:call)
-          end
-        end
-      end
-
-      def tweak_bootsnap
-        gsub_file "config/boot.rb", %r{require 'bootsnap/setup'.*$}, <<~RUBY.rstrip
-          require "bootsnap"
-
-          env = ENV["RAILS_ENV"] || "development"
-
-          Bootsnap.setup(
-            cache_dir: File.expand_path(File.join("..", "tmp", "cache"), __dir__),
-            development_mode: env == "development",
-            load_path_cache: true,
-            compile_cache_iseq: !ENV["SIMPLECOV"],
-            compile_cache_yaml: true
-          )
-        RUBY
-      end
-
-      def tweak_spring
-        return unless File.exist?("config/spring.rb")
-
-        prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n"
-      end
-
-      def tweak_csp_initializer
-        return unless File.exist?("config/initializers/content_security_policy.rb")
-
-        remove_file("config/initializers/content_security_policy.rb")
-        create_file "config/initializers/content_security_policy.rb" do
-          %(# For tuning the Content Security Policy, check the Decidim documentation site
-# https://docs.decidim.org/develop/en/customize/content_security_policy)
-        end
-      end
-
-      def puma_ssl_options
-        return unless options[:dev_ssl]
-
-        append_file "config/puma.rb", <<~CONFIG
-
-          # Development SSL
-          if ENV["DEV_SSL"] && defined?(Bundler) && (dev_gem = Bundler.load.specs.find { |spec| spec.name == "decidim-dev" })
-            cert_dir = ENV.fetch("DEV_SSL_DIR") { "\#{dev_gem.full_gem_path}/lib/decidim/dev/assets" }
-            ssl_bind(
-              "0.0.0.0",
-              ENV.fetch("DEV_SSL_PORT") { 3443 },
-              cert_pem: File.read("\#{cert_dir}/ssl-cert.pem"),
-              key_pem: File.read("\#{cert_dir}/ssl-key.pem")
-            )
-          end
-        CONFIG
-      end
-
-      def modify_gitignore
-        return if options[:skip_git]
-
-        append_file ".gitignore", <<~GITIGNORE
-
-          # Ignore env configuration files
-          .env
-          .envrc
-          .rbenv-vars
-
-          # Ignore the files and folders generated through Webpack
-          /public/decidim-packs
-          /public/packs-test
-          /public/sw.js
-          /public/sw.js.map
-
-          # Ignore node modules
-          /node_modules
-        GITIGNORE
-      end
-
-      def add_ignore_tailwind_configuration
-        append_file ".gitignore", "\n\n# Ignore Tailwind configuration\ntailwind.config.js" unless options["skip_git"]
       end
 
       def remove_default_error_pages
@@ -331,26 +282,6 @@ module Decidim
         gsub_file "config/initializers/decidim.rb",
                   /#{Regexp.escape("config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]")}/,
                   "# config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]"
-      end
-
-      def dev_performance_config
-        gsub_file "config/environments/development.rb", /^end\n$/, <<~CONFIG
-
-            # Performance configs for local testing
-            if ENV.fetch("RAILS_BOOST_PERFORMANCE", false).to_s == "true"
-              # Indicate boost performance mode
-              config.boost_performance = true
-              # Enable caching and eager load
-              config.eager_load = true
-              config.cache_classes = true
-              # Logging
-              config.log_level = :info
-              config.action_view.logger = nil
-              # Compress the HTML responses with gzip
-              config.middleware.use Rack::Deflater
-            end
-          end
-        CONFIG
       end
 
       def authorization_handler
@@ -415,6 +346,11 @@ module Decidim
       end
 
       private
+
+
+      def get_builder_class
+        Decidim::Generators::AppBuilder
+      end
 
       def gem_modifier
         @gem_modifier ||= if options[:path]
