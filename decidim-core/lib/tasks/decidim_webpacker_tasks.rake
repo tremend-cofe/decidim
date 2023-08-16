@@ -205,7 +205,7 @@ if (config_path = Decidim::Webpacker.configuration.configuration_file)
 end
 
 # Remove the yarn install prerequisity from assets:precompile
-Rake::Task["assets:precompile"].prerequisites.delete("webpacker:yarn_install")
+Rake::Task["webpacker:compile"].prerequisites.delete("webpacker:yarn_install")
 
 # Add gem overrides path to the beginning in order to override rake tasks
 # Needed because of a bug in Rails 6.0 (see the overridden task for details)
