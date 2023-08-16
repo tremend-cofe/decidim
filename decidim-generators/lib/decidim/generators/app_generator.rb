@@ -26,10 +26,6 @@ module Decidim
         template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
 
         template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
-      end
-
-      def create_public_files
-        super
 
         remove_file "public/404.html"
         remove_file "public/500.html"
@@ -82,10 +78,6 @@ module Decidim
                              default: false,
                              desc: "Seed test database"
 
-      class_option :skip_bundle, type: :boolean,
-                                 default: true, # this is to avoid installing gems in this step yet (done by InstallGenerator)
-                                 desc: "Do not run bundle install"
-
       class_option :skip_gemfile, type: :boolean,
                                   default: false,
                                   desc: "Do not generate a Gemfile for the application"
@@ -114,13 +106,17 @@ module Decidim
                            default: "",
                            desc: "Setup the Gemfile with the appropiate gem to handle a queue adapter provider. Supported options are: (empty, does nothing) and sidekiq"
 
-      class_option :skip_webpack_install, type: :boolean,
-                                          default: true,
-                                          desc: "Do not run Webpack install"
-
       class_option :dev_ssl, type: :boolean,
                              default: false,
                              desc: "Do not add Puma development SSL configuration options"
+
+      def initialize(*args)
+        super
+        self.options = options.merge(
+          skip_webpack_install: true,
+          skip_bundle: true # this is to avoid installing gems in this step yet (done by InstallGenerator)
+        )
+      end
 
       # we disable the webpacker installation as we will use shakapacker
       def webpacker_gemfile_entry
