@@ -27,6 +27,14 @@ module Decidim
 
         template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
       end
+
+      def create_public_files
+        super
+
+        remove_file "public/404.html"
+        remove_file "public/500.html"
+        remove_file "public/favicon.ico"
+      end
     end
 
     # Generates a Rails app and installs decidim to it. Uses the default Rails
@@ -264,15 +272,6 @@ module Decidim
 
       def add_ignore_tailwind_configuration
         append_file ".gitignore", "\n\n# Ignore Tailwind configuration\ntailwind.config.js" unless options["skip_git"]
-      end
-
-      def remove_default_error_pages
-        remove_file "public/404.html"
-        remove_file "public/500.html"
-      end
-
-      def remove_default_favicon
-        remove_file "public/favicon.ico"
       end
 
       def decidim_initializer
