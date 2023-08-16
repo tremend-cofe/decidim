@@ -8,6 +8,9 @@ require_relative "install_generator"
 
 module Decidim
   module Generators
+    class AppBuilder < Rails::AppBuilder
+      
+    end
     # Generates a Rails app and installs decidim to it. Uses the default Rails
     # generator for most of the work.
     #
@@ -399,6 +402,10 @@ module Decidim
       end
 
       private
+
+      def get_builder_class
+        Decidim::Generators::AppBuilder
+      end
 
       def gem_modifier
         @gem_modifier ||= if options[:path]
