@@ -9,8 +9,26 @@ require_relative "install_generator"
 module Decidim
   module Generators
     class AppBuilder < Rails::AppBuilder
-      
+      def readme
+        template "README.md.erb", "README.md", force: true
+      end
+
+      def database_yml
+        template "database.yml.erb", "config/database.yml"
+      end
+
+      def leftovers
+        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
+        copy_file ".rubocop.yml", ".rubocop.yml"
+        copy_file ".node-version", ".node-version"
+        template "Dockerfile.erb", "Dockerfile"
+        template "docker-compose.yml.erb", "docker-compose.yml"
+        template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
+
+        template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
+      end
     end
+
     # Generates a Rails app and installs decidim to it. Uses the default Rails
     # generator for most of the work.
     #
@@ -101,45 +119,8 @@ module Decidim
         []
       end
 
-      def database_yml
-        template "database.yml.erb", "config/database.yml", force: true
-      end
-
-      def decidim_controller
-        template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb", force: true
-      end
-
-      def docker
-        template "Dockerfile.erb", "Dockerfile"
-        template "docker-compose.yml.erb", "docker-compose.yml"
-      end
-
-      def etherpad
-        template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
-      end
-
       def cable_yml
         template "cable.yml.erb", "config/cable.yml", force: true
-      end
-
-      def readme
-        template "README.md.erb", "README.md", force: true
-      end
-
-      def license
-        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
-      end
-
-      def rubocop
-        copy_file ".rubocop.yml", ".rubocop.yml"
-      end
-
-      def ruby_version
-        copy_file ".ruby-version", ".ruby-version", force: true
-      end
-
-      def node_version
-        copy_file ".node-version", ".node-version"
       end
 
       def gemfile
@@ -403,9 +384,11 @@ module Decidim
 
       private
 
+      # rubocop:disable Naming/AccessorMethodName
       def get_builder_class
         Decidim::Generators::AppBuilder
       end
+      # rubocop:enable Naming/AccessorMethodName
 
       def gem_modifier
         @gem_modifier ||= if options[:path]
