@@ -34,24 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def letter_opener_web
-        route <<~RUBY
-          if Rails.env.development?
-            mount LetterOpenerWeb::Engine, at: "/letter_opener"
-          end
-
-        RUBY
-
-        inject_into_file "config/environments/development.rb",
-                         after: "config.action_mailer.raise_delivery_errors = false" do
-          cut <<~RUBY
-            |
-            |  config.action_mailer.delivery_method = :letter_opener_web
-            |  config.action_mailer.default_url_options = { port: 3000 }
-          RUBY
-        end
-      end
-
       def profiling_gems
         return unless options[:profiling]
 
