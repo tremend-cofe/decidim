@@ -34,8 +34,13 @@ module Decidim
         remove_file "public/500.html"
         remove_file "public/favicon.ico"
 
-        return unless options[:demo]
+        prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n" if File.exist?("config/spring.rb")
 
+        add_demo_files if options[:demo]
+      end
+
+      private
+      def add_demo_files
         # authorization_handler
         copy_file "dummy_authorization_handler.rb", "app/services/dummy_authorization_handler.rb"
         copy_file "another_dummy_authorization_handler.rb", "app/services/another_dummy_authorization_handler.rb"
@@ -225,13 +230,7 @@ module Decidim
           end
         end
       end
-
-      def tweak_spring
-        return unless File.exist?("config/spring.rb")
-
-        prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n"
-      end
-
+      
       def puma_ssl_options
         return unless options[:dev_ssl]
 
