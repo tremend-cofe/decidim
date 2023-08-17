@@ -4,7 +4,6 @@ require "bundler"
 require "rails/generators"
 require "rails/generators/rails/app/app_generator"
 require "decidim/generators"
-require_relative "install_generator"
 
 module Decidim
   module Generators
@@ -496,11 +495,6 @@ module Decidim
         gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
       end
 
-      def copy_migrations
-        rails "decidim:choose_target_plugins", "railties:install:migrations"
-        recreate_db if options[:recreate_db]
-      end
-
       def letter_opener_web
         route <<~RUBY
           if Rails.env.development?
@@ -517,6 +511,11 @@ module Decidim
             |  config.action_mailer.default_url_options = { port: 3000 }
           RUBY
         end
+      end
+
+      def copy_migrations
+        rails "decidim:choose_target_plugins", "railties:install:migrations"
+        recreate_db if options[:recreate_db]
       end
 
       def profiling_gems
@@ -538,16 +537,8 @@ module Decidim
         copy_file "rack_profiler_initializer.rb", "config/initializers/rack_profiler.rb"
       end
 
-      def install
-        Decidim::Generators::InstallGenerator.start(
-          [
-            "--recreate_db=#{options[:recreate_db]}",
-            "--seed_db=#{options[:seed_db]}",
-            "--skip_gemfile=#{options[:skip_gemfile]}",
-            "--app_name=#{app_name}",
-            "--profiling=#{options[:profiling]}"
-          ]
-        )
+      def bundle_install
+        run "bundle install"
       end
 
       private
@@ -608,6 +599,34 @@ module Decidim
 
       def root_path
         File.expand_path(File.join("..", "..", ".."), __dir__)
+      end
+
+      def recreate_db
+        soft_rails "db:environment:set", "db:drop"
+        rails "db:create"
+
+        rails "db:migrate"
+
+        rails "db:seed" if options[:seed_db]
+
+        rails "db:test:prepare"
+      end
+
+      # Runs rails commands in a subprocess, and aborts if it does not suceeed
+      def rails(*args)
+        abort unless system("bin/rails", *args)
+      end
+
+      # Runs rails commands in a subprocess silencing errors, and ignores status
+      def soft_rails(*args)
+        system("bin/rails", *args, err: File::NULL)
+      end
+
+      def cut(text, strip: true)
+        cutted = text.gsub(/^ *\|/, "")
+        return cutted unless strip
+
+        cutted.rstrip
       end
     end
   end
