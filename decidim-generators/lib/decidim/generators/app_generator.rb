@@ -402,6 +402,10 @@ module Decidim
                   "config.machine_translation_service = 'Decidim::Dev::DummyTranslator'"
       end
 
+      def add_decidim_routes
+        route "mount Decidim::Core::Engine => '/'"
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [

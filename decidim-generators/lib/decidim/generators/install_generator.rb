@@ -34,10 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def install
-        route "mount Decidim::Core::Engine => '/'"
-      end
-
       def add_seeds
         append_file "db/seeds.rb", <<~RUBY
           # You can remove the 'faker' gem if you do not want Decidim seeds.
