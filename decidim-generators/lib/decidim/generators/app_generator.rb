@@ -444,7 +444,32 @@ module Decidim
           RUBY
         end
       end
-      
+
+      def install_decidim_webpacker
+        # Copy CSS files
+        copy_file "decidim_application.scss", "app/packs/stylesheets/decidim/decidim_application.scss"
+        copy_file "_decidim-settings.scss", "app/packs/stylesheets/decidim/_decidim-settings.scss"
+
+        # Copy JS application file
+        copy_file "decidim_application.js", "app/packs/src/decidim/decidim_application.js"
+
+        # Create empty directory for images
+        empty_directory "app/packs/images"
+        # Add a .keep file so directory is included in git when committing
+        create_file "app/packs/images/.keep"
+
+        # Regenerate webpacker binstubs
+        remove_file "bin/yarn"
+        bundle_install
+        rails "webpacker:binstubs"
+
+        # Run Decidim custom webpacker installation
+        rails "decidim:webpacker:install"
+
+        # Run Decidim custom procfile installation
+        rails "decidim:procfile:install"
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [

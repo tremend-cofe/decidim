@@ -34,50 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def smtp_environment
-        inject_into_file "config/environments/production.rb",
-                         after: "config.log_formatter = ::Logger::Formatter.new" do
-          cut <<~RUBY
-            |
-            |  config.action_mailer.smtp_settings = {
-            |    :address        => Rails.application.secrets.smtp_address,
-            |    :port           => Rails.application.secrets.smtp_port,
-            |    :authentication => Rails.application.secrets.smtp_authentication,
-            |    :user_name      => Rails.application.secrets.smtp_username,
-            |    :password       => Rails.application.secrets.smtp_password,
-            |    :domain         => Rails.application.secrets.smtp_domain,
-            |    :enable_starttls_auto => Rails.application.secrets.smtp_starttls_auto,
-            |    :openssl_verify_mode => 'none'
-            |  }
-          RUBY
-        end
-      end
-
-      def install_decidim_webpacker
-        # Copy CSS files
-        copy_file "decidim_application.scss", "app/packs/stylesheets/decidim/decidim_application.scss"
-        copy_file "_decidim-settings.scss", "app/packs/stylesheets/decidim/_decidim-settings.scss"
-
-        # Copy JS application file
-        copy_file "decidim_application.js", "app/packs/src/decidim/decidim_application.js"
-
-        # Create empty directory for images
-        empty_directory "app/packs/images"
-        # Add a .keep file so directory is included in git when committing
-        create_file "app/packs/images/.keep"
-
-        # Regenerate webpacker binstubs
-        remove_file "bin/yarn"
-        bundle_install
-        rails "webpacker:binstubs"
-
-        # Run Decidim custom webpacker installation
-        rails "decidim:webpacker:install"
-
-        # Run Decidim custom procfile installation
-        rails "decidim:procfile:install"
-      end
-
       def build_api_docs
         rails "decidim_api:generate_docs"
       end
