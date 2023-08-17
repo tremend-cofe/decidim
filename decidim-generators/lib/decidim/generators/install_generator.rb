@@ -34,13 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def add_seeds
-        append_file "db/seeds.rb", <<~RUBY
-          # You can remove the 'faker' gem if you do not want Decidim seeds.
-          Decidim.seed!
-        RUBY
-      end
-
       def copy_initializer
         copy_file "carrierwave.rb", "config/initializers/carrierwave.rb"
       end
