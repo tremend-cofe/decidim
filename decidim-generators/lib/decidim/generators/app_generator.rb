@@ -413,6 +413,10 @@ module Decidim
         RUBY
       end
 
+      def copy_carrierwave_initializer
+        copy_file "carrierwave.rb", "config/initializers/carrierwave.rb"
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [

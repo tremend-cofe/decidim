@@ -34,10 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def copy_initializer
-        copy_file "carrierwave.rb", "config/initializers/carrierwave.rb"
-      end
-
       def secrets
         template "secrets.yml.erb", "config/secrets.yml", force: true
       end
