@@ -426,6 +426,25 @@ module Decidim
         remove_file "app/views/layouts/mailer.text.erb"
       end
 
+      def smtp_environment
+        inject_into_file "config/environments/production.rb",
+                         after: "config.log_formatter = ::Logger::Formatter.new" do
+          cut <<~RUBY
+            |
+            |  config.action_mailer.smtp_settings = {
+            |    :address        => Rails.application.secrets.smtp_address,
+            |    :port           => Rails.application.secrets.smtp_port,
+            |    :authentication => Rails.application.secrets.smtp_authentication,
+            |    :user_name      => Rails.application.secrets.smtp_username,
+            |    :password       => Rails.application.secrets.smtp_password,
+            |    :domain         => Rails.application.secrets.smtp_domain,
+            |    :enable_starttls_auto => Rails.application.secrets.smtp_starttls_auto,
+            |    :openssl_verify_mode => 'none'
+            |  }
+          RUBY
+        end
+      end
+      
       def install
         Decidim::Generators::InstallGenerator.start(
           [
