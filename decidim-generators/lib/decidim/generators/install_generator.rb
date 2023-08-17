@@ -34,11 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def remove_layout
-        remove_file "app/views/layouts/application.html.erb"
-        remove_file "app/views/layouts/mailer.text.erb"
-      end
-
       def smtp_environment
         inject_into_file "config/environments/production.rb",
                          after: "config.log_formatter = ::Logger::Formatter.new" do
