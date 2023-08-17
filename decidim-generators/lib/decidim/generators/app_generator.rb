@@ -26,6 +26,7 @@ module Decidim
         template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
 
         template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
+        template "initializer.rb.erb", "config/initializers/decidim.rb"
 
         remove_file "public/404.html"
         remove_file "public/500.html"
@@ -246,7 +247,7 @@ module Decidim
       end
 
       def decidim_initializer
-        copy_file "initializer.rb", "config/initializers/decidim.rb"
+
 
         gsub_file "config/environments/production.rb",
                   /config.log_level = :info/,
@@ -255,20 +256,6 @@ module Decidim
         gsub_file "config/environments/production.rb",
                   %r{# config.asset_host = 'http://assets.example.com'},
                   "config.asset_host = ENV['RAILS_ASSET_HOST'] if ENV['RAILS_ASSET_HOST'].present?"
-
-        if options[:force_ssl] == "false"
-          gsub_file "config/initializers/decidim.rb",
-                    /# config.force_ssl = true/,
-                    "config.force_ssl = false"
-        end
-        return if options[:locales].blank?
-
-        gsub_file "config/initializers/decidim.rb",
-                  /#{Regexp.escape("# config.available_locales = %w(en ca es)")}/,
-                  "config.available_locales = %w(#{options[:locales].gsub(",", " ")})"
-        gsub_file "config/initializers/decidim.rb",
-                  /#{Regexp.escape("config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]")}/,
-                  "# config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]"
       end
 
       def dev_performance_config
@@ -299,14 +286,6 @@ module Decidim
         copy_file "verifications_initializer.rb", "config/initializers/decidim_verifications.rb"
       end
 
-      def sms_gateway
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.sms_gateway_service = "MySMSGatewayService"/,
-                  "config.sms_gateway_service = 'Decidim::Verifications::Sms::ExampleGateway'"
-      end
-
       def budgets_workflows
         return unless options[:demo]
 
@@ -314,30 +293,6 @@ module Decidim
         copy_file "budgets_workflow_random.en.yml", "config/locales/budgets_workflow_random.en.yml"
 
         copy_file "budgets_initializer.rb", "config/initializers/decidim_budgets.rb"
-      end
-
-      def timestamp_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.timestamp_service = "MyTimestampService"/,
-                  "config.timestamp_service = \"Decidim::Initiatives::DummyTimestamp\""
-      end
-
-      def pdf_signature_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.pdf_signature_service = "MyPDFSignatureService"/,
-                  "config.pdf_signature_service = \"Decidim::Initiatives::PdfSignatureExample\""
-      end
-
-      def machine_translation_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.machine_translation_service = "MyTranslationService"/,
-                  "config.machine_translation_service = 'Decidim::Dev::DummyTranslator'"
       end
 
       def install
