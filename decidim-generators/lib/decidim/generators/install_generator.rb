@@ -161,7 +161,7 @@ module Decidim
             gem "bullet"
             gem "flamegraph"
             gem "memory_profiler"
-            gem "rack-mini-profiler", require: false
+            # gem "rack-mini-profiler", require: false
             gem "stackprof"
           end
         RUBY
@@ -177,6 +177,7 @@ module Decidim
       private
 
       def recreate_db
+        run "bin/spring stop"
         soft_rails "db:environment:set", "db:drop"
         rails "db:create"
 
