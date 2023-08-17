@@ -480,6 +480,22 @@ module Decidim
         remove_dir("app/javascript")
       end
 
+      def remove_sprockets_requirement
+        gsub_file "config/application.rb", %r{require ['"]rails/all['"]\R}, <<~RUBY
+          require "decidim/rails"
+
+          # Add the frameworks used by your app that are not loaded by Decidim.
+          # require "action_mailbox/engine"
+          # require "action_text/engine"
+          require "action_cable/engine"
+          require "rails/test_unit/railtie"
+        RUBY
+
+        gsub_file "config/environments/development.rb", /config\.assets.*$/, ""
+        gsub_file "config/environments/test.rb", /config\.assets.*$/, ""
+        gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [
