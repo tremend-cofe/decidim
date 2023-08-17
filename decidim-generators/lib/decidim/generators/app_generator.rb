@@ -18,19 +18,33 @@ module Decidim
       end
 
       def leftovers
-        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
         copy_file ".rubocop.yml", ".rubocop.yml"
         copy_file ".node-version", ".node-version"
+
+        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
         template "Dockerfile.erb", "Dockerfile"
         template "docker-compose.yml.erb", "docker-compose.yml"
         template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
 
         template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
         template "initializer.rb.erb", "config/initializers/decidim.rb"
+        copy_file "initializers_content_security_policy.rb", "config/initializers/content_security_policy.rb", force: true
 
         remove_file "public/404.html"
         remove_file "public/500.html"
         remove_file "public/favicon.ico"
+
+        return unless options[:demo]
+
+        # authorization_handler
+        copy_file "dummy_authorization_handler.rb", "app/services/dummy_authorization_handler.rb"
+        copy_file "another_dummy_authorization_handler.rb", "app/services/another_dummy_authorization_handler.rb"
+        copy_file "verifications_initializer.rb", "config/initializers/decidim_verifications.rb"
+
+        # budgets_workflows
+        copy_file "budgets_workflow_random.rb", "lib/budgets_workflow_random.rb"
+        copy_file "budgets_workflow_random.en.yml", "config/locales/budgets_workflow_random.en.yml"
+        copy_file "budgets_initializer.rb", "config/initializers/decidim_budgets.rb"
       end
     end
 
@@ -218,16 +232,6 @@ module Decidim
         prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n"
       end
 
-      def tweak_csp_initializer
-        return unless File.exist?("config/initializers/content_security_policy.rb")
-
-        remove_file("config/initializers/content_security_policy.rb")
-        create_file "config/initializers/content_security_policy.rb" do
-          %(# For tuning the Content Security Policy, check the Decidim documentation site
-# https://docs.decidim.org/develop/en/customize/content_security_policy)
-        end
-      end
-
       def puma_ssl_options
         return unless options[:dev_ssl]
 
@@ -247,8 +251,6 @@ module Decidim
       end
 
       def decidim_initializer
-
-
         gsub_file "config/environments/production.rb",
                   /config.log_level = :info/,
                   "config.log_level = %w(debug info warn error fatal).include?(ENV['RAILS_LOG_LEVEL']) ? ENV['RAILS_LOG_LEVEL'] : :info"
@@ -276,23 +278,6 @@ module Decidim
             end
           end
         CONFIG
-      end
-
-      def authorization_handler
-        return unless options[:demo]
-
-        copy_file "dummy_authorization_handler.rb", "app/services/dummy_authorization_handler.rb"
-        copy_file "another_dummy_authorization_handler.rb", "app/services/another_dummy_authorization_handler.rb"
-        copy_file "verifications_initializer.rb", "config/initializers/decidim_verifications.rb"
-      end
-
-      def budgets_workflows
-        return unless options[:demo]
-
-        copy_file "budgets_workflow_random.rb", "lib/budgets_workflow_random.rb"
-        copy_file "budgets_workflow_random.en.yml", "config/locales/budgets_workflow_random.en.yml"
-
-        copy_file "budgets_initializer.rb", "config/initializers/decidim_budgets.rb"
       end
 
       def install
