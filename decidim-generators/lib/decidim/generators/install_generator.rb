@@ -34,10 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def build_api_docs
-        rails "decidim_api:generate_docs"
-      end
-
       def remove_old_assets
         remove_file "config/initializers/assets.rb"
         remove_dir("app/assets")

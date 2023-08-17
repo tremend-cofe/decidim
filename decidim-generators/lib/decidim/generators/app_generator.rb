@@ -470,6 +470,10 @@ module Decidim
         rails "decidim:procfile:install"
       end
 
+      def build_api_docs
+        rails "decidim_api:generate_docs"
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [
