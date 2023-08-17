@@ -34,12 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def remove_old_assets
-        remove_file "config/initializers/assets.rb"
-        remove_dir("app/assets")
-        remove_dir("app/javascript")
-      end
-
       def remove_sprockets_requirement
         gsub_file "config/application.rb", %r{require ['"]rails/all['"]\R}, <<~RUBY
           require "decidim/rails"

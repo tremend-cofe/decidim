@@ -474,6 +474,12 @@ module Decidim
         rails "decidim_api:generate_docs"
       end
 
+      def remove_old_assets
+        remove_file "config/initializers/assets.rb"
+        remove_dir("app/assets")
+        remove_dir("app/javascript")
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [
