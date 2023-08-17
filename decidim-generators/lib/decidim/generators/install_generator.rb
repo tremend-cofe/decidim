@@ -34,11 +34,6 @@ module Decidim
                                default: false,
                                desc: "Add the necessary gems to profile the app"
 
-      def copy_migrations
-        rails "decidim:choose_target_plugins", "railties:install:migrations"
-        recreate_db if options[:recreate_db]
-      end
-
       def letter_opener_web
         route <<~RUBY
           if Rails.env.development?

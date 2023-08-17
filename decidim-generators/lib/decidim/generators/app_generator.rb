@@ -496,6 +496,11 @@ module Decidim
         gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
       end
 
+      def copy_migrations
+        rails "decidim:choose_target_plugins", "railties:install:migrations"
+        recreate_db if options[:recreate_db]
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [
