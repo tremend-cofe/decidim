@@ -8,6 +8,102 @@ require_relative "install_generator"
 
 module Decidim
   module Generators
+    class AppBuilder < Rails::AppBuilder
+      def readme
+        template "README.md.erb", "README.md", force: true
+      end
+
+      def database_yml
+        template "database.yml.erb", "config/database.yml"
+      end
+
+      def production_environment
+        gsub_file "config/environments/production.rb",
+                  /config.log_level = :info/,
+                  "config.log_level = %w(debug info warn error fatal).include?(ENV['RAILS_LOG_LEVEL']) ? ENV['RAILS_LOG_LEVEL'] : :info"
+
+        gsub_file "config/environments/production.rb",
+                  %r{# config.asset_host = 'http://assets.example.com'},
+                  "config.asset_host = ENV['RAILS_ASSET_HOST'] if ENV['RAILS_ASSET_HOST'].present?"
+
+        gsub_file "config/environments/production.rb",
+                  /config.active_storage.service = :local/,
+                  "config.active_storage.service = Rails.application.secrets.dig(:storage, :provider) || :local"
+
+        gsub_file "config/environments/production.rb",
+                  /# config.active_job.queue_adapter     = :resque/,
+                  'config.active_job.queue_adapter = ENV.fetch("QUEUE_ADAPTER", "async").to_sym'
+      end
+
+      def development_environment
+        gsub_file "config/environments/development.rb", /^end\n$/, <<~CONFIG
+
+            # Performance configs for local testing
+            if ENV.fetch("RAILS_BOOST_PERFORMANCE", false).to_s == "true"
+              # Indicate boost performance mode
+              config.boost_performance = true
+              # Enable caching and eager load
+              config.eager_load = true
+              config.cache_classes = true
+              # Logging
+              config.log_level = :info
+              config.action_view.logger = nil
+              # Compress the HTML responses with gzip
+              config.middleware.use Rack::Deflater
+            end
+          end
+        CONFIG
+      end
+
+      def public_directory
+        directory "public", "public", recursive: false
+
+        remove_file "public/404.html"
+        remove_file "public/500.html"
+        remove_file "public/favicon.ico"
+      end
+
+      def queue_sidekiq_files
+        template "sidekiq.yml.erb", "config/sidekiq.yml"
+
+        prepend_file "config/routes.rb", "require \"sidekiq/web\"\n\n"
+        route <<~RUBY
+          authenticate :user, ->(u) { u.admin? } do
+            mount Sidekiq::Web => "/sidekiq"
+          end
+        RUBY
+      end
+
+      def authorization_handler
+        copy_file "dummy_authorization_handler.rb", "app/services/dummy_authorization_handler.rb"
+        copy_file "another_dummy_authorization_handler.rb", "app/services/another_dummy_authorization_handler.rb"
+        copy_file "verifications_initializer.rb", "config/initializers/decidim_verifications.rb"
+      end
+
+      def budgets_workflows
+        copy_file "budgets_workflow_random.rb", "lib/budgets_workflow_random.rb"
+        copy_file "budgets_workflow_random.en.yml", "config/locales/budgets_workflow_random.en.yml"
+        copy_file "budgets_initializer.rb", "config/initializers/decidim_budgets.rb"
+      end
+
+      def leftovers
+        copy_file ".rubocop.yml", ".rubocop.yml"
+        copy_file ".node-version", ".node-version"
+
+        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
+        template "Dockerfile.erb", "Dockerfile"
+        template "docker-compose.yml.erb", "docker-compose.yml"
+        template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
+
+        template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb"
+
+        template "initializer.rb.erb", "config/initializers/decidim.rb"
+        copy_file "initializers_content_security_policy.rb", "config/initializers/content_security_policy.rb", force: true
+
+        prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n" if File.exist?("config/spring.rb")
+      end
+    end
+
     # Generates a Rails app and installs decidim to it. Uses the default Rails
     # generator for most of the work.
     #
@@ -53,10 +149,6 @@ module Decidim
                              default: false,
                              desc: "Seed test database"
 
-      class_option :skip_bundle, type: :boolean,
-                                 default: true, # this is to avoid installing gems in this step yet (done by InstallGenerator)
-                                 desc: "Do not run bundle install"
-
       class_option :skip_gemfile, type: :boolean,
                                   default: false,
                                   desc: "Do not generate a Gemfile for the application"
@@ -85,321 +177,57 @@ module Decidim
                            default: "",
                            desc: "Setup the Gemfile with the appropiate gem to handle a queue adapter provider. Supported options are: (empty, does nothing) and sidekiq"
 
-      class_option :skip_webpack_install, type: :boolean,
-                                          default: true,
-                                          desc: "Do not run Webpack install"
-
       class_option :dev_ssl, type: :boolean,
                              default: false,
                              desc: "Do not add Puma development SSL configuration options"
+      STORAGE_PROVIDERS = %w(local s3 gcs azure).freeze
 
-      # we disable the webpacker installation as we will use shakapacker
-      def webpacker_gemfile_entry
-        []
-      end
+      def initialize(*args)
+        super
 
-      def database_yml
-        template "database.yml.erb", "config/database.yml", force: true
-      end
-
-      def decidim_controller
-        template "decidim_controller.rb.erb", "app/controllers/decidim_controller.rb", force: true
-      end
-
-      def docker
-        template "Dockerfile.erb", "Dockerfile"
-        template "docker-compose.yml.erb", "docker-compose.yml"
-      end
-
-      def etherpad
-        template "docker-compose-etherpad.yml", "docker-compose-etherpad.yml"
-      end
-
-      def cable_yml
-        template "cable.yml.erb", "config/cable.yml", force: true
-      end
-
-      def readme
-        template "README.md.erb", "README.md", force: true
-      end
-
-      def license
-        template "LICENSE-AGPLv3.txt", "LICENSE-AGPLv3.txt"
-      end
-
-      def rubocop
-        copy_file ".rubocop.yml", ".rubocop.yml"
-      end
-
-      def ruby_version
-        copy_file ".ruby-version", ".ruby-version", force: true
-      end
-
-      def node_version
-        copy_file ".node-version", ".node-version"
-      end
-
-      def gemfile
-        return if options[:skip_gemfile]
-
-        if branch.present?
-          get target_gemfile, "Gemfile", force: true
-          append_file "Gemfile", %(\ngem "net-imap", "~> 0.2.3", group: :development)
-          append_file "Gemfile", %(\ngem "net-pop", "~> 0.1.1", group: :development)
-          append_file "Gemfile", %(\ngem "net-smtp", "~> 0.3.1", group: :development)
-          get "#{target_gemfile}.lock", "Gemfile.lock", force: true
-        else
-          copy_file target_gemfile, "Gemfile", force: true
-          copy_file "#{target_gemfile}.lock", "Gemfile.lock", force: true
-        end
-
-        gsub_file "Gemfile", /gem "#{current_gem}".*/, "gem \"#{current_gem}\", #{gem_modifier}"
-
-        return unless current_gem == "decidim"
-
-        gsub_file "Gemfile", /gem "decidim-dev".*/, "gem \"decidim-dev\", #{gem_modifier}"
-
-        %w(conferences elections initiatives templates).each do |component|
-          if options[:demo]
-            gsub_file "Gemfile", /gem "decidim-#{component}".*/, "gem \"decidim-#{component}\", #{gem_modifier}"
-          else
-            gsub_file "Gemfile", /gem "decidim-#{component}".*/, "# gem \"decidim-#{component}\", #{gem_modifier}"
-          end
-        end
-      end
-
-      def add_storage_provider
-        template "storage.yml.erb", "config/storage.yml", force: true
+        self.options = options.merge(
+          database: :postgresql,
+          skip_webpack_install: true,
+          skip_test_unit: true,
+          skip_test: true,
+          skip_turbolinks: true,
+          skip_javascript: true,
+          skip_system_test: true,
+          skip_action_mailbox: true,
+          skip_action_text: true,
+          skip_jbuilder: true,
+          skip_sprockets: true,
+          skip_action_cable: true
+        )
 
         providers = options[:storage].split(",")
 
-        abort("#{providers} is not supported as storage provider, please use local, s3, gcs or azure") unless (providers - %w(local s3 gcs azure)).empty?
-        gsub_file "config/environments/production.rb",
-                  /config.active_storage.service = :local/,
-                  "config.active_storage.service = Rails.application.secrets.dig(:storage, :provider) || :local"
+        abort("#{providers} is not supported as storage provider, please use local, s3, gcs or azure") unless (providers - STORAGE_PROVIDERS).empty?
 
-        add_production_gems do
-          gem "aws-sdk-s3", require: false if providers.include?("s3")
-          gem "azure-storage-blob", require: false if providers.include?("azure")
-          gem "google-cloud-storage", "~> 1.11", require: false if providers.include?("gcs")
-        end
+        abort("#{options[:queue]} is not supported as a queue adapter, please use sidekiq for the moment") unless ["", "sidekiq"].include?(options[:queue])
       end
 
-      def add_queue_adapter
-        adapter = options[:queue]
-
-        abort("#{adapter} is not supported as a queue adapter, please use sidekiq for the moment") unless adapter.in?(["", "sidekiq"])
-
-        return unless adapter == "sidekiq"
-
-        template "sidekiq.yml.erb", "config/sidekiq.yml", force: true
-
-        gsub_file "config/environments/production.rb",
-                  /# config.active_job.queue_adapter     = :resque/,
-                  "config.active_job.queue_adapter = ENV['QUEUE_ADAPTER'] if ENV['QUEUE_ADAPTER'].present?"
-
-        prepend_file "config/routes.rb", "require \"sidekiq/web\"\n\n"
-        route <<~RUBY
-          authenticate :user, ->(u) { u.admin? } do
-            mount Sidekiq::Web => "/sidekiq"
-          end
-        RUBY
-
-        add_production_gems do
-          gem "sidekiq"
-        end
+      def create_queue_files
+        build(:queue_sidekiq_files) if options[:queue] == "sidekiq"
       end
 
-      def add_production_gems(&block)
-        return if options[:skip_gemfile]
-
-        if block
-          @production_gems ||= []
-          @production_gems << block
-        elsif @production_gems.present?
-          gem_group :production do
-            @production_gems.map(&:call)
-          end
-        end
-      end
-
-      def tweak_bootsnap
-        gsub_file "config/boot.rb", %r{require 'bootsnap/setup'.*$}, <<~RUBY.rstrip
-          require "bootsnap"
-
-          env = ENV["RAILS_ENV"] || "development"
-
-          Bootsnap.setup(
-            cache_dir: File.expand_path(File.join("..", "tmp", "cache"), __dir__),
-            development_mode: env == "development",
-            load_path_cache: true,
-            compile_cache_iseq: !ENV["SIMPLECOV"],
-            compile_cache_yaml: true
-          )
-        RUBY
-      end
-
-      def tweak_spring
-        return unless File.exist?("config/spring.rb")
-
-        prepend_to_file "config/spring.rb", "require \"decidim/spring\"\n\n"
-      end
-
-      def tweak_csp_initializer
-        return unless File.exist?("config/initializers/content_security_policy.rb")
-
-        remove_file("config/initializers/content_security_policy.rb")
-        create_file "config/initializers/content_security_policy.rb" do
-          %(# For tuning the Content Security Policy, check the Decidim documentation site
-# https://docs.decidim.org/develop/en/customize/content_security_policy)
-        end
-      end
-
-      def puma_ssl_options
-        return unless options[:dev_ssl]
-
-        append_file "config/puma.rb", <<~CONFIG
-
-          # Development SSL
-          if ENV["DEV_SSL"] && defined?(Bundler) && (dev_gem = Bundler.load.specs.find { |spec| spec.name == "decidim-dev" })
-            cert_dir = ENV.fetch("DEV_SSL_DIR") { "\#{dev_gem.full_gem_path}/lib/decidim/dev/assets" }
-            ssl_bind(
-              "0.0.0.0",
-              ENV.fetch("DEV_SSL_PORT") { 3443 },
-              cert_pem: File.read("\#{cert_dir}/ssl-cert.pem"),
-              key_pem: File.read("\#{cert_dir}/ssl-key.pem")
-            )
-          end
-        CONFIG
-      end
-
-      def modify_gitignore
-        return if options[:skip_git]
-
-        append_file ".gitignore", <<~GITIGNORE
-
-          # Ignore env configuration files
-          .env
-          .envrc
-          .rbenv-vars
-
-          # Ignore the files and folders generated through Webpack
-          /public/decidim-packs
-          /public/packs-test
-          /public/sw.js
-          /public/sw.js.map
-
-          # Ignore node modules
-          /node_modules
-        GITIGNORE
-      end
-
-      def add_ignore_tailwind_configuration
-        append_file ".gitignore", "\n\n# Ignore Tailwind configuration\ntailwind.config.js" unless options["skip_git"]
-      end
-
-      def remove_default_error_pages
-        remove_file "public/404.html"
-        remove_file "public/500.html"
-      end
-
-      def remove_default_favicon
-        remove_file "public/favicon.ico"
-      end
-
-      def decidim_initializer
-        copy_file "initializer.rb", "config/initializers/decidim.rb"
-
-        gsub_file "config/environments/production.rb",
-                  /config.log_level = :info/,
-                  "config.log_level = %w(debug info warn error fatal).include?(ENV['RAILS_LOG_LEVEL']) ? ENV['RAILS_LOG_LEVEL'] : :info"
-
-        gsub_file "config/environments/production.rb",
-                  %r{# config.asset_host = 'http://assets.example.com'},
-                  "config.asset_host = ENV['RAILS_ASSET_HOST'] if ENV['RAILS_ASSET_HOST'].present?"
-
-        if options[:force_ssl] == "false"
-          gsub_file "config/initializers/decidim.rb",
-                    /# config.force_ssl = true/,
-                    "config.force_ssl = false"
-        end
-        return if options[:locales].blank?
-
-        gsub_file "config/initializers/decidim.rb",
-                  /#{Regexp.escape("# config.available_locales = %w(en ca es)")}/,
-                  "config.available_locales = %w(#{options[:locales].gsub(",", " ")})"
-        gsub_file "config/initializers/decidim.rb",
-                  /#{Regexp.escape("config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]")}/,
-                  "# config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]"
-      end
-
-      def dev_performance_config
-        gsub_file "config/environments/development.rb", /^end\n$/, <<~CONFIG
-
-            # Performance configs for local testing
-            if ENV.fetch("RAILS_BOOST_PERFORMANCE", false).to_s == "true"
-              # Indicate boost performance mode
-              config.boost_performance = true
-              # Enable caching and eager load
-              config.eager_load = true
-              config.cache_classes = true
-              # Logging
-              config.log_level = :info
-              config.action_view.logger = nil
-              # Compress the HTML responses with gzip
-              config.middleware.use Rack::Deflater
-            end
-          end
-        CONFIG
-      end
-
-      def authorization_handler
+      def build_demo_files
         return unless options[:demo]
 
-        copy_file "dummy_authorization_handler.rb", "app/services/dummy_authorization_handler.rb"
-        copy_file "another_dummy_authorization_handler.rb", "app/services/another_dummy_authorization_handler.rb"
-        copy_file "verifications_initializer.rb", "config/initializers/decidim_verifications.rb"
+        build(:authorization_handler)
+        build(:budgets_workflows)
       end
 
-      def sms_gateway
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.sms_gateway_service = "MySMSGatewayService"/,
-                  "config.sms_gateway_service = 'Decidim::Verifications::Sms::ExampleGateway'"
+      def setup_production_environment
+        build(:production_environment)
       end
 
-      def budgets_workflows
-        return unless options[:demo]
-
-        copy_file "budgets_workflow_random.rb", "lib/budgets_workflow_random.rb"
-        copy_file "budgets_workflow_random.en.yml", "config/locales/budgets_workflow_random.en.yml"
-
-        copy_file "budgets_initializer.rb", "config/initializers/decidim_budgets.rb"
+      def setup_development_environment
+        build(:development_environment)
       end
 
-      def timestamp_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.timestamp_service = "MyTimestampService"/,
-                  "config.timestamp_service = \"Decidim::Initiatives::DummyTimestamp\""
-      end
-
-      def pdf_signature_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.pdf_signature_service = "MyPDFSignatureService"/,
-                  "config.pdf_signature_service = \"Decidim::Initiatives::PdfSignatureExample\""
-      end
-
-      def machine_translation_service
-        return unless options[:demo]
-
-        gsub_file "config/initializers/decidim.rb",
-                  /# config.machine_translation_service = "MyTranslationService"/,
-                  "config.machine_translation_service = 'Decidim::Dev::DummyTranslator'"
+      def add_package_json
+        build(:package_json)
       end
 
       def install
@@ -416,13 +244,106 @@ module Decidim
 
       private
 
+      def bundle_command(command, env = {})
+        say_status :run, "bundle #{command}"
+
+        run "bundle #{command}", env:
+      end
+
+      def development = { group: :development }
+
+      def version
+        options[:path] || branch.present? ? nil : Decidim::Generators.version
+      end
+
+      def decidim_gemfile_entry
+        [
+          GemfileEntry.new("decidim", version,
+                           "Decidim's core engine", gem_modifier),
+          GemfileEntry.new("decidim-conferences", version,
+                           "Decidim conference module", gem_modifier, !options[:demo]),
+          GemfileEntry.new("decidim-elections", version,
+                           "Decidim elections module", gem_modifier, !options[:demo]),
+          GemfileEntry.new("decidim-initiatives", version,
+                           "Decidim initiatives module", gem_modifier, !options[:demo]),
+          GemfileEntry.new("decidim-templates", version,
+                           "Decidim templates module", gem_modifier, !options[:demo])
+        ]
+      end
+
+      def queue_gemfile_entry
+        [
+          GemfileEntry.new("sidekiq", nil, "Sidekiq background processing support",
+                           {}, options[:queue] != "sidekiq")
+        ]
+      end
+
+      def storage_provider_gemfile_entry
+        providers = options[:storage].split(",")
+
+        [
+          GemfileEntry.new("aws-sdk-s3", nil, "AWS S3 Active Storage support",
+                           { require: false }, providers.exclude?("s3")),
+          GemfileEntry.new("azure-storage-blob", nil, "Azure Active Storage support",
+                           { require: false }, providers.exclude?("azure")),
+          GemfileEntry.new("google-cloud-storage", "~> 1.11", "Google Cloud Platform Active Storage support",
+                           { require: false }, providers.exclude?("gcs"))
+        ]
+      end
+
+      def decidim_dev_gemfile_entry
+        [
+          GemfileEntry.new("decidim-dev", version, "Decidim's dev engine", gem_modifier.merge(development)),
+          GemfileEntry.new("spring-watcher-listen", "~> 2.0", "Spring watcher", development),
+          GemfileEntry.new("net-imap", "~> 0.2.3", "IMAP client library", development, branch.blank?),
+          GemfileEntry.new("net-pop", "~> 0.1.1", "POP client library", development, branch.blank?),
+          GemfileEntry.new("net-smtp", "~> 0.3.1", "SMTP client library", development, branch.blank?)
+        ]
+      end
+
+      def web_server_gemfile_entry
+        return [] if options[:skip_puma]
+
+        comment = "Use Puma as the app server"
+        GemfileEntry.new("puma", "~> 6.0", comment)
+      end
+
+      def gemfile_entries
+        [
+          decidim_gemfile_entry,
+          queue_gemfile_entry,
+          storage_provider_gemfile_entry,
+          web_server_gemfile_entry,
+          psych_gemfile_entry,
+          decidim_dev_gemfile_entry,
+          @extra_entries
+        ].flatten.find_all(&@gem_filter)
+      end
+
+      # Rails comes as a dependency of decidim
+      def rails_gemfile_entry
+        []
+      end
+
+      def webpacker_gemfile_entry
+        []
+      end
+
+      # rubocop:disable Naming/AccessorMethodName
+      def get_builder_class
+        Decidim::Generators::AppBuilder
+      end
+      # rubocop:enable Naming/AccessorMethodName
+
+      # old
+
       def gem_modifier
         @gem_modifier ||= if options[:path]
-                            %(path: "#{options[:path]}")
+                            { path: options[:path] }
                           elsif branch.present?
-                            %(git: "#{repository}", branch: "#{branch}")
+                            { git: repository, branch: }
                           else
-                            %("#{Decidim::Generators.version}")
+                            {}
                           end
       end
 
@@ -442,36 +363,6 @@ module Decidim
 
       def app_const_base
         app_name.gsub(/\W/, "_").squeeze("_").camelize
-      end
-
-      def current_gem
-        return "decidim" unless options[:path]
-
-        @current_gem ||= File.read(gemspec).match(/name\s*=\s*['"](?<name>.*)["']/)[:name]
-      end
-
-      def gemspec
-        File.expand_path(Dir.glob("*.gemspec", base: expanded_path).first, expanded_path)
-      end
-
-      def target_gemfile
-        root = if options[:path]
-                 expanded_path
-               elsif branch.present?
-                 "https://raw.githubusercontent.com/decidim/decidim/#{branch}/decidim-generators"
-               else
-                 root_path
-               end
-
-        File.join(root, "Gemfile")
-      end
-
-      def expanded_path
-        File.expand_path(options[:path])
-      end
-
-      def root_path
-        File.expand_path(File.join("..", "..", ".."), __dir__)
       end
     end
   end
