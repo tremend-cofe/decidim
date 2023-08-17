@@ -417,6 +417,10 @@ module Decidim
         copy_file "carrierwave.rb", "config/initializers/carrierwave.rb"
       end
 
+      def secrets
+        template "secrets.yml.erb", "config/secrets.yml", force: true
+      end
+
       def install
         Decidim::Generators::InstallGenerator.start(
           [
