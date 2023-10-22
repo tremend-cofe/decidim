@@ -5,62 +5,34 @@ module Decidim
     module Admin
       # This command is executed when the user creates a Result from the admin
       # panel.
-      class CreateResult < Decidim::Command
-        def initialize(form)
-          @form = form
-        end
-
-        # Creates the result if valid.
-        #
-        # Broadcasts :ok if successful, :invalid otherwise.
-        def call
-          return broadcast(:invalid) if @form.invalid?
-
-          transaction do
-            create_result
-            link_meetings
-            link_proposals
-            link_projects
-            notify_proposal_followers
-          end
-
-          broadcast(:ok)
-        end
+      class CreateResult < Decidim::Commands::CreateResource
+        fetch_form_attributes :scope, :category, :parent_id, :title, :description, :start_date,
+                              :end_date, :progress, :decidim_accountability_status_id, :external_id, :weight
 
         private
 
-        attr_reader :result
+        attr_reader :resource
 
-        def create_result
-          params = {
-            component: @form.current_component,
-            scope: @form.scope,
-            category: @form.category,
-            parent_id: @form.parent_id,
-            title: @form.title,
-            description: @form.description,
-            start_date: @form.start_date,
-            end_date: @form.end_date,
-            progress: @form.progress,
-            decidim_accountability_status_id: @form.decidim_accountability_status_id,
-            external_id: @form.external_id.presence,
-            weight: @form.weight
-          }
-
-          @result = Decidim.traceability.create!(
-            Result,
-            @form.current_user,
-            params,
-            visibility: "all"
-          )
+        def create_resource
+          super
+          link_meetings
+          link_proposals
+          link_projects
+          notify_proposal_followers
         end
 
+        def resource_class = Decidim::Accountability::Result
+
+        def extra_params = { visibility: "all" }
+
+        def attributes = super.merge(component: form.current_component, external_id: form.external_id.presence)
+
         def proposals
-          @proposals ||= result.sibling_scope(:proposals).where(id: @form.proposal_ids)
+          @proposals ||= resource.sibling_scope(:proposals).where(id: form.proposal_ids)
         end
 
         def projects
-          @projects ||= result.sibling_scope(:projects).where(id: @form.project_ids)
+          @projects ||= resource.sibling_scope(:projects).where(id: form.project_ids)
         end
 
         def meeting_ids
@@ -70,19 +42,19 @@ module Decidim
         end
 
         def meetings
-          @meetings ||= result.sibling_scope(:meetings).where(id: meeting_ids)
+          @meetings ||= resource.sibling_scope(:meetings).where(id: meeting_ids)
         end
 
         def link_proposals
-          result.link_resources(proposals, "included_proposals")
+          resource.link_resources(proposals, "included_proposals")
         end
 
         def link_projects
-          result.link_resources(projects, "included_projects")
+          resource.link_resources(projects, "included_projects")
         end
 
         def link_meetings
-          result.link_resources(meetings, "meetings_through_proposals")
+          resource.link_resources(meetings, "meetings_through_proposals")
         end
 
         def notify_proposal_followers
@@ -90,7 +62,7 @@ module Decidim
             Decidim::EventsManager.publish(
               event: "decidim.events.accountability.proposal_linked",
               event_class: Decidim::Accountability::ProposalLinkedEvent,
-              resource: result,
+              resource:,
               affected_users: proposal.notifiable_identities,
               followers: proposal.followers - proposal.notifiable_identities,
               extra: {

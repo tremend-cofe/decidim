@@ -19,6 +19,7 @@ module Decidim::Accountability
     let(:form) do
       double(
         invalid?: invalid,
+        current_user: user,
         current_component:,
         key:,
         name: { en: name },
