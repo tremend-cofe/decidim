@@ -20,13 +20,12 @@ module Decidim
         broadcast(:ok)
       end
 
-      def create_resource
-        @resource = Decidim.traceability.create!(
-          resource_class,
-          form.current_user,
-          attributes,
-          **extra_params
-        )
+      def create_resource(soft: false)
+        @resource = Decidim.traceability.send(soft ? :create : :create!,
+                                              resource_class,
+                                              form.current_user,
+                                              attributes,
+                                              **extra_params)
       end
 
       def self.fetch_form_attributes(*fields)

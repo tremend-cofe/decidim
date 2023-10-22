@@ -25,11 +25,14 @@ module Decidim
         Decidim.traceability.perform_action!(
           :delete,
           resource,
-          current_user
+          current_user,
+          **extra_params
         ) do
           resource.destroy!
         end
       end
+
+      def extra_params = {}
     end
   end
 end

@@ -12,7 +12,7 @@ module Decidim
       #
       # Broadcasts :ok if successful, :invalid otherwise.
       def call
-        return broadcast(:invalid) if form.invalid?
+        return broadcast(:invalid) if invalid?
 
         transaction do
           update_resource
@@ -31,11 +31,16 @@ module Decidim
 
       attr_reader :form, :resource
 
+      def invalid?
+        form.invalid?
+      end
+
       def update_resource
         Decidim.traceability.update!(
           resource,
           form.current_user,
-          attributes
+          attributes,
+          **extra_params
         )
       end
 
@@ -46,6 +51,8 @@ module Decidim
           form.send(field)
         end
       end
+
+      def extra_params = {}
     end
   end
 end

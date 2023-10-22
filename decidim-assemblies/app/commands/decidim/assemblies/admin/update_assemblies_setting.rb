@@ -5,40 +5,20 @@ module Decidim
     module Admin
       # A command with all the business logic when updating assemblies
       # settings in admin area.
-      class UpdateAssembliesSetting < Decidim::Command
+      class UpdateAssembliesSetting < Decidim::Commands::UpdateResource
+        fetch_form_attributes :enable_organization_chart
         # Public: Initializes the command.
         #
         # assemblies_setting - A assemblies_setting object to update.
         # form - A form object with the params.
         def initialize(assemblies_settings, form)
-          @assemblies_settings = assemblies_settings
-          @form = form
+          super(form, assemblies_settings)
         end
 
-        # Executes the command. Broadcasts these events:
-        #
-        # - :ok when everything is valid.
-        # - :invalid if the form or assemblies_settings is not valid and we could not proceed.
-        #
-        # Returns nothing.
-        def call
-          return broadcast(:invalid) if form.invalid? || assemblies_settings.invalid?
+        protected
 
-          update_assemblies_setting!
-
-          broadcast(:ok)
-        end
-
-        private
-
-        attr_reader :form, :assemblies_settings
-
-        def update_assemblies_setting!
-          Decidim.traceability.update!(
-            @assemblies_settings,
-            form.current_user,
-            enable_organization_chart: form.enable_organization_chart
-          )
+        def invalid?
+          form.invalid? || resource.invalid?
         end
       end
     end

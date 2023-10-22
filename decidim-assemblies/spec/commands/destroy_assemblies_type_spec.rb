@@ -20,7 +20,7 @@ module Decidim::Assemblies
         expect(Decidim.traceability)
           .to receive(:perform_action!)
           .with(
-            "delete",
+            :delete,
             assembly_type,
             user
           )
