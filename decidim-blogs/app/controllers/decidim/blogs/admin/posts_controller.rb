@@ -55,7 +55,7 @@ module Decidim
         def destroy
           enforce_permission_to :destroy, :blogpost, blogpost: post
 
-          Decidim::Commands::DestroyResource.call(status, current_user) do
+          Decidim::Commands::DestroyResource.call(post, current_user) do
             on(:ok) do
               flash[:notice] = I18n.t("posts.destroy.success", scope: "decidim.blogs.admin")
 
