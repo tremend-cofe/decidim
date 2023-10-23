@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim::Assemblies
   describe Admin::UpdateAssembliesSetting do
-    subject { described_class.new(assembly_setting, form) }
+    subject { described_class.new(form, assembly_setting) }
 
     let(:organization) { create(:organization) }
     let(:user) { create(:user, :admin, :confirmed, organization:) }

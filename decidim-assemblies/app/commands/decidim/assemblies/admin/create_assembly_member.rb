@@ -15,7 +15,7 @@ module Decidim
         #
         # form - A form object with the params.
         # assembly - The Assembly that will hold the member
-        def initialize(form, _current_user, assembly)
+        def initialize(form, assembly)
           super(form)
           @current_user = form.current_user
           @assembly = assembly

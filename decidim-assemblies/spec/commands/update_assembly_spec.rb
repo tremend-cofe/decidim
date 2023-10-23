@@ -87,7 +87,7 @@ module Decidim::Assemblies
       let(:form) do
         Admin::AssemblyForm.from_params(params).with_context(context)
       end
-      let(:command) { described_class.new(my_assembly, form) }
+      let(:command) { described_class.new(form, my_assembly) }
 
       describe "when the form is not valid" do
         before do

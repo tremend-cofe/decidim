@@ -21,7 +21,7 @@ module Decidim
           @form = assemblies_settings_form
                   .from_params(params, assemblies_settings: current_assemblies_settings)
 
-          UpdateAssembliesSetting.call(current_assemblies_settings, @form) do
+          UpdateAssembliesSetting.call(@form, current_assemblies_settings) do
             on(:ok) do
               flash[:notice] = I18n.t("assemblies_settings.update.success", scope: "decidim.admin")
               redirect_to edit_assemblies_settings_path

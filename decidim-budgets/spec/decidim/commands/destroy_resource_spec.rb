@@ -3,22 +3,26 @@
 require "spec_helper"
 
 describe Decidim::Commands::DestroyResource do
-  subject { described_class.new(result, user) }
+  subject { described_class.new(assembly_type, user) }
 
-  let(:result) { create(:result) }
-  let(:organization) { result.component.organization }
-  let(:user) { create(:user, organization:) }
+  let(:organization) { create(:organization) }
+  let(:assembly_type) { create(:assemblies_type, organization:) }
+  let(:user) { create(:user, :admin, :confirmed, organization:) }
 
   context "when everything is ok" do
-    it "destroys the result" do
+    it "destroys the assembly type" do
       subject.call
-      expect { result.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { assembly_type.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "traces the action", versioning: true do
       expect(Decidim.traceability)
         .to receive(:perform_action!)
-        .with(:delete, result, user)
+        .with(
+          :delete,
+          assembly_type,
+          user
+        )
         .and_call_original
 
       expect { subject.call }.to change(Decidim::ActionLog, :count)

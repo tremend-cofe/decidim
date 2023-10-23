@@ -21,7 +21,7 @@ module Decidim
         # assembly - the Assembly to update
         # form - A form object with the params.
         def initialize(assembly, form)
-          super(form, assembly)
+          super(assembly, form)
           @parent = Assembly.find_by(id: resource.parent)
         end
 

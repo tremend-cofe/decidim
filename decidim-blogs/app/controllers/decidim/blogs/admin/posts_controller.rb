@@ -55,13 +55,13 @@ module Decidim
         def destroy
           enforce_permission_to :destroy, :blogpost, blogpost: post
 
-          Decidim.traceability.perform_action!("delete", post, current_user) do
-            post.destroy!
+          Decidim::Commands::DestroyResource.call(status, current_user) do
+            on(:ok) do
+              flash[:notice] = I18n.t("posts.destroy.success", scope: "decidim.blogs.admin")
+
+              redirect_to posts_path
+            end
           end
-
-          flash[:notice] = I18n.t("posts.destroy.success", scope: "decidim.blogs.admin")
-
-          redirect_to posts_path
         end
 
         private
