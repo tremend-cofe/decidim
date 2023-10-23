@@ -126,6 +126,7 @@ module Decidim
     autoload :CreateResource, "decidim/commands/create_resource"
     autoload :UpdateResource, "decidim/commands/update_resource"
     autoload :DestroyResource, "decidim/commands/destroy_resource"
+    autoload :ResourceHandler, "decidim/commands/resource_handler"
   end
 
   include ActiveSupport::Configurable
