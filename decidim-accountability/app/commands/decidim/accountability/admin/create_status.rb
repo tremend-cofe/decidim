@@ -7,9 +7,6 @@ module Decidim
       # panel.
       class CreateStatus < Decidim::Commands::CreateResource
         fetch_form_attributes :key, :name, :description, :progress
-        def initialize(form, _user)
-          super(form)
-        end
 
         private
 

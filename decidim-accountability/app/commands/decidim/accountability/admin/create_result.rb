@@ -12,6 +12,7 @@ module Decidim
         private
 
         attr_reader :resource
+        alias result resource
 
         def create_resource
           super
