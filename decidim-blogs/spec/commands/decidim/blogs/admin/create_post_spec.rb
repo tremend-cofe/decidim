@@ -10,7 +10,7 @@ module Decidim
 
         let(:organization) { create(:organization) }
         let(:participatory_process) { create(:participatory_process, organization:) }
-        let(:current_component) { create(:component, participatory_space: participatory_process, manifest_name: "blogs") }
+        let(:component) { create(:component, participatory_space: participatory_process, manifest_name: "blogs") }
         let(:current_user) { create(:user, organization:) }
         let(:title) { "Post title" }
         let(:body) { "Lorem Ipsum dolor sit amet" }
@@ -20,10 +20,11 @@ module Decidim
         let(:form) do
           double(
             invalid?: invalid,
+            current_user:,
             title: { en: title },
             body: { en: body },
             published_at: publish_time,
-            current_component:,
+            component:,
             author: current_user
           )
         end
@@ -65,7 +66,7 @@ module Decidim
 
           it "sets the component" do
             subject.call
-            expect(post.component).to eq current_component
+            expect(post.component).to eq component
           end
 
           it "broadcasts ok" do
@@ -115,10 +116,11 @@ module Decidim
             let(:form) do
               double(
                 invalid?: invalid,
+                current_user:,
                 title: { en: title },
                 published_at: publish_time,
                 body: { en: body },
-                current_component:,
+                component:,
                 author: group
               )
             end

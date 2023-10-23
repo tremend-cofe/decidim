@@ -20,10 +20,11 @@ module Decidim
         let(:form) do
           double(
             invalid?: invalid,
+            current_user:,
             title: { en: title },
             body: { en: body },
             published_at: publish_time,
-            current_component:,
+            component: current_component,
             author: current_user
           )
         end
@@ -95,6 +96,7 @@ module Decidim
             let(:form) do
               double(
                 invalid?: invalid,
+                current_user:,
                 title: { en: title },
                 body: { en: body },
                 published_at: publish_time,

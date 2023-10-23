@@ -11,13 +11,13 @@ module Decidim
       #
       # Broadcasts :ok if successful, :invalid otherwise.
       def call
-        return broadcast(:invalid) if form.invalid?
+        return broadcast(:invalid) if invalid?
 
         transaction do
           create_resource
         end
 
-        broadcast(:ok)
+        broadcast(:ok, resource)
       end
 
       def create_resource(soft: false)
@@ -36,8 +36,12 @@ module Decidim
 
       private
 
-      attr_reader :form
+      attr_reader :form, :resource
 
+      def invalid?
+        form.invalid?
+      end
+      
       def resource_class = raise "#{self.class.name} needs to implement #{__method__}"
 
       def attributes

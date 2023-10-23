@@ -18,7 +18,7 @@ module Decidim
           update_resource
         end
 
-        broadcast(:ok)
+        broadcast(:ok, resource)
       end
 
       def self.fetch_form_attributes(*fields)
