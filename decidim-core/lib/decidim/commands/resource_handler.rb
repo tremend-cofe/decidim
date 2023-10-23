@@ -6,6 +6,8 @@ module Decidim
       extend ActiveSupport::Concern
 
       included do
+        protected
+
         attr_reader :form
 
         def resource_class = raise "#{self.class.name} needs to implement #{__method__}"

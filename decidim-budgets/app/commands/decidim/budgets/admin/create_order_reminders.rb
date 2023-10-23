@@ -5,6 +5,7 @@ module Decidim
     module Admin
       # This command is executed when admin sends vote reminders.
       class CreateOrderReminders < Decidim::Command
+        delegate :current_component, :voting_enabled?, :voting_ends_soon?, to: :form
         def initialize(form)
           @form = form
         end
@@ -47,18 +48,6 @@ module Decidim
 
         def generator
           @generator ||= Decidim::Budgets::OrderReminderGenerator.new
-        end
-
-        def current_component
-          form.current_component
-        end
-
-        def voting_enabled?
-          form.voting_enabled?
-        end
-
-        def voting_ends_soon?
-          form.voting_ends_soon?
         end
       end
     end

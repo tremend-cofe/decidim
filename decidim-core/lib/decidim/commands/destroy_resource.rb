@@ -12,14 +12,18 @@ module Decidim
       #
       # Broadcasts :ok if successful, :invalid otherwise.
       def call
+        return broadcast(:invalid) if invalid?
+
         destroy_resource
 
-        broadcast(:ok)
+        broadcast(:ok, resource)
       end
 
       private
 
       attr_reader :resource, :current_user
+
+      def invalid? = false
 
       def destroy_resource
         Decidim.traceability.perform_action!(
