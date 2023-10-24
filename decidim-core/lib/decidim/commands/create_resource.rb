@@ -4,6 +4,7 @@ module Decidim
   module Commands
     class CreateResource < ::Decidim::Command
       include Decidim::Commands::ResourceHandler
+
       def initialize(form)
         @form = form
       end
