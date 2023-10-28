@@ -66,7 +66,7 @@ module Decidim
           end
         end
       end
-      
+
       # Rails 7 uses VIPS as default processor, and this may add up to 140 MB on a docker image.
       # Please refer to:
       # https://github.com/rails/rails/blob/7-0-stable/activestorage/CHANGELOG.md#rails-700alpha1-september-15-2021
