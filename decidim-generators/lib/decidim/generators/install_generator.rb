@@ -55,7 +55,7 @@ module Decidim
         gsub_file "config/environments/test.rb", /config\.assets.*$/, ""
         gsub_file "config/environments/production.rb", /config\.assets.*$/, ""
       end
-      
+
       def install
         route "mount Decidim::Core::Engine => '/'"
       end

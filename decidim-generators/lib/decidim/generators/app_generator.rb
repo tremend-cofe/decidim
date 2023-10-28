@@ -98,6 +98,10 @@ module Decidim
         []
       end
 
+      def package_json
+        template "package.json"
+      end
+      
       def database_yml
         template "database.yml.erb", "config/database.yml", force: true
       end
