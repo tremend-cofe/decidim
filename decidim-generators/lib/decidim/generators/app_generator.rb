@@ -42,8 +42,8 @@ module Decidim
                             desc: "Use a specific branch from GitHub's version"
 
       class_option :repository, type: :string,
-                                default: "https://github.com/decidim/decidim.git",
-                                desc: "Use a specific GIT repository (valid in conjunction with --edge or --branch)"
+                                 default: "https://github.com/tremend-cofe/decidim.git",
+                                 desc: "Use a specific GIT repository (valid in conjunction with --edge or --branch)"
 
       class_option :recreate_db, type: :boolean,
                                  default: false,
@@ -54,7 +54,7 @@ module Decidim
                              desc: "Seed test database"
 
       class_option :skip_bundle, type: :boolean,
-                                 default: true, # this is to avoid installing gems in this step yet (done by InstallGenerator)
+                                 default: false, # this is to avoid installing gems in this step yet (done by InstallGenerator)
                                  desc: "Do not run bundle install"
 
       class_option :skip_gemfile, type: :boolean,
@@ -417,7 +417,7 @@ module Decidim
       end
 
       def repository
-        @repository ||= options[:repository] || "https://github.com/decidim/decidim.git"
+        @repository ||= options[:repository] || "https://github.com/tremend-cofe/decidim.git"
       end
 
       def app_name
@@ -442,7 +442,7 @@ module Decidim
         root = if options[:path]
                  expanded_path
                elsif branch.present?
-                 "https://raw.githubusercontent.com/decidim/decidim/#{branch}/decidim-generators"
+                 "https://raw.githubusercontent.com/tremend-cofe/decidim/#{branch}/decidim-generators"
                else
                  root_path
                end
