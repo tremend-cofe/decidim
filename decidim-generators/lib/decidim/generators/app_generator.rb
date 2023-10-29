@@ -54,7 +54,7 @@ module Decidim
                              desc: "Seed test database"
 
       class_option :skip_bundle, type: :boolean,
-                                 default: false, # this is to avoid installing gems in this step yet (done by InstallGenerator)
+                                 default: true, # this is to avoid installing gems in this step yet (done by InstallGenerator)
                                  desc: "Do not run bundle install"
 
       class_option :skip_gemfile, type: :boolean,
@@ -101,7 +101,7 @@ module Decidim
       def package_json
         template "package.json"
       end
-      
+
       def database_yml
         template "database.yml.erb", "config/database.yml", force: true
       end
@@ -142,6 +142,11 @@ module Decidim
       def node_version
         copy_file ".node-version", ".node-version"
       end
+
+      def remove_gemfile
+        remove_file "Gemfile" if options[:skip_gemfile]
+      end
+
 
       def gemfile
         return if options[:skip_gemfile]
