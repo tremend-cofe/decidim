@@ -72,11 +72,11 @@ module Decidim
       # https://github.com/rails/rails/blob/7-0-stable/activestorage/CHANGELOG.md#rails-700alpha1-september-15-2021
       # https://github.com/libvips/ruby-vips/issues/219
       # https://github.com/libvips/ruby-vips/issues/219#issuecomment-1006370293
-      initializer "decidim.active_storage" do |app|
+      initializer "decidim_core.active_storage" do |app|
         app.config.active_storage.variant_processor = :mini_magick unless Decidim.which("vips")
       end
 
-      initializer "decidim.active_support" do |app|
+      initializer "decidim_core.active_support" do |app|
         app.config.active_support.key_generator_hash_digest_class = Decidim.key_generator_hash_digest_class if Decidim.key_generator_hash_digest_class.present?
       end
 

@@ -155,7 +155,7 @@ module Decidim
       end
 
       def order_by_id_list(id_list)
-        return ApplicationRecord.none if id_list.to_a.empty?
+        return none if id_list.to_a.empty?
 
         values_clause = id_list.each_with_index.map { |id, i| "(#{id}, #{i})" }.join(", ")
         joins(Arel.sql("JOIN (VALUES #{values_clause}) AS #{table_name}_id_order(id, ordering) ON #{table_name}.id = #{table_name}_id_order.id").to_s)
