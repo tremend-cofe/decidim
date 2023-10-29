@@ -147,7 +147,6 @@ module Decidim
         remove_file "Gemfile" if options[:skip_gemfile]
       end
 
-
       def gemfile
         return if options[:skip_gemfile]
 

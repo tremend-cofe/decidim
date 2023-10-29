@@ -92,7 +92,6 @@ module Decidim
       end
 
       initializer "decidim_assemblies.content_blocks" do
-
         config.to_prepare do
           Decidim.content_blocks.register(:homepage, :highlighted_assemblies) do |content_block|
             content_block.cell = "decidim/assemblies/content_blocks/highlighted_assemblies"
