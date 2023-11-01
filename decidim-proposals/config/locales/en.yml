@@ -391,6 +391,7 @@ en:
         see_all: See all proposals
     proposals:
       actions:
+        edit_proposal_state: Edit proposal state
         answer_proposal: Answer proposal
         edit_proposal: Edit proposal
         import: Import proposals from another component
@@ -398,7 +399,26 @@ en:
         participatory_texts: Participatory texts
         show: Show proposal
         title: Actions
+        destroy: Delete
+        delete_proposal_state_confirm: Are you sure you want to delete this proposal state?
       admin:
+        proposal_states:
+          update:
+            success: Proposal state updated successfully
+            error: Error updating proposal state
+          edit:
+            update: Update
+            title: Edit proposal state
+          destroy:
+            success: Proposal state deleted successfully
+          create:
+            success: Proposal state created successfully
+            error: Error creating proposal state
+          new:
+            create: Create
+            title: New proposal state
+          index:
+            title: Proposal states
         actions:
           preview: Preview
         exports:
@@ -584,6 +604,10 @@ en:
             invalid: There was an error unassigning proposals from a valuator.
             success: Valuator unassigned from proposals successfully.
       admin_log:
+        proposal_state:
+          create: "%{user_name} created the %{resource_name} proposal state on the %{space_name}"
+          delete: "%{user_name} deleted the %{resource_name} proposal state on the %{space_name}"
+          update: "%{user_name} updated the %{resource_name} proposal state on the %{space_name}"
         proposal:
           answer: "%{user_name} answered the %{resource_name} proposal on the %{space_name} space"
           create: "%{user_name} created the %{resource_name} proposal on the %{space_name} space as an official proposal"
@@ -730,6 +754,8 @@ en:
         new_proposal: 'New proposal:'
         proposal_updated: 'Proposal updated:'
       models:
+        proposal_state:
+          title: Proposal state
         proposal:
           fields:
             category: Category

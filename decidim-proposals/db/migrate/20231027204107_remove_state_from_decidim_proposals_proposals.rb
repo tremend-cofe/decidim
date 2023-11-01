@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 class RemoveStateFromDecidimProposalsProposals < ActiveRecord::Migration[6.1]
   def up
-    remove_column :decidim_proposals_proposals, :state
+    rename_column :decidim_proposals_proposals, :state, :old_state
   end
 
   def down
-    add_column :decidim_proposals_proposals, :state, :integer, default: 0, null: false
+    rename_column :decidim_proposals_proposals, :old_state, :state
   end
 end

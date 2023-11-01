@@ -51,6 +51,8 @@ module Decidim
           # Every user allowed by the space can assign proposals to a valuator
           allow! if permission_action.subject == :proposals && permission_action.action == :assign_to_valuator
 
+          allow! if permission_action.subject == :proposal_state # && permission_action.action == :read
+
           # Every user allowed by the space can unassign a valuator from proposals
           can_unassign_valuator_from_proposals?
 

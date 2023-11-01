@@ -230,6 +230,24 @@ Decidim.register_component(:proposals) do |component|
       Decidim::Component.create!(params)
     end
 
+    default_states = {
+      not_answered: { name: "not_answered", color: "#F5A623", default: true},
+      evaluating: { name: "evaluating", color: "#F5A623", default: true},
+      accepted: { name: "accepted", color: "#F5A623", default: true},
+      rejected: { name: "rejected", color: "#F5A623", default: true},
+      withdrawn: { name: "withdrawn", color: "#F5A623", default: true}
+    }
+
+
+    default_states.each_key do |key|
+      default_states[key].merge( object: Decidim.traceability.perform_action!(
+        "create",
+        Decidim::Proposals::ProposalState,
+        admin_user,
+        name: {en: default_states[key][:name] },
+        component:
+      ))
+    end
     if participatory_space.scope
       scopes = participatory_space.scope.descendants
       global = participatory_space.scope
@@ -240,15 +258,15 @@ Decidim.register_component(:proposals) do |component|
 
     5.times do |n|
       state, answer, state_published_at = if n > 3
-                                            ["accepted", Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
+                                            [default_states.dig(:accepted,:object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
                                           elsif n > 2
-                                            ["rejected", nil, Time.current]
+                                            [default_states.dig(:rejected,:object), nil, Time.current]
                                           elsif n > 1
-                                            ["evaluating", nil, Time.current]
+                                            [default_states.dig(:evaluating,:object), nil, Time.current]
                                           elsif n.positive?
-                                            ["accepted", Decidim::Faker::Localized.sentence(word_count: 10), nil]
+                                            [default_states.dig(:answered,:object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
                                           else
-                                            ["not_answered", nil, nil]
+                                            [default_states.dig(:not_answered,:object), nil, nil]
                                           end
 
       params = {
