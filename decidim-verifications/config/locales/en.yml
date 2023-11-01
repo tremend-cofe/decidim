@@ -4,36 +4,8 @@ en:
     attributes:
       config:
         available_methods: Available methods
-        offline: Offline
-        offline_explanation: Instructions for offline verification
-        online: Online
-      confirmation:
-        verification_code: Verification code
-      id_document_information:
-        document_number: Document number (with letter)
-        document_type: Type of the document
       id_document_upload:
-        document_number: Document number (with letter)
-        document_type: Type of your document
-        user: Participant
         verification_attachment: Scanned copy of your document
-      mobile_phone:
-        mobile_phone_number: Mobile phone number
-      offline_confirmation:
-        email: Participant email
-      postal_letter_address:
-        full_address: Full address
-      postal_letter_confirmation:
-        verification_code: Verification code
-      postal_letter_postage:
-        full_address: Full address
-        verification_code: Verification code
-    errors:
-      models:
-        census_data:
-          attributes:
-            file:
-              malformed: Malformed import file, please read through the instructions carefully and make sure the file is UTF-8 encoded.
   decidim:
     admin:
       menu:
@@ -50,11 +22,6 @@ en:
           no_data: No verified participants.
           title: Authorizations revocation
         authorization_workflows: Authorizations
-    admin_log:
-      organization:
-        update_id_documents_config: "%{user_name} updated the Identity Documents authorization configuration"
-      user:
-        grant_id_documents_offline_verification: "%{user_name} verified %{resource_name} using an offline Identity Documents authorization"
     authorization_handlers:
       admin:
         csv_census:
@@ -76,23 +43,14 @@ en:
       csv_census:
         explanation: Get verified using the organization's census.
         name: Organization's census
-      direct: Direct
       help: Help
       id_documents:
         explanation: Upload your identity documents so we can check your identity.
         name: Identity documents
-      multistep: Multi-Step
       name: Name
       postal_letter:
         explanation: We will send you a postal letter with a code that you will have to enter so we can verify your address.
         name: Code by postal letter
-    events:
-      verifications:
-        verify_with_managed_user:
-          email_intro: The participant <a href="%{resource_url}">%{resource_title}</a> has tried to verify themself with the data of another participant (<a href="%{managed_user_url}">%{managed_user_name}</a>).
-          email_outro: Check the <a href="%{conflicts_url}">Verifications's conflicts list</a> and contact the participant to verify their details and solve the issue.
-          email_subject: Failed verification attempt against another participant
-          notification_title: The participant <a href="%{resource_path}">%{resource_title}</a> has tried to verify themself with the data of another participant (<a href="%{managed_user_path}">%{managed_user_name}</a>).
     verifications:
       authorizations:
         authorization_metadata:
@@ -171,10 +129,6 @@ en:
             one: Participation is restricted to participants with the postal code %{postal_codes}.
             other: 'Participation is restricted to participants with any of the following postal codes: %{postal_codes}.'
           scope: Participation is restricted to participants with the scope %{scope_name}.
-          user_postal_codes:
-            one: Participation is restricted to participants with the postal code %{postal_codes}, and your postal code is %{user_postal_code}.
-            other: 'Participation is restricted to participants with any of the following postal codes: %{postal_codes}. Your postal code is %{user_postal_code}.'
-          user_scope: Participation is restricted to participants with the scope %{scope_name}, and your scope is %{user_scope_name}.
       id_documents:
         admin:
           config:
@@ -232,9 +186,6 @@ en:
           update:
             error: There was a problem reuploading your document.
             success: Document successfully reuploaded.
-        dni: DNI
-        nie: NIE
-        passport: Passport
       postal_letter:
         admin:
           pending_authorizations:

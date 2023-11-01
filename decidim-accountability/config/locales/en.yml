@@ -3,30 +3,9 @@ en:
   activemodel:
     attributes:
       result:
-        decidim_accountability_status_id: Status
-        decidim_category_id: Category
-        decidim_scope_id: Scope
-        description: Description
-        end_date: End date
         meetings_ids: Included meetings
-        progress: Progress
         project_ids: Included projects
         proposals: Included proposals
-        start_date: Start date
-        title: Title
-        updated_at: Updated at
-      status:
-        description: Description
-        key: Key
-        name: Name
-        progress: Progress
-      timeline_entry:
-        description: Description
-        entry_date: Date
-        title: Title
-    models:
-      decidim/accountability/proposal_linked_event: Proposal included in a result
-      decidim/accountability/result_progress_updated_event: Result progress updated
   activerecord:
     models:
       decidim/accountability/result:
@@ -159,18 +138,6 @@ en:
             invalid: There was a problem updating this entry.
             success: Entry successfully updated.
       admin_log:
-        result:
-          create: "%{user_name} created result %{resource_name} in %{space_name}"
-          delete: "%{user_name} deleted the %{resource_name} result in %{space_name}"
-          update: "%{user_name} updated result %{resource_name} in %{space_name}"
-        status:
-          create: "%{user_name} created the %{resource_name} status"
-          delete: "%{user_name} deleted the %{resource_name} status"
-          update: "%{user_name} updated the %{resource_name} status"
-        timeline_entry:
-          create: "%{user_name} created the %{resource_name} timeline entry"
-          delete: "%{user_name} deleted the %{resource_name} timeline entry"
-          update: "%{user_name} updated the %{resource_name} timeline entry"
         value_types:
           parent_presenter:
             not_found: 'The parent was not found on the database (ID: %{id})'
@@ -235,7 +202,6 @@ en:
         show:
           stats:
             attendees: Attendees
-            back_to_resource: Go back to result
             comments: Comments
             contributions: Contributions
             last_edited_by: Last edited by
@@ -245,46 +211,11 @@ en:
             votes: Supports
         timeline:
           title: Project evolution
-    admin:
-      filters:
-        results:
-          category_id_eq:
-            label: Category
-          scope_id_eq:
-            label: Scope
-          status_id_eq:
-            label: Status
     components:
       accountability:
         actions:
           comment: Comment
         name: Accountability
-        settings:
-          global:
-            categories_label: Name for "Categories"
-            comments_enabled: Comments enabled
-            comments_max_length: Comments max length (Leave 0 for default value)
-            display_progress_enabled: Display progress
-            heading_leaf_level_results: Name for "Projects"
-            heading_parent_level_results: Name for "Results"
-            intro: Intro
-            scope_id: Scope
-            scopes_enabled: Scopes enabled
-            subcategories_label: Name for "Subcategories"
-          step:
-            comments_blocked: Comments blocked
-    events:
-      accountability:
-        proposal_linked:
-          email_intro: 'The proposal "%{proposal_title}" has been included in a result. You can see it from this page:'
-          email_outro: You have received this notification because you are following "%{proposal_title}". You can stop receiving notifications following the previous link.
-          email_subject: An update to %{proposal_title}
-          notification_title: The proposal <a href="%{proposal_path}">%{proposal_title}</a> has been included in the <a href="%{resource_path}">%{resource_title}</a> result.
-        result_progress_updated:
-          email_intro: 'The result "%{resource_title}", which includes the proposal "%{proposal_title}", is now %{progress}% complete. You can see it from this page:'
-          email_outro: You have received this notification because you are following "%{proposal_title}", and this proposal is included in the result "%{resource_title}". You can stop receiving notifications following the previous link.
-          email_subject: An update to %{resource_title} progress
-          notification_title: The result <a href="%{resource_path}">%{resource_title}</a>, which includes the proposal <a href="%{proposal_path}">%{proposal_title}</a>, is now %{progress}% complete.
     metrics:
       results:
         description: Number of results generated
@@ -293,10 +224,3 @@ en:
     participatory_spaces:
       highlighted_results:
         see_all: See all results
-    resource_links:
-      included_projects:
-        result_project: Projects included in this result
-      included_proposals:
-        result_proposal: Proposals included in this result
-    statistics:
-      results_count: Results

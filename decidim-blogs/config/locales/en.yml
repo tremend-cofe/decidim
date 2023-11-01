@@ -1,19 +1,5 @@
 ---
 en:
-  activemodel:
-    attributes:
-      post:
-        body: Body
-        decidim_author_id: Author
-        published_at: Publish time
-        title: Title
-    models:
-      decidim/blogs/create_post_event: New blog post
-  activerecord:
-    models:
-      decidim/blogs/post:
-        one: Post
-        other: Posts
   decidim:
     blogs:
       actions:
@@ -42,15 +28,9 @@ en:
           update:
             invalid: There was a problem saving the post.
             success: Post successfully saved.
-      admin_log:
-        post:
-          create: "%{user_name} created the %{resource_name} blog post in %{space_name}"
-          delete: "%{user_name} deleted the %{resource_name} blog post from %{space_name}"
-          update: "%{user_name} updated the %{resource_name} blog post in %{space_name}"
       content_blocks:
         highlighted_posts:
           last_published: Last published
-          name: Posts
           see_all: See all posts
       last_activity:
         new_post: 'New post:'
@@ -76,22 +56,3 @@ en:
           endorse: Endorse
           update: Update
         name: Blog
-        settings:
-          global:
-            announcement: Announcement
-            comments_enabled: Comments enabled
-            comments_max_length: Comments max length (Leave 0 for default value)
-          step:
-            announcement: Announcement
-            comments_blocked: Comments blocked
-            endorsements_blocked: Endorsements blocked
-            endorsements_enabled: Endorsements enabled
-    events:
-      blogs:
-        post_created:
-          email_intro: The post "%{resource_title}" has been published in "%{participatory_space_title}" that you are following.
-          email_outro: You have received this notification because you are following "%{participatory_space_title}". You can unfollow it from the previous link.
-          email_subject: New post published in %{participatory_space_title}
-          notification_title: The post <a href="%{resource_path}">%{resource_title}</a> has been published in %{participatory_space_title}
-    statistics:
-      posts_count: Posts
