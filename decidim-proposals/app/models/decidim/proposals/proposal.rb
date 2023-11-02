@@ -196,24 +196,24 @@ module Decidim
       # Public: Returns the published state of the proposal.
       #
       # Returns Boolean.
-      # def state
-      #   return amendment.state if emendation?
-      #   return nil unless published_state? || withdrawn?
-      #
-      #   super
-      # end
+      def state
+        return amendment.state if emendation?
+        return nil unless published_state? || withdrawn?
+
+        proposal_state
+      end
 
       # This is only used to define the setter, as the getter will be overriden below.
-      # alias_attribute :internal_state, :state
+      alias_attribute :internal_state, :state
 
       # Public: Returns the internal state of the proposal.
       #
       # Returns Boolean.
-      # def internal_state
-      #   return amendment.state if emendation?
-      #
-      #   self[:state]
-      # end
+      def internal_state
+        return amendment.state if emendation?
+
+        proposal_state
+      end
 
       # Public: Checks if the organization has published the state for the proposal.
       #
@@ -228,34 +228,6 @@ module Decidim
       def answered?
         answered_at.present?
       end
-      #
-      # # Public: Checks if the author has withdrawn the proposal.
-      # #
-      # # Returns Boolean.
-      # def withdrawn?
-      #   internal_state == "withdrawn"
-      # end
-      #
-      # # Public: Checks if the organization has accepted a proposal.
-      # #
-      # # Returns Boolean.
-      # def accepted?
-      #   state == "accepted"
-      # end
-      #
-      # # Public: Checks if the organization has rejected a proposal.
-      # #
-      # # Returns Boolean.
-      # def rejected?
-      #   state == "rejected"
-      # end
-      #
-      # # Public: Checks if the organization has marked the proposal as evaluating it.
-      # #
-      # # Returns Boolean.
-      # def evaluating?
-      #   state == "evaluating"
-      # end
 
       # Public: Overrides the `reported_content_url` Reportable concern method.
       def reported_content_url

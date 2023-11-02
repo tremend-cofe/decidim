@@ -32,9 +32,10 @@ module Decidim
         end
 
         def proposal_complete_state(proposal)
-          return humanize_proposal_state(proposal.internal_state).html_safe if proposal.answered? && !proposal.published_state?
-
-          humanize_proposal_state(proposal.state).html_safe
+          # return humanize_proposal_state(proposal.internal_state).html_safe if proposal.answered? && !proposal.published_state?
+          #
+          # humanize_proposal_state(proposal.state).html_safe
+          translated_attribute(proposal&.proposal_state&.title)
         end
 
         def proposals_admin_filter_tree

@@ -27,28 +27,7 @@ module Decidim
       def humanize_proposal_state(state)
         I18n.t(state, scope: "decidim.proposals.answers", default: :not_answered)
       end
-
-      # Public: The css class applied based on the proposal state.
-      #
-      # proposal - The proposal to evaluate.
-      #
-      # Returns a String.
-      def proposal_state_css_class(proposal)
-        state = proposal.state
-        state = proposal.internal_state if proposal.answered? && !proposal.published_state?
-
-        case state
-        when "accepted"
-          "success"
-        when "rejected", "withdrawn"
-          "alert"
-        when "evaluating"
-          "warning"
-        else
-          "info"
-        end
-      end
-
+      
       # Public: The state of a proposal in a way a human can understand.
       #
       # state - The String state of the proposal.
