@@ -63,17 +63,21 @@ module Decidim
 
       enum state: STATES, _default: "not_answered"
 
-      scope :accepted, -> { state_published.where(state: "accepted") }
-      scope :rejected, -> { state_published.where(state: "rejected") }
-      scope :evaluating, -> { state_published.where(state: "evaluating") }
+      scope :not_status, ->(status) { joins(:proposal_state).where.not(decidim_proposals_proposal_states: { token: status } ) }
+      scope :only_status, ->(status) { joins(:proposal_state).where(decidim_proposals_proposal_states: { token: status } ) }
+
+      scope :accepted, -> { state_published.only_status(:accepted) }
+      scope :rejected, -> { state_published.only_status(:rejected) }
+      scope :evaluating, -> { state_published.only_status(:evaluating) }
 
       scope :answered, -> { where.not(answered_at: nil) }
       scope :not_answered, -> { where(answered_at: nil) }
 
       scope :state_not_published, -> { where(state_published_at: nil) }
       scope :state_published, -> { where.not(state_published_at: nil) }
-      scope :except_rejected, -> { not_rejected.or(state_not_published) }
-      scope :except_withdrawn, -> { not_withdrawn }
+      scope :except_rejected, -> { not_status(:rejected).or(state_not_published) }
+      scope :except_withdrawn, -> { not_status(:withdrawn) }
+
       scope :drafts, -> { where(published_at: nil) }
       scope :published, -> { where.not(published_at: nil) }
       scope :order_by_most_recent, -> { order(created_at: :desc) }
@@ -212,7 +216,8 @@ module Decidim
       def internal_state
         return amendment.state if emendation?
 
-        self[:state]
+        # self[:state]
+        proposal_state&.token
       end
 
       # Public: Checks if the organization has published the state for the proposal.
