@@ -13,10 +13,11 @@ module Decidim
       translatable_fields :title
 
       has_many :proposals,
-        class_name: "Decidim::Proposals::Proposal",
-        foreign_key: "decidim_proposals_proposal_state_id",
-        inverse_of: :state,
-        dependent: :restrict
+               class_name: "Decidim::Proposals::Proposal",
+               foreign_key: "decidim_proposals_proposal_state_id",
+               inverse_of: :state,
+               dependent: :restrict_with_error,
+               counter_cache: :proposals_count
 
       def self.log_presenter_class_for(_log)
         Decidim::Proposals::AdminLog::ProposalStatePresenter

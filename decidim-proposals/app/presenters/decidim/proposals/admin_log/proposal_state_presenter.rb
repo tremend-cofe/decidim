@@ -5,6 +5,7 @@ module Decidim
     module AdminLog
       class ProposalStatePresenter < Decidim::Log::BasePresenter
         private
+
         def diff_fields_mapping
           {
             title: :i18n

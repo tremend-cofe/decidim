@@ -14,6 +14,11 @@ Decidim.register_component(:proposals) do |component|
     raise "Cannot destroy this component when there are proposals" if Decidim::Proposals::Proposal.where(component: instance).any?
   end
 
+  component.on(:create) do |instance|
+    admin = GlobalID::Locator.locate(instance.versions.first.whodunnit)
+    Decidim::Proposals.create_default_states!(instance, admin)
+  end
+
   component.data_portable_entities = ["Decidim::Proposals::Proposal"]
 
   component.newsletter_participant_entities = ["Decidim::Proposals::Proposal"]
@@ -230,24 +235,8 @@ Decidim.register_component(:proposals) do |component|
       Decidim::Component.create!(params)
     end
 
-    default_states = {
-      not_answered: { name: "not_answered", color: "#F5A623", default: true},
-      evaluating: { name: "evaluating", color: "#F5A623", default: true},
-      accepted: { name: "accepted", color: "#F5A623", default: true},
-      rejected: { name: "rejected", color: "#F5A623", default: true},
-      withdrawn: { name: "withdrawn", color: "#F5A623", default: true}
-    }
+    Decidim::Proposals.create_default_states!(component, admin_user)
 
-
-    default_states.each_key do |key|
-      default_states[key].merge( object: Decidim.traceability.perform_action!(
-        "create",
-        Decidim::Proposals::ProposalState,
-        admin_user,
-        name: {en: default_states[key][:name] },
-        component:
-      ))
-    end
     if participatory_space.scope
       scopes = participatory_space.scope.descendants
       global = participatory_space.scope
@@ -258,15 +247,15 @@ Decidim.register_component(:proposals) do |component|
 
     5.times do |n|
       state, answer, state_published_at = if n > 3
-                                            [default_states.dig(:accepted,:object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
+                                            [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
                                           elsif n > 2
-                                            [default_states.dig(:rejected,:object), nil, Time.current]
+                                            [default_states.dig(:rejected, :object), nil, Time.current]
                                           elsif n > 1
-                                            [default_states.dig(:evaluating,:object), nil, Time.current]
+                                            [default_states.dig(:evaluating, :object), nil, Time.current]
                                           elsif n.positive?
-                                            [default_states.dig(:answered,:object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
+                                            [default_states.dig(:answered, :object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
                                           else
-                                            [default_states.dig(:not_answered,:object), nil, nil]
+                                            [default_states.dig(:not_answered, :object), nil, nil]
                                           end
 
       params = {
