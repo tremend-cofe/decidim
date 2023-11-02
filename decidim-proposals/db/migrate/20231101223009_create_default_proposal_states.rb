@@ -16,7 +16,7 @@ class CreateDefaultProposalStates < ActiveRecord::Migration[6.1]
     Decidim::Component.where(manifest_name: "proposals").find_each do |component|
       admin_user = component.organization.admins.first
 
-      Decidim::Proposals.create_default_states!(component, admin_user)
+      default_states = Decidim::Proposals.create_default_states!(component, admin_user)
 
       Proposal.where(decidim_component_id: component.id).find_each do |proposal|
         proposal.update!(state: default_states.dig(proposal.old_state.to_sym, :object))

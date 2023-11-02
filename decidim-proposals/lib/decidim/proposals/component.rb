@@ -17,6 +17,7 @@ Decidim.register_component(:proposals) do |component|
   component.on(:create) do |instance|
     admin = GlobalID::Locator.locate(instance.versions.first.whodunnit)
     Decidim::Proposals.create_default_states!(instance, admin)
+    nil
   end
 
   component.data_portable_entities = ["Decidim::Proposals::Proposal"]
@@ -235,7 +236,7 @@ Decidim.register_component(:proposals) do |component|
       Decidim::Component.create!(params)
     end
 
-    Decidim::Proposals.create_default_states!(component, admin_user)
+    default_states = Decidim::Proposals.create_default_states!(component, admin_user)
 
     if participatory_space.scope
       scopes = participatory_space.scope.descendants
@@ -255,7 +256,7 @@ Decidim.register_component(:proposals) do |component|
                                           elsif n.positive?
                                             [default_states.dig(:answered, :object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
                                           else
-                                            [default_states.dig(:not_answered, :object), nil, nil]
+                                            [nil, nil, nil]
                                           end
 
       params = {
