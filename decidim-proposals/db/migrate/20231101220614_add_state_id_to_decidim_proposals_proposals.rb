@@ -6,4 +6,8 @@ class AddStateIdToDecidimProposalsProposals < ActiveRecord::Migration[6.1]
 
     add_foreign_key :decidim_proposals_proposals, :decidim_proposals_proposal_states, column: :decidim_proposals_proposal_state_id
   end
+
+  def down
+    drop_column :decidim_proposals_proposals, :decidim_proposals_proposal_state_id
+  end
 end

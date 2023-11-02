@@ -247,7 +247,7 @@ Decidim.register_component(:proposals) do |component|
     end
 
     5.times do |n|
-      state, answer, state_published_at = if n > 3
+      proposal_state, answer, state_published_at = if n > 3
                                             [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
                                           elsif n > 2
                                             [default_states.dig(:rejected, :object), nil, Time.current]
@@ -265,7 +265,7 @@ Decidim.register_component(:proposals) do |component|
         scope: Faker::Boolean.boolean(true_ratio: 0.5) ? global : scopes.sample,
         title: { en: Faker::Lorem.sentence(word_count: 2) },
         body: { en: Faker::Lorem.paragraphs(number: 2).join("\n") },
-        state:,
+        proposal_state:,
         answer:,
         answered_at: state.present? ? Time.current : nil,
         state_published_at:,
@@ -335,7 +335,7 @@ Decidim.register_component(:proposals) do |component|
           scope: Faker::Boolean.boolean(true_ratio: 0.5) ? global : scopes.sample,
           title: { en: "#{proposal.title["en"]} #{Faker::Lorem.sentence(word_count: 1)}" },
           body: { en: "#{proposal.body["en"]} #{Faker::Lorem.sentence(word_count: 3)}" },
-          state: "evaluating",
+          proposal_state: default_states.dig(:evaluating, :object),
           answer: nil,
           answered_at: Time.current,
           published_at: Time.current

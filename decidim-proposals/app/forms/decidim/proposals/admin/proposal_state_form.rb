@@ -9,6 +9,10 @@ module Decidim
         mimic :proposal_state
 
         translatable_attribute :title, String
+        translatable_attribute :description, String
+        attribute :color, String
+        attribute :default, Boolean
+        attribute :include_in_stats, Boolean
 
         validates :title, translatable_presence: true
       end

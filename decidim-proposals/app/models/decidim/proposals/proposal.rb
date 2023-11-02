@@ -42,10 +42,11 @@ module Decidim
 
       component_manifest_name "proposals"
 
-      belongs_to :state,
+      belongs_to :proposal_state,
                  class_name: "Decidim::Proposals::ProposalState",
                  foreign_key: "decidim_proposals_proposal_state_id",
-                 inverse_of: :proposals
+                 inverse_of: :proposals,
+                 optional: true
 
       has_many :votes,
                -> { final },
@@ -109,7 +110,7 @@ module Decidim
         order(Arel.sql("#{sort_by_valuation_assignments_count_nulls_last_query} DESC NULLS LAST").to_s)
       }
 
-      scope_search_multi :with_any_state, [:accepted, :rejected, :evaluating, :state_not_published, :state_published]
+      # scope_search_multi :with_any_state, [:accepted, :rejected, :evaluating, :state_not_published, :state_published]
 
       def self.with_valuation_assigned_to(user, space)
         valuator_roles = space.user_roles(:valuator).where(user:)
@@ -195,24 +196,24 @@ module Decidim
       # Public: Returns the published state of the proposal.
       #
       # Returns Boolean.
-      def state
-        return amendment.state if emendation?
-        return nil unless published_state? || withdrawn?
-
-        super
-      end
+      # def state
+      #   return amendment.state if emendation?
+      #   return nil unless published_state? || withdrawn?
+      #
+      #   super
+      # end
 
       # This is only used to define the setter, as the getter will be overriden below.
-      alias_attribute :internal_state, :state
+      # alias_attribute :internal_state, :state
 
       # Public: Returns the internal state of the proposal.
       #
       # Returns Boolean.
-      def internal_state
-        return amendment.state if emendation?
-
-        self[:state]
-      end
+      # def internal_state
+      #   return amendment.state if emendation?
+      #
+      #   self[:state]
+      # end
 
       # Public: Checks if the organization has published the state for the proposal.
       #
@@ -227,34 +228,34 @@ module Decidim
       def answered?
         answered_at.present?
       end
-
-      # Public: Checks if the author has withdrawn the proposal.
       #
-      # Returns Boolean.
-      def withdrawn?
-        internal_state == "withdrawn"
-      end
-
-      # Public: Checks if the organization has accepted a proposal.
+      # # Public: Checks if the author has withdrawn the proposal.
+      # #
+      # # Returns Boolean.
+      # def withdrawn?
+      #   internal_state == "withdrawn"
+      # end
       #
-      # Returns Boolean.
-      def accepted?
-        state == "accepted"
-      end
-
-      # Public: Checks if the organization has rejected a proposal.
+      # # Public: Checks if the organization has accepted a proposal.
+      # #
+      # # Returns Boolean.
+      # def accepted?
+      #   state == "accepted"
+      # end
       #
-      # Returns Boolean.
-      def rejected?
-        state == "rejected"
-      end
-
-      # Public: Checks if the organization has marked the proposal as evaluating it.
+      # # Public: Checks if the organization has rejected a proposal.
+      # #
+      # # Returns Boolean.
+      # def rejected?
+      #   state == "rejected"
+      # end
       #
-      # Returns Boolean.
-      def evaluating?
-        state == "evaluating"
-      end
+      # # Public: Checks if the organization has marked the proposal as evaluating it.
+      # #
+      # # Returns Boolean.
+      # def evaluating?
+      #   state == "evaluating"
+      # end
 
       # Public: Overrides the `reported_content_url` Reportable concern method.
       def reported_content_url

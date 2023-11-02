@@ -32,7 +32,11 @@ module Decidim
 
         def attributes
           {
-            title: form.title
+            title: form.title,
+            description: form.description,
+            color: form.color,
+            default: form.default,
+            include_in_stats: form.include_in_stats
           }
         end
       end

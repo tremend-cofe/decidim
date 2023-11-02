@@ -15,7 +15,7 @@ module Decidim
       has_many :proposals,
                class_name: "Decidim::Proposals::Proposal",
                foreign_key: "decidim_proposals_proposal_state_id",
-               inverse_of: :state,
+               inverse_of: :proposal_state,
                dependent: :restrict_with_error,
                counter_cache: :proposals_count
 
