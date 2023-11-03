@@ -24,6 +24,5 @@ class CreateDefaultProposalStates < ActiveRecord::Migration[6.1]
     end
   end
 
-  def down
-  end
+  def down; end
 end

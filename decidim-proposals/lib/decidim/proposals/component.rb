@@ -249,16 +249,16 @@ Decidim.register_component(:proposals) do |component|
 
     5.times do |n|
       proposal_state, answer, state_published_at = if n > 3
-                                            [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
-                                          elsif n > 2
-                                            [default_states.dig(:rejected, :object), nil, Time.current]
-                                          elsif n > 1
-                                            [default_states.dig(:evaluating, :object), nil, Time.current]
-                                          elsif n.positive?
-                                            [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
-                                          else
-                                            [default_states.dig(:not_answered, :object), nil, nil]
-                                          end
+                                                     [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), Time.current]
+                                                   elsif n > 2
+                                                     [default_states.dig(:rejected, :object), nil, Time.current]
+                                                   elsif n > 1
+                                                     [default_states.dig(:evaluating, :object), nil, Time.current]
+                                                   elsif n.positive?
+                                                     [default_states.dig(:accepted, :object), Decidim::Faker::Localized.sentence(word_count: 10), nil]
+                                                   else
+                                                     [default_states.dig(:not_answered, :object), nil, nil]
+                                                   end
 
       params = {
         component:,
