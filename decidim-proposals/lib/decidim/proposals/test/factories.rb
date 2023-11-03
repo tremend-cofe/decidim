@@ -10,6 +10,10 @@ FactoryBot.define do
     manifest_name { :proposals }
     participatory_space { create(:participatory_process, :with_steps, organization:) }
 
+    after :create do |proposal_component|
+      Decidim::Proposals.create_default_states!(proposal_component, nil)
+    end
+
     trait :with_endorsements_enabled do
       step_settings do
         {

@@ -41,9 +41,11 @@ describe Decidim::Proposals::Metrics::ProposalsMetricManage do
       let!(:report) { create(:report, moderation:) }
 
       it "filters the data correctly" do
+        withdrawn = Decidim::Proposals::ProposalState.where(token: "withdrawn", component: ).first!
+
         proposals[0].moderation.update!(hidden_at: Time.current)
         proposals[1].update!(published_at: nil)
-        proposals[2].update!(state: "withdrawn")
+        proposals[2].update!(proposal_state: withdrawn)
 
         registry = generate_metric_registry
 
