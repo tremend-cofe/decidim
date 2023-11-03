@@ -204,7 +204,7 @@ module Decidim
         return amendment.state if emendation?
         return nil unless published_state? || withdrawn?
 
-        super
+        proposal_state&.token
       end
 
       # This is only used to define the setter, as the getter will be overriden below.
@@ -216,7 +216,6 @@ module Decidim
       def internal_state
         return amendment.state if emendation?
 
-        # self[:state]
         proposal_state&.token
       end
 

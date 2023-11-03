@@ -43,8 +43,10 @@ module Decidim
             proposal,
             form.current_user
           ) do
+            proposal_state = Decidim::Proposals::ProposalState.where(component: proposal.component, token: form.state).first!
+
             attributes = {
-              state: form.state,
+              proposal_state:,
               answer: form.answer,
               cost: form.cost,
               cost_report: form.cost_report,

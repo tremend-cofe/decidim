@@ -33,7 +33,9 @@ module Decidim
       private
 
       def change_proposal_state_to_withdrawn
-        @proposal.update state: "withdrawn"
+        proposal_state = Decidim::Proposals::ProposalState.where(component: @proposal.component, token: "withdrawn").first
+
+        @proposal.update proposal_state:
       end
 
       def reject_emendations_if_any
