@@ -50,7 +50,7 @@ module Decidim
               execution_period: form.execution_period
             }
 
-            proposal_state.assign_state(form.state)
+            proposal.assign_state(form.state)
             if form.state == "not_answered"
               attributes[:answered_at] = nil
               attributes[:state_published_at] = nil

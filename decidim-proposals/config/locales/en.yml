@@ -1,5 +1,6 @@
 ---
 en:
+
   activemodel:
     attributes:
       collaborative_draft:
@@ -97,6 +98,8 @@ en:
     admin:
       filters:
         proposals:
+          proposal_state_id_eq:
+            label: State
           category_id_eq:
             label: Category
           is_emendation_true:
