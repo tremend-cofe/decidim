@@ -127,7 +127,7 @@ module Decidim
         order(Arel.sql("#{sort_by_valuation_assignments_count_nulls_last_query} DESC NULLS LAST").to_s)
       }
 
-      # scope_search_multi :with_any_state, [:accepted, :rejected, :evaluating, :state_not_published, :state_published]
+      scope_search_multi :with_any_state, [:accepted, :rejected, :evaluating, :state_not_published, :state_published]
 
       def self.with_valuation_assigned_to(user, space)
         valuator_roles = space.user_roles(:valuator).where(user:)
