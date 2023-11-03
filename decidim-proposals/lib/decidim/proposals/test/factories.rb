@@ -11,7 +11,9 @@ FactoryBot.define do
     participatory_space { create(:participatory_process, :with_steps, organization:) }
 
     after :create do |proposal_component|
-      Decidim::Proposals.create_default_states!(proposal_component, nil)
+      [:not_answered, :evaluating, :accepted, :rejected, :withdrawn].each do |state|
+        create(:proposal_state, state, component: proposal_component)
+      end
     end
 
     trait :with_endorsements_enabled do

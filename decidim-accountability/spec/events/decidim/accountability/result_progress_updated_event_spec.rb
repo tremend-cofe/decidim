@@ -8,7 +8,7 @@ describe Decidim::Accountability::ResultProgressUpdatedEvent do
   let(:event_name) { "decidim.events.accountability.result_progress_updated" }
   let(:resource) { create(:result) }
   let(:proposal_component) do
-    create(:component, manifest_name: "proposals", participatory_space: resource.component.participatory_space)
+    create(:proposal_component, participatory_space: resource.component.participatory_space)
   end
   let(:proposal) { create(:proposal, component: proposal_component, title: { en: "My super proposal" }) }
   let(:extra) { { proposal_id: proposal.id, progress: 95 } }

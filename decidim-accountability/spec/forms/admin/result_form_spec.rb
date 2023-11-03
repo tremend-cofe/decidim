@@ -108,7 +108,7 @@ module Decidim::Accountability
     context "with proposals" do
       subject { described_class.from_model(result).with_context(context) }
 
-      let(:proposals_component) { create(:component, manifest_name: :proposals, participatory_space: participatory_process) }
+      let(:proposals_component) { create(:proposal_component, participatory_space: participatory_process) }
       let!(:proposal) { create(:proposal, component: proposals_component) }
 
       let(:result) do
