@@ -455,9 +455,11 @@ module Decidim
       def process_amendment_state_change!
         return unless %w(accepted rejected evaluating withdrawn).member?(amendment.state)
 
+        state = Decidim::Proposals::ProposalState.where(component:, token: amendment.state).first!
+
         PaperTrail.request(enabled: false) do
           update!(
-            state: amendment.state,
+            proposal_state: state,
             state_published_at: Time.current
           )
         end
