@@ -43,16 +43,14 @@ module Decidim
             proposal,
             form.current_user
           ) do
-            proposal_state = Decidim::Proposals::ProposalState.where(component: proposal.component, token: form.state).first!
-
             attributes = {
-              proposal_state:,
               answer: form.answer,
               cost: form.cost,
               cost_report: form.cost_report,
               execution_period: form.execution_period
             }
 
+            proposal_state.assign_state(form.state)
             if form.state == "not_answered"
               attributes[:answered_at] = nil
               attributes[:state_published_at] = nil
