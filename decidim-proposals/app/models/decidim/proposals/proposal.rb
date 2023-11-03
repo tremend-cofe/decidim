@@ -85,9 +85,9 @@ module Decidim
       scope :with_availability, lambda { |state_key|
         case state_key
         when "withdrawn"
-          withdrawn
+          only_status(:withdrawn)
         else
-          except_withdrawn
+          not_status(:withdrawn)
         end
       }
 
