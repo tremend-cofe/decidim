@@ -29,6 +29,19 @@ module Decidim
       include Decidim::TranslatableAttributes
       include Decidim::FilterableResource
 
+      before_create :set_default_state
+
+      def set_default_state
+        assign_state("not_answered")
+      end
+
+      def assign_state(token)
+        return if proposal_state.present?
+
+        proposal_state = Decidim::Proposals::ProposalState.where(component: , token: ).first!
+        self.proposal_state = proposal_state
+      end
+
       translatable_fields :title, :body
 
       # STATES = { not_answered: 0, evaluating: 10, accepted: 20, rejected: -10, withdrawn: -20 }.freeze
