@@ -67,7 +67,7 @@ describe Decidim::Elections::Admin::AnswerForm do
   context "with proposals" do
     subject { described_class.from_model(answer).with_context(context) }
 
-    let(:proposals_component) { create(:proposal_component, participatory_space: component.participatory_space) }
+    let(:proposals_component) { create(:component, manifest_name: :proposals, participatory_space: component.participatory_space) }
     let(:proposals) { create_list(:proposal, 2, component: proposals_component) }
     let(:answer) { create(:election_answer, question:) }
 

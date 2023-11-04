@@ -17,7 +17,7 @@ describe Decidim::Elections::Answer do
     it { is_expected.to be_empty }
 
     context "when the answer has related proposals" do
-      let(:proposals_component) { create(:proposal_component, participatory_space: answer.question.election.component.participatory_space) }
+      let(:proposals_component) { create(:component, manifest_name: :proposals, participatory_space: answer.question.election.component.participatory_space) }
       let(:proposals) { create_list(:proposal, 2, component: proposals_component) }
       let(:other_proposals) { create_list(:proposal, 2) }
 
