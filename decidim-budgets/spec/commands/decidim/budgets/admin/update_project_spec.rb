@@ -20,7 +20,7 @@ module Decidim::Budgets
     let(:longitude) { 2.1234 }
     let(:current_photos) { [] }
     let(:proposal_component) do
-      create(:proposal_component, participatory_space: participatory_process)
+      create(:component, manifest_name: :proposals, participatory_space: participatory_process)
     end
     let(:proposals) do
       create_list(

@@ -53,7 +53,7 @@ describe Decidim::Elections::Admin::UpdateAnswer do
   end
 
   context "with proposals" do
-    let(:proposals_component) { create(:proposal_component, participatory_space: component.participatory_space) }
+    let(:proposals_component) { create(:component, manifest_name: :proposals, participatory_space: component.participatory_space) }
     let(:proposals) { create_list(:proposal, 2, component: proposals_component) }
 
     it "creates the answer" do
