@@ -258,30 +258,30 @@ FactoryBot.define do
     css_class { "warning" }
 
     trait :not_answered do
+      title { Decidim::Faker::Localized.localized { I18n.t(:not_answered, scope: "decidim.admin.filters.proposals.state_eq.values") } }
       token { :not_answered }
       system { true }
-      title { Decidim::Faker::Localized.localized { :not_answered } }
     end
     trait :evaluating do
+      title { Decidim::Faker::Localized.localized { I18n.t(:evaluating, scope: "decidim.admin.filters.proposals.state_eq.values") } }
       token { :evaluating }
       system { true }
-      title { Decidim::Faker::Localized.localized { :evaluating } }
     end
     trait :accepted do
+      title { Decidim::Faker::Localized.localized { I18n.t(:accepted, scope: "decidim.admin.filters.proposals.state_eq.values") } }
       token { :accepted }
       system { true }
-      title { Decidim::Faker::Localized.localized { :accepted } }
     end
     trait :rejected do
+      title { Decidim::Faker::Localized.localized { I18n.t(:rejected, scope: "decidim.admin.filters.proposals.state_eq.values") } }
       token { :rejected }
       system { true }
-      title { Decidim::Faker::Localized.localized { :rejected } }
     end
 
     trait :withdrawn do
+      title { Decidim::Faker::Localized.localized { I18n.t(:withdrawn, scope: "decidim.admin.filters.proposals.state_eq.values") } }
       token { :withdrawn }
       system { true }
-      title { Decidim::Faker::Localized.localized { :withdrawn } }
     end
   end
 
@@ -291,6 +291,7 @@ FactoryBot.define do
       # user_groups correspondence to users is by sorting order
       user_groups { [] }
       skip_injection { false }
+      state { :not_answered }
     end
 
     title do
@@ -328,8 +329,6 @@ FactoryBot.define do
       end
     end
 
-    proposal_state { create(:proposal_state, :not_answered, component:) }
-
     after(:build) do |proposal, evaluator|
       proposal.title = if evaluator.title.is_a?(String)
                          { proposal.try(:organization).try(:default_locale) || "en" => evaluator.title }
@@ -345,6 +344,7 @@ FactoryBot.define do
       proposal.title = Decidim::ContentProcessor.parse_with_processor(:hashtag, proposal.title, current_organization: proposal.organization).rewrite
       proposal.body = Decidim::ContentProcessor.parse_with_processor(:hashtag, proposal.body, current_organization: proposal.organization).rewrite
 
+      proposal.assign_state(evaluator.state)
       if proposal.component
         users = evaluator.users || [create(:user, :confirmed, organization: proposal.component.participatory_space.organization)]
         users.each_with_index do |user, idx|
@@ -395,43 +395,43 @@ FactoryBot.define do
     end
 
     trait :evaluating do
-      proposal_state { create(:proposal_state, :evaluating, component:) }
+      state { :evaluating }
       answered_at { Time.current }
       state_published_at { Time.current }
     end
 
     trait :accepted do
-      proposal_state { create(:proposal_state, :accepted, component:) }
+      state { :accepted }
       answered_at { Time.current }
       state_published_at { Time.current }
     end
 
     trait :rejected do
-      proposal_state { create(:proposal_state, :rejected, component:) }
+      state { :rejected }
       answered_at { Time.current }
       state_published_at { Time.current }
     end
 
     trait :withdrawn do
-      proposal_state { create(:proposal_state, :withdrawn, component:) }
+      state { :withdrawn }
     end
 
     trait :accepted_not_published do
-      proposal_state { create(:proposal_state, :accepted, component:) }
+      state { :accepted }
       answered_at { Time.current }
       state_published_at { nil }
       answer { generate_localized_title }
     end
 
     trait :with_answer do
-      proposal_state { create(:proposal_state, :accepted, component:) }
+      state { :accepted }
       answer { generate_localized_title }
       answered_at { Time.current }
       state_published_at { Time.current }
     end
 
     trait :not_answered do
-      proposal_state { create(:proposal_state, :not_answered, component:) }
+      state { :not_answered }
     end
 
     trait :draft do

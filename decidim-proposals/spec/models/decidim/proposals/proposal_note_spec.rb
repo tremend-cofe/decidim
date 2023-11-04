@@ -8,7 +8,7 @@ module Decidim
       subject { proposal_note }
 
       let!(:organization) { create(:organization) }
-      let!(:component) { create(:proposal_component, organization: ) }
+      let!(:component) { create(:proposal_component, organization:) }
       let!(:participatory_process) { create(:participatory_process, organization:) }
       let!(:author) { create(:user, :admin, organization:) }
       let!(:proposal) { create(:proposal, component:, users: [author]) }
