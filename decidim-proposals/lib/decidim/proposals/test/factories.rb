@@ -4,6 +4,10 @@ require "decidim/core/test/factories"
 require "decidim/participatory_processes/test/factories"
 require "decidim/meetings/test/factories"
 
+def generate_state_title(token)
+  Decidim::Faker::Localized.localized { I18n.t(token, scope: "decidim.proposals.answers") }
+end
+
 FactoryBot.define do
   factory :proposal_component, parent: :component do
     name { Decidim::Components::Namer.new(participatory_space.organization.available_locales, :proposals).i18n_name }
@@ -11,7 +15,7 @@ FactoryBot.define do
     participatory_space { create(:participatory_process, :with_steps, organization:) }
 
     after :create do |proposal_component|
-      Decidim::Proposals.create_default_states!(proposal_component, nil)
+      Decidim::Proposals.create_default_states!(proposal_component, nil, with_traceability: false)
     end
 
     trait :with_endorsements_enabled do
@@ -246,10 +250,6 @@ FactoryBot.define do
     end
   end
 
-  def generate_state_title(token)
-    Decidim::Faker::Localized.localized { I18n.t(token, scope: "decidim.proposals.answers") }
-  end
-
   factory :proposal_state, class: "Decidim::Proposals::ProposalState" do
     token { :not_answered }
     title { generate_state_title(:not_answered) }
@@ -329,11 +329,10 @@ FactoryBot.define do
     end
 
     after(:build) do |proposal, evaluator|
-
       if proposal.component
         existing_states = Decidim::Proposals::ProposalState.where(component: proposal.component).any?
 
-        Decidim::Proposals.create_default_states!(proposal.component, nil) unless existing_states
+        Decidim::Proposals.create_default_states!(proposal.component, nil, with_traceability: false) unless existing_states
       end
 
       proposal.assign_state(evaluator.state)
