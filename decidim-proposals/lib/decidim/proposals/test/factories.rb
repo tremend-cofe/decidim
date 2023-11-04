@@ -11,9 +11,7 @@ FactoryBot.define do
     participatory_space { create(:participatory_process, :with_steps, organization:) }
 
     after :create do |proposal_component|
-      [:not_answered, :evaluating, :accepted, :rejected, :withdrawn].each do |state|
-        create(:proposal_state, state, component: proposal_component)
-      end
+      Decidim::Proposals.create_default_states!(proposal_component, nil)
     end
 
     trait :with_endorsements_enabled do
@@ -248,38 +246,39 @@ FactoryBot.define do
     end
   end
 
+  def generate_state_title(token)
+    Decidim::Faker::Localized.localized { I18n.t(token, scope: "decidim.proposals.answers") }
+  end
+
   factory :proposal_state, class: "Decidim::Proposals::ProposalState" do
-    token { SecureRandom.hex(10) }
-    title { Decidim::Faker::Localized.localized { generate(:title) } }
+    token { :not_answered }
+    title { generate_state_title(:not_answered) }
     description { Decidim::Faker::Localized.localized { Faker::Lorem.sentences(number: 3).join("\n") } }
     component { create(:proposal_component) }
     default { false }
-    system { false }
-    css_class { "warning" }
+    system { true }
+    css_class { "" }
 
-    trait :not_answered do
-      title { Decidim::Faker::Localized.localized { I18n.t(:not_answered, scope: "decidim.admin.filters.proposals.state_eq.values") } }
-      token { :not_answered }
-      system { true }
-    end
     trait :evaluating do
-      title { Decidim::Faker::Localized.localized { I18n.t(:evaluating, scope: "decidim.admin.filters.proposals.state_eq.values") } }
+      title { generate_state_title(:evaluating) }
       token { :evaluating }
       system { true }
     end
+
     trait :accepted do
-      title { Decidim::Faker::Localized.localized { I18n.t(:accepted, scope: "decidim.admin.filters.proposals.state_eq.values") } }
+      title { generate_state_title(:accepted) }
       token { :accepted }
       system { true }
     end
+
     trait :rejected do
-      title { Decidim::Faker::Localized.localized { I18n.t(:rejected, scope: "decidim.admin.filters.proposals.state_eq.values") } }
+      title { generate_state_title(:rejected) }
       token { :rejected }
       system { true }
     end
 
     trait :withdrawn do
-      title { Decidim::Faker::Localized.localized { I18n.t(:withdrawn, scope: "decidim.admin.filters.proposals.state_eq.values") } }
+      title { generate_state_title(:withdrawn) }
       token { :withdrawn }
       system { true }
     end
@@ -330,6 +329,14 @@ FactoryBot.define do
     end
 
     after(:build) do |proposal, evaluator|
+
+      if proposal.component
+        existing_states = Decidim::Proposals::ProposalState.where(component: proposal.component).any?
+
+        Decidim::Proposals.create_default_states!(proposal.component, nil) unless existing_states
+      end
+
+      proposal.assign_state(evaluator.state)
       proposal.title = if evaluator.title.is_a?(String)
                          { proposal.try(:organization).try(:default_locale) || "en" => evaluator.title }
                        else
@@ -344,7 +351,6 @@ FactoryBot.define do
       proposal.title = Decidim::ContentProcessor.parse_with_processor(:hashtag, proposal.title, current_organization: proposal.organization).rewrite
       proposal.body = Decidim::ContentProcessor.parse_with_processor(:hashtag, proposal.body, current_organization: proposal.organization).rewrite
 
-      proposal.assign_state(evaluator.state)
       if proposal.component
         users = evaluator.users || [create(:user, :confirmed, organization: proposal.component.participatory_space.organization)]
         users.each_with_index do |user, idx|

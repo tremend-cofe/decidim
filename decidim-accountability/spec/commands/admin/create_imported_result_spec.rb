@@ -30,7 +30,7 @@ module Decidim::Accountability
       )
     end
     let(:proposal_component) do
-      create(:proposal_component, participatory_space: participatory_process)
+      create(:component, manifest_name: "proposals", participatory_space: participatory_process)
     end
     let(:proposals) do
       create_list(
