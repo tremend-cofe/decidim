@@ -8,9 +8,7 @@ describe "Admin manages participatory texts" do
     decidim_admin_participatory_processes.edit_participatory_process_path(participatory_process)
   end
 
-  include_context "when managing a component as an admin" do
-    let!(:component) { create(:proposal_component, participatory_space:) }
-  end
+  include_context "when managing a component as an admin"
 
   before do
     component.update!(

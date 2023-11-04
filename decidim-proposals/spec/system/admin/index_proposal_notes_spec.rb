@@ -21,9 +21,7 @@ describe "Index Proposal Notes" do
     )
   end
 
-  include_context "when managing a component as an admin" do
-    let!(:component) { create(:proposal_component, participatory_space:) }
-  end
+  include_context "when managing a component as an admin"
 
   before do
     within find("tr", text: translated(proposal.title)) do

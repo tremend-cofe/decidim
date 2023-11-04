@@ -17,9 +17,7 @@ describe "Valuator manages proposals" do
 
   include Decidim::ComponentPathHelper
 
-  include_context "when managing a component as an admin" do
-    let!(:component) { create(:proposal_component, participatory_space:) }
-  end
+  include_context "when managing a component as an admin"
 
   before do
     user.update(admin: false)
