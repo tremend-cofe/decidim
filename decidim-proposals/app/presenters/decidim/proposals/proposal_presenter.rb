@@ -91,8 +91,8 @@ module Decidim
 
       def parsed_state_change(old_state, new_state)
         [
-          translated_attribute(Decidim::Proposals::ProposalState.find(old_state).title),
-          translated_attribute(Decidim::Proposals::ProposalState.find(new_state).title)
+          translated_attribute(Decidim::Proposals::ProposalState.find_by(id: old_state)&.title),
+          translated_attribute(Decidim::Proposals::ProposalState.find_by(id: new_state)&.title)
         ]
       end
     end

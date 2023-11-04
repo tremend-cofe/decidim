@@ -10,7 +10,9 @@ describe "Admin manages proposals" do
     decidim_admin_participatory_processes.edit_participatory_process_path(participatory_process)
   end
 
-  include_context "when managing a component as an admin"
+  include_context "when managing a component as an admin" do
+    let!(:component) { create(:proposal_component, participatory_space:) }
+  end
 
   it_behaves_like "manage settings"
   it_behaves_like "manage proposals"

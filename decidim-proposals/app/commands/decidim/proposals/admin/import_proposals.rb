@@ -80,7 +80,7 @@ module Decidim
         def proposal_answer_attributes(original_proposal)
           return {} unless form.keep_answers
 
-          state = Decidim::Proposals::ProposalState.where(component: target_component.component, token: original_proposal.state).first!
+          state = Decidim::Proposals::ProposalState.where(component: target_component, token: original_proposal.state).first!
 
           {
             answer: original_proposal.answer,
