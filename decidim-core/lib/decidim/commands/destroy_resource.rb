@@ -41,6 +41,10 @@ module Decidim
       end
 
       def extra_params = {}
+
+      def run_before_hooks; end
+
+      def run_after_hooks; end
     end
   end
 end

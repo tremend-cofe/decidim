@@ -37,6 +37,10 @@ module Decidim
       private
 
       attr_reader :form, :resource
+
+      def run_before_hooks; end
+
+      def run_after_hooks; end
     end
   end
 end

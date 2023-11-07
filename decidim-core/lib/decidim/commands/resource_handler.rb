@@ -30,10 +30,6 @@ module Decidim
         def self.fetch_form_attributes(*fields)
           self.form_attributes += Array(fields)
         end
-
-        def run_before_hooks; end
-
-        def run_after_hooks; end
       end
     end
   end
