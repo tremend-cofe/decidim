@@ -14,9 +14,13 @@ module Decidim
       def call
         return broadcast(:invalid) if invalid?
 
+        run_before_hooks
         destroy_resource
+        run_after_hooks
 
         broadcast(:ok, resource)
+      rescue Decidim::Commands::HookError, ActiveRecord::ActiveRecordError
+        broadcast(:invalid)
       end
 
       private

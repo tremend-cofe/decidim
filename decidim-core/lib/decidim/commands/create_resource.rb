@@ -16,10 +16,14 @@ module Decidim
         return broadcast(:invalid) if invalid?
 
         transaction do
+          run_before_hooks
           create_resource
+          run_after_hooks
         end
 
         broadcast(:ok, resource)
+      rescue Decidim::Commands::HookError, ActiveRecord::ActiveRecordError
+        broadcast(:invalid)
       end
 
       def create_resource(soft: false)
