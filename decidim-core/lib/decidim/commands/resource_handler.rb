@@ -24,10 +24,11 @@ module Decidim
 
         delegate :invalid?, to: :form
 
+        class_attribute :form_attributes
+        self.form_attributes = []
+
         def self.fetch_form_attributes(*fields)
-          define_method(:form_attributes) do
-            fields
-          end
+          self.form_attributes += Array(fields)
         end
       end
     end
