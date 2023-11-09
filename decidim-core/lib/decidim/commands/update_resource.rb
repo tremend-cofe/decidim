@@ -5,6 +5,10 @@ module Decidim
     class UpdateResource < ::Decidim::Command
       include Decidim::Commands::ResourceHandler
 
+      # Initializes the command.
+      #
+      # @param form [Decidim::Form] the form object to update the resource.
+      # @param resource [Decidim::Resource] the resource to update.
       def initialize(form, resource)
         @form = form
         @resource = resource
@@ -40,8 +44,10 @@ module Decidim
         )
       end
 
+      # Runs any before hooks. That you may want to execute before updating the resource.
       def run_before_hooks; end
 
+      # Runs any after hooks. That you may want to execute after updating the resource.
       def run_after_hooks; end
     end
   end
