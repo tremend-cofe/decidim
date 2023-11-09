@@ -3,7 +3,6 @@
 module Decidim
   module Commands
     class DestroyResource < ::Decidim::Command
-
       # Initializes the command.
       #
       # @param resource [ActiveRecord::Base] the resource to destroy.

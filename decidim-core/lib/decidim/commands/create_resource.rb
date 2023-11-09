@@ -11,7 +11,6 @@ module Decidim
         @form = form
       end
 
-
       # Creates the result if valid.
       #
       # Broadcasts :ok if successful, :invalid otherwise.
