@@ -6,6 +6,7 @@ module Decidim
       class RegistryManager
         def self.register_homepage_content_blocks!
           Decidim.content_blocks.register(:homepage, :hero) do |content_block|
+            content_block.component = true
             content_block.cell = "decidim/content_blocks/hero"
             content_block.settings_form_cell = "decidim/content_blocks/hero_settings_form"
             content_block.public_name_key = "decidim.content_blocks.hero.name"
@@ -25,6 +26,7 @@ module Decidim
           end
 
           Decidim.content_blocks.register(:homepage, :global_menu) do |content_block|
+            content_block.component = true
             content_block.cell = "decidim/content_blocks/global_menu"
             content_block.public_name_key = "decidim.content_blocks.global_menu.name"
             content_block.default!
@@ -72,6 +74,7 @@ module Decidim
           end
 
           Decidim.content_blocks.register(:homepage, :html) do |content_block|
+            content_block.component = true
             content_block.cell = "decidim/content_blocks/html"
             content_block.public_name_key = "decidim.content_blocks.html.name"
             content_block.settings_form_cell = "decidim/content_blocks/html_settings_form"
