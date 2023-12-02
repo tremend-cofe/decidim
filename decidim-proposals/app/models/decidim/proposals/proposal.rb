@@ -58,14 +58,14 @@ module Decidim
       scope :not_answered, -> { where(answered_at: nil) }
 
       scope :state_not_published, -> { where(state_published_at: nil) }
-      scope :state_published, -> { where.not(state_published_at: nil).where.not(state: nil) }
+      # scope :state_published, -> { where.not(state_published_at: nil).where.not(state: nil) }
 
-      scope :accepted, -> { state_published.where(state: "accepted") }
-      scope :rejected, -> { state_published.where(state: "rejected") }
-      scope :evaluating, -> { state_published.where(state: "evaluating") }
-      scope :withdrawn, -> { where(state: "withdrawn") }
-      scope :except_rejected, -> { where.not(state: "rejected").or(state_not_published) }
-      scope :except_withdrawn, -> { where.not(state: "withdrawn").or(where(state: nil)) }
+      # scope :accepted, -> { state_published.where(state: "accepted") }
+      # scope :rejected, -> { state_published.where(state: "rejected") }
+      # scope :evaluating, -> { state_published.where(state: "evaluating") }
+      # scope :withdrawn, -> { where(state: "withdrawn") }
+      # scope :except_rejected, -> { where.not(state: "rejected").or(state_not_published) }
+      # scope :except_withdrawn, -> { where.not(state: "withdrawn").or(where(state: nil)) }
       scope :drafts, -> { where(published_at: nil) }
       scope :except_drafts, -> { where.not(published_at: nil) }
       scope :published, -> { where.not(published_at: nil) }
@@ -160,27 +160,28 @@ module Decidim
         published_at.present?
       end
 
-      # Public: Returns the published state of the proposal.
-      #
-      # Returns Boolean.
-      def state
-        return amendment.state if emendation?
-        return nil unless published_state? || withdrawn?
 
-        super
-      end
+      # # Public: Returns the published state of the proposal.
+      # #
+      # # Returns Boolean.
+      # def state
+      #   return amendment.state if emendation?
+      #   return nil unless published_state? || withdrawn?
+      #
+      #   super
+      # end
 
       # This is only used to define the setter, as the getter will be overriden below.
       alias_attribute :internal_state, :state
 
-      # Public: Returns the internal state of the proposal.
+      # # Public: Returns the internal state of the proposal.
+      # #
+      # # Returns Boolean.
+      # def internal_state
+      #   return amendment.state if emendation?
       #
-      # Returns Boolean.
-      def internal_state
-        return amendment.state if emendation?
-
-        self[:state]
-      end
+      #   self[:state]
+      # end
 
       # Public: Checks if the organization has published the state for the proposal.
       #
@@ -196,33 +197,33 @@ module Decidim
         answered_at.present?
       end
 
-      # Public: Checks if the author has withdrawn the proposal.
+      # # Public: Checks if the author has withdrawn the proposal.
+      # #
+      # # Returns Boolean.
+      # def withdrawn?
+      #   internal_state == "withdrawn"
+      # end
       #
-      # Returns Boolean.
-      def withdrawn?
-        internal_state == "withdrawn"
-      end
-
-      # Public: Checks if the organization has accepted a proposal.
+      # # Public: Checks if the organization has accepted a proposal.
+      # #
+      # # Returns Boolean.
+      # def accepted?
+      #   state == "accepted"
+      # end
       #
-      # Returns Boolean.
-      def accepted?
-        state == "accepted"
-      end
-
-      # Public: Checks if the organization has rejected a proposal.
+      # # Public: Checks if the organization has rejected a proposal.
+      # #
+      # # Returns Boolean.
+      # def rejected?
+      #   state == "rejected"
+      # end
       #
-      # Returns Boolean.
-      def rejected?
-        state == "rejected"
-      end
-
-      # Public: Checks if the organization has marked the proposal as evaluating it.
-      #
-      # Returns Boolean.
-      def evaluating?
-        state == "evaluating"
-      end
+      # # Public: Checks if the organization has marked the proposal as evaluating it.
+      # #
+      # # Returns Boolean.
+      # def evaluating?
+      #   state == "evaluating"
+      # end
 
       # Public: Overrides the `reported_content_url` Reportable concern method.
       def reported_content_url
@@ -290,12 +291,12 @@ module Decidim
         !published_state? && within_edit_time_limit? && !copied_from_other_component? && created_by?(user)
       end
 
-      # Checks whether the user can withdraw the given proposal.
-      #
-      # user - the user to check for withdrawability.
-      def withdrawable_by?(user)
-        user && !withdrawn? && authored_by?(user) && !copied_from_other_component?
-      end
+      # # Checks whether the user can withdraw the given proposal.
+      # #
+      # # user - the user to check for withdrawability.
+      # def withdrawable_by?(user)
+      #   user && !withdrawn? && authored_by?(user) && !copied_from_other_component?
+      # end
 
       # Public: Whether the proposal is a draft or not.
       def draft?
@@ -397,16 +398,16 @@ module Decidim
         Time.current < limit
       end
 
-      def process_amendment_state_change!
-        return unless %w(accepted rejected evaluating withdrawn).member?(amendment.state)
-
-        PaperTrail.request(enabled: false) do
-          update!(
-            state: amendment.state,
-            state_published_at: Time.current
-          )
-        end
-      end
+      # def process_amendment_state_change!
+      #   return unless %w(accepted rejected evaluating withdrawn).member?(amendment.state)
+      #
+      #   PaperTrail.request(enabled: false) do
+      #     update!(
+      #       state: amendment.state,
+      #       state_published_at: Time.current
+      #     )
+      #   end
+      # end
 
       private
 
