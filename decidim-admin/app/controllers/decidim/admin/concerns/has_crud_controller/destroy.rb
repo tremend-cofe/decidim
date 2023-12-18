@@ -27,9 +27,9 @@ module Decidim
 
             def enforce_destroy_permission
               return if crud_actions.dig(:destroy, :secure) == false
-              raise "#{self.class.name} must implement 'permission_subject' method" unless respond_to?(:permission_subject)
+              raise "#{self.class.name} must implement 'authorization_scope' method" unless respond_to?(:authorization_scope)
 
-              enforce_permission_to :destroy, permission_subject, object_name => send(object_name)
+              enforce_permission_to :destroy, authorization_scope, object_name => send(object_name)
             end
           end
         end

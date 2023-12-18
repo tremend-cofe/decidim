@@ -38,9 +38,9 @@ module Decidim
 
             def enforce_update_permission
               return if crud_actions.dig(:update, :secure) == false
-              raise "#{self.class.name} must implement 'permission_subject' method" unless respond_to?(:permission_subject)
+              raise "#{self.class.name} must implement 'authorization_scope' method" unless respond_to?(:authorization_scope)
 
-              enforce_permission_to :update, permission_subject, object_name => send(object_name)
+              enforce_permission_to :update, authorization_scope, object_name => send(object_name)
             end
           end
         end

@@ -16,9 +16,9 @@ module Decidim
 
             def enforce_show_permission
               return if crud_actions.dig(:show, :secure) == false
-              raise "#{self.class.name} must implement 'permission_subject' method" unless respond_to?(:permission_subject)
+              raise "#{self.class.name} must implement 'authorization_scope' method" unless respond_to?(:authorization_scope)
 
-              enforce_permission_to :read, permission_subject, object_name => send(object_name)
+              enforce_permission_to :read, authorization_scope, object_name => send(object_name)
             end
           end
         end

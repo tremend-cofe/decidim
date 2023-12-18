@@ -16,7 +16,7 @@ module Decidim
 
         included do
           class_attribute :crud_actions
-          class_attribute :permission_subject
+          class_attribute :authorization_scope
 
           self.crud_actions = {
             create: { enabled: false, secure: true, module: Decidim::Admin::Concerns::HasCrudController::Create },
@@ -32,8 +32,8 @@ module Decidim
             include crud_actions[action_name][:module]
           end
 
-          def self.permission_subject(value)
-            self.permission_subject = value
+          def self.authorization_scope(value)
+            self.authorization_scope = value
           end
         end
       end

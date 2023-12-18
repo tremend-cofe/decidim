@@ -16,9 +16,9 @@ module Decidim
 
             def enforce_index_permission
               return if crud_actions.dig(:index, :secure) == false
-              raise "#{self.class.name} must implement 'permission_subject' method" unless respond_to?(:permission_subject)
+              raise "#{self.class.name} must implement 'authorization_scope' method" unless respond_to?(:authorization_scope)
 
-              enforce_permission_to :read, permission_subject
+              enforce_permission_to :read, authorization_scope
             end
           end
         end

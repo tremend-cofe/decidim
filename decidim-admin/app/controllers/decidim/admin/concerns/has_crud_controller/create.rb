@@ -37,9 +37,9 @@ module Decidim
 
             def enforce_create_permission
               return if crud_actions.dig(:create, :secure) == false
-              raise "#{self.class.name} must implement 'permission_subject' method" unless respond_to?(:permission_subject)
+              raise "#{self.class.name} must implement 'authorization_scope' method" unless respond_to?(:authorization_scope)
 
-              enforce_permission_to :create, permission_subject
+              enforce_permission_to :create, authorization_scope
             end
           end
         end
