@@ -3,7 +3,12 @@
 module Decidim
   module Admin
     # Controller that allows managing all areas at the admin panel.
-    #
+
+    # i18n-tasks-use t('decidim.admin.areas.create.success')
+    # i18n-tasks-use t('decidim.admin.areas.create.error')
+    # i18n-tasks-use t('decidim.admin.areas.update.success')
+    # i18n-tasks-use t('decidim.admin.areas.update.error')
+    # i18n-tasks-use t('decidim.admin.areas.destroy.success')
     class AreasController < Decidim::Admin::ApplicationController
       include Decidim::Admin::Concerns::HasTabbedMenu
 
@@ -13,70 +18,43 @@ module Decidim
 
       helper_method :area, :organization_areas
 
+      permission_subject :area
+      # with_action :index, secure: true
+      with_action :create, secure: true
+      with_action :update, secure: true
+      with_action :destroy, secure: true
+
       def index
         enforce_permission_to :read, :area
         @areas = organization_areas
       end
 
-      def new
-        enforce_permission_to :create, :area
-        @form = form(AreaForm).instance
-      end
-
-      def create
-        enforce_permission_to :create, :area
-        @form = form(AreaForm).from_params(params)
-        CreateArea.call(@form) do
-          on(:ok) do
-            flash[:notice] = I18n.t("areas.create.success", scope: "decidim.admin")
-            redirect_to areas_path
-          end
-
-          on(:invalid) do
-            flash.now[:alert] = I18n.t("areas.create.error", scope: "decidim.admin")
-            render :new
-          end
-        end
-      end
-
-      def edit
-        enforce_permission_to(:update, :area, area:)
-        @form = form(AreaForm).from_model(area)
-      end
-
-      def update
-        enforce_permission_to(:update, :area, area:)
-        @form = form(AreaForm).from_params(params)
-
-        UpdateArea.call(@form, area) do
-          on(:ok) do
-            flash[:notice] = I18n.t("areas.update.success", scope: "decidim.admin")
-            redirect_to areas_path
-          end
-
-          on(:invalid) do
-            flash.now[:alert] = I18n.t("areas.update.error", scope: "decidim.admin")
-            render :edit
-          end
-        end
-      end
-
       def destroy
-        enforce_permission_to(:destroy, :area, area:)
-
         DestroyArea.call(area, current_user) do
           on(:ok) do
-            flash[:notice] = I18n.t("areas.destroy.success", scope: "decidim.admin")
+            flash[:notice] = I18n.t("destroy.success", scope:)
             redirect_to areas_path
           end
           on(:has_spaces) do
-            flash[:alert] = I18n.t("areas.destroy.has_spaces", scope: "decidim.admin")
+            flash[:alert] = I18n.t("destroy.has_spaces", scope:)
             redirect_to areas_path
           end
         end
       end
 
       private
+
+      def form_class = Decidim::Admin::AreaForm
+
+      def create_command = Decidim::Admin::CreateArea
+
+      def update_command = Decidim::Admin::UpdateArea
+
+      def destroy_command = Decidim::Commands::DestroyArea
+
+      def scope = "decidim.admin.areas"
+
+      def object_name = :area
 
       def tab_menu_name = :admin_areas_menu
 
