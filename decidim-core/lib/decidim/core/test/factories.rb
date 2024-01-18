@@ -9,8 +9,45 @@ require "decidim/participatory_processes/test/factories"
 require "decidim/assemblies/test/factories"
 require "decidim/comments/test/factories"
 
-def generate_localized_title
-  Decidim::Faker::Localized.localized { generate(:title) }
+def generate_component_name(locales, manifest_name, skip_injection: false)
+  prepend = " "
+  prepend += "<script>alert(\"#{manifest_name}\");</script> " if skip_injection
+
+  prepend + Decidim::Components::Namer.new(locales, manifest_name).i18n_name
+end
+
+def generate_localized_description(field = nil, skip_injection: false, before: "<p>", after: "</p>")
+  skip_injection = true if field.nil?
+  Decidim::Faker::Localized.wrapped(before, after) do
+    if skip_injection
+      Decidim::Faker::Localized.localized { Faker::Lorem.sentences(number: 3).join("\n") }
+    else
+      Decidim::Faker::Localized.localized { "<script>alert(\"#{field}\");</script> #{Faker::Lorem.sentences(number: 3).join("\n")}" }
+    end
+  end
+end
+
+def generate_localized_word(field = nil, skip_injection: false)
+  skip_injection = true if field.nil?
+  Decidim::Faker::Localized.localized do
+    if skip_injection
+      Faker::Lorem.word
+    else
+      "<script>alert(\"#{field}\");</script> #{Faker::Lorem.word}"
+    end
+  end
+end
+
+def generate_localized_title(field = nil, skip_injection: false)
+  skip_injection = true if field.nil?
+
+  Decidim::Faker::Localized.localized do
+    if skip_injection
+      generate(:title)
+    else
+      "<script>alert(\"#{field}\");</script> #{generate(:title)}"
+    end
+  end
 end
 
 FactoryBot.define do
