@@ -61,7 +61,7 @@ FactoryBot.define do
         create(:participatory_process_step,
                active: true,
                end_date: evaluator.current_step_ends,
-               skip_injection:,
+               skip_injection: evaluator.skip_injection,
                participatory_process:)
         participatory_process.reload
         participatory_process.steps.reload
