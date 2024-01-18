@@ -11,8 +11,11 @@ FactoryBot.define do
   end
 
   factory :participatory_process, class: "Decidim::ParticipatoryProcess" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
-    slug { generate(:participatory_process_slug) }
+    slug { generate(:participatory_process_slug, skip_injection:) }
     subtitle { generate_localized_title }
     weight { 1 }
     short_description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
@@ -102,6 +105,9 @@ FactoryBot.define do
   end
 
   factory :participatory_process_group, class: "Decidim::ParticipatoryProcessGroup" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     hero_image { Decidim::Dev.test_file("city.jpeg", "image/jpeg") }
@@ -127,6 +133,9 @@ FactoryBot.define do
   end
 
   factory :participatory_process_step, class: "Decidim::ParticipatoryProcessStep" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     start_date { 1.month.ago }
@@ -145,6 +154,9 @@ FactoryBot.define do
   end
 
   factory :participatory_process_type, class: "Decidim::ParticipatoryProcessType" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
     organization
 
@@ -163,6 +175,7 @@ FactoryBot.define do
 
   factory :process_admin, parent: :user, class: "Decidim::User" do
     transient do
+      skip_injection { false }
       participatory_process { create(:participatory_process) }
     end
 
@@ -179,6 +192,7 @@ FactoryBot.define do
 
   factory :process_collaborator, parent: :user, class: "Decidim::User" do
     transient do
+      skip_injection { false }
       participatory_process { create(:participatory_process) }
     end
 
@@ -195,6 +209,7 @@ FactoryBot.define do
 
   factory :process_moderator, parent: :user, class: "Decidim::User" do
     transient do
+      skip_injection { false }
       participatory_process { create(:participatory_process) }
     end
 
@@ -211,6 +226,7 @@ FactoryBot.define do
 
   factory :process_valuator, parent: :user, class: "Decidim::User" do
     transient do
+      skip_injection { false }
       participatory_process { create(:participatory_process) }
     end
 
@@ -226,6 +242,9 @@ FactoryBot.define do
   end
 
   factory :participatory_process_user_role, class: "Decidim::ParticipatoryProcessUserRole" do
+    transient do
+      skip_injection { false }
+    end
     user
     participatory_process { create :participatory_process, organization: user.organization }
     role { "admin" }
