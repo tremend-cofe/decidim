@@ -188,7 +188,7 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :admin, skip_injection:
+             role: :admin, skip_injection: evaluator.skip_injection
     end
   end
 
@@ -205,7 +205,7 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :collaborator, skip_injection:
+             role: :collaborator, skip_injection: evaluator.skip_injection
     end
   end
 
@@ -222,7 +222,7 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :moderator, skip_injection:
+             role: :moderator, skip_injection: evaluator.skip_injection
     end
   end
 
@@ -239,7 +239,7 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :valuator, skip_injection:
+             role: :valuator, skip_injection: evaluator.skip_injection
     end
   end
 

@@ -10,10 +10,9 @@ require "decidim/assemblies/test/factories"
 require "decidim/comments/test/factories"
 
 def generate_component_name(locales, manifest_name, skip_injection: false)
-  prepend = " "
-  prepend += "<script>alert(\"#{manifest_name}\");</script> " if skip_injection
+  prepend = skip_injection ? "" : "<script>alert(\"#{manifest_name}\");</script>"
 
-  prepend + Decidim::Components::Namer.new(locales, manifest_name).i18n_name
+  Decidim::Components::Namer.new(locales, manifest_name).i18n_name.transform_values { |v| [prepend, v].compact_blank.join(" ") }
 end
 
 def generate_localized_description(field = nil, skip_injection: false, before: "<p>", after: "</p>")
@@ -110,6 +109,9 @@ FactoryBot.define do
   end
 
   factory :subcategory, parent: :category do
+    transient do
+      skip_injection { false }
+    end
     parent { build(:category) }
 
     participatory_space { parent.participatory_space }
@@ -117,6 +119,7 @@ FactoryBot.define do
 
   factory :organization, class: "Decidim::Organization" do
     transient do
+      skip_injection { false }
       create_static_pages { true }
     end
 
@@ -179,6 +182,9 @@ FactoryBot.define do
   end
 
   factory :user, class: "Decidim::User" do
+    transient do
+      skip_injection { false }
+    end
     email { generate(:email) }
     name { generate(:name) }
     nickname { generate(:nickname) }
@@ -247,17 +253,24 @@ FactoryBot.define do
   end
 
   factory :participatory_space_private_user, class: "Decidim::ParticipatorySpacePrivateUser" do
+    transient do
+      skip_injection { false }
+    end
     user
     privatable_to { create(:participatory_process, organization: user.organization) }
   end
 
   factory :assembly_private_user, class: "Decidim::ParticipatorySpacePrivateUser" do
+    transient do
+      skip_injection { false }
+    end
     user
     privatable_to { create(:assembly, organization: user.organization) }
   end
 
   factory :user_group, class: "Decidim::UserGroup" do
     transient do
+      skip_injection { false }
       document_number { "#{Faker::Number.number(digits: 8)}X" }
       phone { Faker::PhoneNumber.phone_number }
       rejected_at { nil }
@@ -317,12 +330,18 @@ FactoryBot.define do
   end
 
   factory :user_group_membership, class: "Decidim::UserGroupMembership" do
+    transient do
+      skip_injection { false }
+    end
     user { create(:user, :confirmed, organization: user_group.organization) }
     role { :creator }
     user_group
   end
 
   factory :identity, class: "Decidim::Identity" do
+    transient do
+      skip_injection { false }
+    end
     provider { "facebook" }
     sequence(:uid)
     user
@@ -330,6 +349,9 @@ FactoryBot.define do
   end
 
   factory :authorization, class: "Decidim::Authorization" do
+    transient do
+      skip_injection { false }
+    end
     sequence(:name) { |n| "dummy_authorization_#{n}" }
     user
     metadata { {} }
@@ -346,6 +368,7 @@ FactoryBot.define do
 
   factory :authorization_transfer, class: "Decidim::AuthorizationTransfer" do
     transient do
+      skip_injection { false }
       organization { create(:organization) }
     end
 
@@ -365,6 +388,7 @@ FactoryBot.define do
 
   factory :authorization_transfer_record, class: "Decidim::AuthorizationTransferRecord" do
     transient do
+      skip_injection { false }
       organization { resource.try(:organization) || create(:organization) }
     end
 
@@ -373,6 +397,9 @@ FactoryBot.define do
   end
 
   factory :static_page, class: "Decidim::StaticPage" do
+    transient do
+      skip_injection { false }
+    end
     slug { generate(:slug) }
     title { generate_localized_title }
     content { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
@@ -401,12 +428,18 @@ FactoryBot.define do
   end
 
   factory :static_page_topic, class: "Decidim::StaticPageTopic" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     organization
   end
 
   factory :attachment_collection, class: "Decidim::AttachmentCollection" do
+    transient do
+      skip_injection { false }
+    end
     name { generate_localized_title }
     description { generate_localized_title }
     weight { Faker::Number.number(digits: 1) }
@@ -415,6 +448,9 @@ FactoryBot.define do
   end
 
   factory :attachment, class: "Decidim::Attachment" do
+    transient do
+      skip_injection { false }
+    end
     title { generate_localized_title }
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     weight { Faker::Number.number(digits: 1) }
@@ -436,6 +472,7 @@ FactoryBot.define do
 
   factory :component, class: "Decidim::Component" do
     transient do
+      skip_injection { false }
       organization { create(:organization) }
     end
 
@@ -533,12 +570,18 @@ FactoryBot.define do
   end
 
   factory :scope_type, class: "Decidim::ScopeType" do
+    transient do
+      skip_injection { false }
+    end
     name { Decidim::Faker::Localized.word }
     plural { Decidim::Faker::Localized.literal(name.values.first.pluralize) }
     organization
   end
 
   factory :scope, class: "Decidim::Scope" do
+    transient do
+      skip_injection { false }
+    end
     name { Decidim::Faker::Localized.literal(generate(:scope_name)) }
     code { generate(:scope_code) }
     scope_type { create(:scope_type, organization:) }
@@ -546,6 +589,9 @@ FactoryBot.define do
   end
 
   factory :subscope, parent: :scope do
+    transient do
+      skip_injection { false }
+    end
     parent { build(:scope) }
 
     before(:create) do |object|
@@ -554,17 +600,26 @@ FactoryBot.define do
   end
 
   factory :area_type, class: "Decidim::AreaType" do
+    transient do
+      skip_injection { false }
+    end
     name { Decidim::Faker::Localized.word }
     plural { Decidim::Faker::Localized.literal(name.values.first.pluralize) }
     organization
   end
 
   factory :area, class: "Decidim::Area" do
+    transient do
+      skip_injection { false }
+    end
     name { Decidim::Faker::Localized.literal(generate(:area_name)) }
     organization
   end
 
   factory :coauthorship, class: "Decidim::Coauthorship" do
+    transient do
+      skip_injection { false }
+    end
     coauthorable { create(:dummy_resource) }
     transient do
       organization { coauthorable.component.participatory_space.organization }
@@ -573,6 +628,9 @@ FactoryBot.define do
   end
 
   factory :resource_link, class: "Decidim::ResourceLink" do
+    transient do
+      skip_injection { false }
+    end
     name { generate(:slug) }
     to { build(:dummy_resource) }
     from { build(:dummy_resource, component: to.component) }
@@ -580,6 +638,7 @@ FactoryBot.define do
 
   factory :newsletter, class: "Decidim::Newsletter" do
     transient do
+      skip_injection { false }
       body { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     end
 
@@ -605,6 +664,9 @@ FactoryBot.define do
   end
 
   factory :moderation, class: "Decidim::Moderation" do
+    transient do
+      skip_injection { false }
+    end
     reportable { build(:dummy_resource) }
     participatory_space { reportable.component.participatory_space }
 
@@ -614,18 +676,27 @@ FactoryBot.define do
   end
 
   factory :report, class: "Decidim::Report" do
+    transient do
+      skip_injection { false }
+    end
     moderation
     user { build(:user, organization: moderation.reportable.organization) }
     reason { "spam" }
   end
 
   factory :impersonation_log, class: "Decidim::ImpersonationLog" do
+    transient do
+      skip_injection { false }
+    end
     admin { build(:user, :admin) }
     user { build(:user, :managed, organization: admin.organization) }
     started_at { 10.minutes.ago }
   end
 
   factory :follow, class: "Decidim::Follow" do
+    transient do
+      skip_injection { false }
+    end
     user do
       build(
         :user,
@@ -636,6 +707,9 @@ FactoryBot.define do
   end
 
   factory :notification, class: "Decidim::Notification" do
+    transient do
+      skip_injection { false }
+    end
     user do
       build(
         :user,
@@ -654,6 +728,7 @@ FactoryBot.define do
 
   factory :action_log, class: "Decidim::ActionLog" do
     transient do
+      skip_injection { false }
       extra_data { {} }
     end
 
@@ -687,6 +762,9 @@ FactoryBot.define do
   end
 
   factory :oauth_application, class: "Decidim::OAuthApplication" do
+    transient do
+      skip_injection { false }
+    end
     organization
     sequence(:name) { |n| "OAuth application #{n}" }
     sequence(:organization_name) { |n| "OAuth application owner #{n}" }
@@ -697,6 +775,9 @@ FactoryBot.define do
   end
 
   factory :oauth_access_token, class: "Doorkeeper::AccessToken" do
+    transient do
+      skip_injection { false }
+    end
     resource_owner_id { create(:user, organization: application.organization).id }
     application { build(:oauth_application) }
     token { SecureRandom.hex(32) }
@@ -706,6 +787,9 @@ FactoryBot.define do
   end
 
   factory :searchable_resource, class: "Decidim::SearchableResource" do
+    transient do
+      skip_injection { false }
+    end
     resource { build(:dummy_resource) }
     resource_id { resource.id }
     resource_type { resource.class.name }
@@ -718,6 +802,9 @@ FactoryBot.define do
   end
 
   factory :content_block, class: "Decidim::ContentBlock" do
+    transient do
+      skip_injection { false }
+    end
     organization
     scope_name { :homepage }
     manifest_name { :hero }
@@ -731,11 +818,17 @@ FactoryBot.define do
   end
 
   factory :hashtag, class: "Decidim::Hashtag" do
+    transient do
+      skip_injection { false }
+    end
     name { generate(:hashtag_name) }
     organization
   end
 
   factory :metric, class: "Decidim::Metric" do
+    transient do
+      skip_injection { false }
+    end
     organization
     day { Time.zone.today }
     metric_type { "random_metric" }
@@ -747,6 +840,9 @@ FactoryBot.define do
   end
 
   factory :amendment, class: "Decidim::Amendment" do
+    transient do
+      skip_injection { false }
+    end
     amendable { build(:dummy_resource) }
     emendation { build(:dummy_resource) }
     amender { emendation.try(:creator_author) || emendation.try(:author) }
@@ -760,27 +856,42 @@ FactoryBot.define do
   end
 
   factory :user_report, class: "Decidim::UserReport" do
+    transient do
+      skip_injection { false }
+    end
     reason { "spam" }
     moderation { create(:user_moderation, user:) }
     user { build(:user) }
   end
 
   factory :user_moderation, class: "Decidim::UserModeration" do
+    transient do
+      skip_injection { false }
+    end
     user { build(:user) }
   end
 
   factory :endorsement, class: "Decidim::Endorsement" do
+    transient do
+      skip_injection { false }
+    end
     resource { build(:dummy_resource) }
     author { resource.try(:creator_author) || resource.try(:author) || build(:user, organization: resource.organization) }
   end
 
   factory :user_group_endorsement, class: "Decidim::Endorsement" do
+    transient do
+      skip_injection { false }
+    end
     resource { build(:dummy_resource) }
     author { build(:user, organization: resource.organization) }
     user_group { create(:user_group, verified_at: Time.current, organization: resource.organization, users: [author]) }
   end
 
   factory :share_token, class: "Decidim::ShareToken" do
+    transient do
+      skip_injection { false }
+    end
     token_for { build(:component) }
     user { build(:user, organization: token_for.organization) }
 
@@ -799,17 +910,26 @@ FactoryBot.define do
   end
 
   factory :editor_image, class: "Decidim::EditorImage" do
+    transient do
+      skip_injection { false }
+    end
     organization
     author { create(:user, :admin, :confirmed, organization:) }
     file { Decidim::Dev.test_file("city.jpeg", "image/jpeg") }
   end
 
   factory :reminder, class: "Decidim::Reminder" do
+    transient do
+      skip_injection { false }
+    end
     user { build(:user) }
     component { build(:dummy_component, organization: user.organization) }
   end
 
   factory :reminder_record, class: "Decidim::ReminderRecord" do
+    transient do
+      skip_injection { false }
+    end
     reminder { create(:reminder) }
     remindable { build(:dummy_resource) }
 
@@ -821,10 +941,16 @@ FactoryBot.define do
   end
 
   factory :reminder_delivery, class: "Decidim::ReminderDelivery" do
+    transient do
+      skip_injection { false }
+    end
     reminder { create(:reminder) }
   end
 
   factory :short_link, class: "Decidim::ShortLink" do
+    transient do
+      skip_injection { false }
+    end
     target { create(:component, manifest_name: "dummy") }
     route_name { nil }
     params { {} }
