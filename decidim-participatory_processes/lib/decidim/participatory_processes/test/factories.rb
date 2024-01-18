@@ -14,23 +14,23 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    title { generate_localized_title }
-    slug { generate(:participatory_process_slug, skip_injection:) }
-    subtitle { generate_localized_title }
+    title { generate_localized_title(:participatory_process_title, skip_injection:) }
+    slug { generate(:participatory_process_slug) }
+    subtitle { generate_localized_title(:participatory_process_subtitle, skip_injection:) }
     weight { 1 }
-    short_description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    short_description { generate_localized_description(:participatory_process_short_description, skip_injection:) }
+    description { generate_localized_description(:participatory_process_description, skip_injection:) }
     organization
     hero_image { Decidim::Dev.test_file("city.jpeg", "image/jpeg") } # Keep after organization
     banner_image { Decidim::Dev.test_file("city2.jpeg", "image/jpeg") } # Keep after organization
     published_at { Time.current }
-    meta_scope { Decidim::Faker::Localized.word }
-    developer_group { generate_localized_title }
-    local_area { generate_localized_title }
-    target { generate_localized_title }
-    participatory_scope { generate_localized_title }
-    participatory_structure { generate_localized_title }
-    announcement { generate_localized_title }
+    meta_scope { generate_localized_word(:participatory_process_meta_scope, skip_injection:) }
+    developer_group { generate_localized_title(:participatory_process_developer_group, skip_injection:) }
+    local_area { generate_localized_title(:participatory_process_local_area, skip_injection:) }
+    target { generate_localized_title(:participatory_process_target, skip_injection:) }
+    participatory_scope { generate_localized_title(:participatory_process_participatory_scope, skip_injection:) }
+    participatory_structure { generate_localized_title(:participatory_process_participatory_structure, skip_injection:) }
+    announcement { generate_localized_title(:participatory_process_announcement, skip_injection:) }
     show_metrics { true }
     show_statistics { true }
     private_space { false }
@@ -61,6 +61,7 @@ FactoryBot.define do
         create(:participatory_process_step,
                active: true,
                end_date: evaluator.current_step_ends,
+               skip_injection:,
                participatory_process:)
         participatory_process.reload
         participatory_process.steps.reload
@@ -84,7 +85,7 @@ FactoryBot.define do
 
     trait :with_scope do
       scopes_enabled { true }
-      scope { create :scope, organization: }
+      scope { create :scope, organization:, skip_injection: }
     end
 
     trait :with_content_blocks do
@@ -97,6 +98,7 @@ FactoryBot.define do
             organization: participatory_process.organization,
             scope_name: :participatory_process_homepage,
             manifest_name:,
+            skip_injection:,
             scoped_resource_id: participatory_process.id
           )
         end
@@ -108,18 +110,18 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    title { generate_localized_title }
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    title { generate_localized_title(:participatory_process_group_title, skip_injection:) }
+    description { generate_localized_description(:participatory_process_group_description, skip_injection:) }
     hero_image { Decidim::Dev.test_file("city.jpeg", "image/jpeg") }
     organization
     hashtag { Faker::Internet.slug }
     group_url { Faker::Internet.url }
-    developer_group { generate_localized_title }
-    local_area { generate_localized_title }
+    developer_group { generate_localized_title(:participatory_process_group_developer_group, skip_injection:) }
+    local_area { generate_localized_title(:participatory_process_group_local_area, skip_injection:) }
     meta_scope { Decidim::Faker::Localized.word }
-    target { generate_localized_title }
-    participatory_scope { generate_localized_title }
-    participatory_structure { generate_localized_title }
+    target { generate_localized_title(:participatory_process_group_target, skip_injection:) }
+    participatory_scope { generate_localized_title(:participatory_process_group_participatory_scope, skip_injection:) }
+    participatory_structure { generate_localized_title(:participatory_process_group_participatory_structure, skip_injection:) }
 
     trait :promoted do
       promoted { true }
@@ -127,7 +129,7 @@ FactoryBot.define do
 
     trait :with_participatory_processes do
       after(:create) do |participatory_process_group|
-        create_list(:participatory_process, 2, :published, organization: participatory_process_group.organization, participatory_process_group:)
+        create_list(:participatory_process, 2, :published, organization: participatory_process_group.organization, participatory_process_group:, skip_injection:)
       end
     end
   end
@@ -136,8 +138,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    title { generate_localized_title }
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    title { generate_localized_title(:participatory_process_step_title, skip_injection:) }
+    description { generate_localized_description(:participatory_process_step_description, skip_injection:) }
     start_date { 1.month.ago }
     end_date { 2.months.from_now }
     position { nil }
@@ -157,18 +159,18 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    title { generate_localized_title }
+    title { generate_localized_title(:participatory_process_type_title, skip_injection:) }
     organization
 
     trait :with_active_participatory_processes do
       after(:create) do |participatory_process_type|
-        create_list(:participatory_process, 2, :active, :published, organization: participatory_process_type.organization, participatory_process_type:)
+        create_list(:participatory_process, 2, :active, :published, skip_injection:, organization: participatory_process_type.organization, participatory_process_type:)
       end
     end
 
     trait :with_past_participatory_processes do
       after(:create) do |participatory_process_type|
-        create_list(:participatory_process, 2, :past, :published, organization: participatory_process_type.organization, participatory_process_type:)
+        create_list(:participatory_process, 2, :past, :published, skip_injection:, organization: participatory_process_type.organization, participatory_process_type:)
       end
     end
   end
@@ -176,7 +178,7 @@ FactoryBot.define do
   factory :process_admin, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process) }
+      participatory_process { create(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -186,14 +188,14 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :admin
+             role: :admin, skip_injection:
     end
   end
 
   factory :process_collaborator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process) }
+      participatory_process { create(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -203,14 +205,14 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :collaborator
+             role: :collaborator, skip_injection:
     end
   end
 
   factory :process_moderator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process) }
+      participatory_process { create(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -220,14 +222,14 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :moderator
+             role: :moderator, skip_injection:
     end
   end
 
   factory :process_valuator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process) }
+      participatory_process { create(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -237,7 +239,7 @@ FactoryBot.define do
       create :participatory_process_user_role,
              user:,
              participatory_process: evaluator.participatory_process,
-             role: :valuator
+             role: :valuator, skip_injection:
     end
   end
 
@@ -246,7 +248,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    participatory_process { create :participatory_process, organization: user.organization }
+    participatory_process { create :participatory_process, organization: user.organization, skip_injection: }
     role { "admin" }
   end
 end
