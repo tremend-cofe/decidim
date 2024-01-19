@@ -5,19 +5,20 @@ module Decidim
   autoload :ResourceHelper, "decidim/resource_helper"
 
   class ViewModel < Cell::ViewModel
-    include ActionView::Helpers::TranslationHelper
+    # include ActionView::Helpers::TranslationHelper
     include ::Cell::Translation
-    include Decidim::ResourceHelper
-    include Decidim::ScopesHelper
-    include ActionController::Helpers
-    include Decidim::ActionAuthorization
-    include Decidim::ActionAuthorizationHelper
-    include Decidim::ReplaceButtonsHelper
+    # include Decidim::ResourceHelper
+    # include Decidim::ScopesHelper
+    # include ActionController::Helpers
+    # include Decidim::ActionAuthorization
+    # include Decidim::ActionAuthorizationHelper
+    # include Decidim::ReplaceButtonsHelper
     include Cell::Caching::Notifications
-    include Decidim::MarkupHelper
-    include Decidim::LayoutHelper
+    # include Decidim::MarkupHelper
+    # include Decidim::LayoutHelper
 
-    delegate :current_organization, to: :controller
+    delegate_missing_to :view_context
+    # delegate :current_organization, to: :controller
 
     cache :show, if: :perform_caching?, expires_in: :cache_expiry_time do
       cache_hash
