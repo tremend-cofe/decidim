@@ -20,13 +20,8 @@ def generate_component_name(locales, manifest_name, skip_injection: false)
 end
 
 def generate_localized_description(field = nil, skip_injection: false, before: "<p>", after: "</p>")
-  skip_injection = true if field.nil?
   Decidim::Faker::Localized.wrapped(before, after) do
-    if skip_injection
-      Decidim::Faker::Localized.localized { Faker::Lorem.sentences(number: 3).join("\n") }
-    else
-      Decidim::Faker::Localized.localized { "<script>alert(\"#{field}\");</script> #{Faker::Lorem.sentences(number: 3).join("\n")}" }
-    end
+    generate_localized_title(field, skip_injection:)
   end
 end
 
