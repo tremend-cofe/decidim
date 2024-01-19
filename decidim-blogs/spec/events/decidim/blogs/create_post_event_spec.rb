@@ -8,12 +8,18 @@ describe Decidim::Blogs::CreatePostEvent do
   let(:email_intro) { "The post \"#{resource_title}\" has been published in \"#{participatory_space_title}\" that you are following." }
   let(:email_outro) { "You have received this notification because you are following \"#{participatory_space_title}\". You can unfollow it from the previous link." }
   let(:notification_title) { "The post <a href=\"#{resource_path}\">#{resource_title}</a> has been published in #{participatory_space_title}" }
-  let(:email_subject) { "New post published in #{participatory_space_title}" }
+  let(:email_subject) { "New post published in #{decidim_sanitize(translated(participatory_space.title))}" }
 
   include_context "when a simple event"
   it_behaves_like "a simple event"
-  it_behaves_like "a simple event email"
-  it_behaves_like "a simple event notification"
+  it_behaves_like "a simple event email" do
+    let(:participatory_space_title) { escape_translated(participatory_space.title) }
+    let(:resource_title) { escape_translated(resource.title) }
+  end
+  it_behaves_like "a simple event notification" do
+    let(:participatory_space_title) { escape_translated(participatory_space.title) }
+    let(:resource_title) { escape_translated(resource.title) }
+  end
 
   describe "resource_text" do
     it "returns the post body" do
