@@ -6,6 +6,7 @@ module Decidim
     def self.included(base)
       base.include ActionView::Helpers::SanitizeHelper
       base.include ActionView::Helpers::TagHelper
+      base.include Decidim::TranslatableAttributes
     end
 
     # Public: It sanitizes a user-inputted string with the
@@ -43,6 +44,10 @@ module Decidim
     def decidim_sanitize_editor_admin(html, options = {})
       html = Decidim::IframeDisabler.new(html, options).perform
       decidim_sanitize_editor(html, { scrubber: Decidim::AdminInputScrubber.new }.merge(options))
+    end
+
+    def escape_translated(text)
+      decidim_html_escape(translated_attribute(text))
     end
 
     def decidim_html_escape(text)
