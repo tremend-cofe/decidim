@@ -18,6 +18,8 @@ module Decidim
     include Decidim::LayoutHelper
 
     delegate :current_organization, to: :controller
+    delegate :render, to: :view_context
+    delegate_missing_to :view_context
 
     cache :show, if: :perform_caching?, expires_in: :cache_expiry_time do
       cache_hash
