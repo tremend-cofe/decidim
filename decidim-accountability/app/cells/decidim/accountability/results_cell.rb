@@ -6,7 +6,7 @@ module Decidim
   module Accountability
     # This cell renders a list of results
     class ResultsCell < Decidim::ViewModel
-      include Decidim::CardHelper
+      # include Decidim::CardHelper
 
       alias results model
     end
