@@ -10,21 +10,25 @@ FactoryBot.define do
   end
 
   factory :elections_component, parent: :component do
-    name { Decidim::Components::Namer.new(participatory_space.organization.available_locales, :elections).i18n_name }
+    transient do
+      skip_injection { false }
+    end
+    name { generate_component_name(participatory_space.organization.available_locales, :elections, skip_injection:) }
     manifest_name { :elections }
-    participatory_space { create(:participatory_process, :with_steps, organization:) }
+    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
   end
 
   factory :election, class: "Decidim::Elections::Election" do
     transient do
-      organization { build(:organization) }
+      skip_injection { false }
+      organization { build(:organization, skip_injection:) }
       number_of_votes { Faker::Number.number(digits: 2) }
       base_id { 10_000 }
     end
 
     upcoming
-    title { generate_localized_title }
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    title { generate_localized_title(:election_title, skip_injection:) }
+    description { generate_localized_description(:election_description, skip_injection:) }
     end_time { 3.days.from_now }
     published_at { nil }
     blocked_at { nil }
@@ -62,11 +66,11 @@ FactoryBot.define do
     end
 
     trait :complete do
-      after(:build) do |election, _evaluator|
-        election.questions << build(:question, :yes_no, election:, weight: 1)
-        election.questions << build(:question, :candidates, election:, weight: 3)
-        election.questions << build(:question, :projects, election:, weight: 2)
-        election.questions << build(:question, :nota, election:, weight: 4)
+      after(:build) do |election, evaluator|
+        election.questions << build(:question, :yes_no, election:, weight: 1, skip_injection: evaluator.skip_injection)
+        election.questions << build(:question, :candidates, election:, weight: 3, skip_injection: evaluator.skip_injection)
+        election.questions << build(:question, :projects, election:, weight: 2, skip_injection: evaluator.skip_injection)
+        election.questions << build(:question, :nota, election:, weight: 4, skip_injection: evaluator.skip_injection)
       end
     end
 
@@ -81,7 +85,7 @@ FactoryBot.define do
 
       after(:create) do |election, evaluator|
         evaluator.trustee_keys.each do |name, key|
-          create(:trustee, :with_public_key, name:, election:, public_key: key)
+          create(:trustee, :with_public_key, name:, election:, public_key: key, skip_injection: evaluator.skip_injection)
         end
       end
     end
@@ -122,7 +126,7 @@ FactoryBot.define do
       bb_status { "vote_ended" }
 
       after(:create) do |election, evaluator|
-        create_list(:vote, evaluator.number_of_votes, :accepted, election:)
+        create_list(:vote, evaluator.number_of_votes, :accepted, election:, skip_injection: evaluator.skip_injection)
       end
     end
 
@@ -137,8 +141,8 @@ FactoryBot.define do
       verifiable_results_file_hash { SecureRandom.hex(32) }
       verifiable_results_file_url { Faker::Internet.url }
 
-      after(:create) do |election|
-        create(:bb_closure, :with_results, election:)
+      after(:create) do |election, evaluator|
+        create(:bb_closure, :with_results, election:, skip_injection: evaluator.skip_injection)
       end
     end
 
@@ -157,7 +161,7 @@ FactoryBot.define do
           election.attachments << create(
             :attachment,
             :with_image,
-            attached_to: election
+            attached_to: election, skip_injection: evaluator.skip_injection
           )
         end
       end
@@ -166,12 +170,13 @@ FactoryBot.define do
 
   factory :question, class: "Decidim::Elections::Question" do
     transient do
+      skip_injection { false }
       more_information { false }
       answers { 3 }
     end
 
     election
-    title { generate_localized_title }
+    title { generate_localized_title(:question_title, skip_injection:) }
     min_selections { 1 }
     max_selections { 1 }
     weight { Faker::Number.number(digits: 1) }
@@ -179,7 +184,7 @@ FactoryBot.define do
 
     trait :complete do
       after(:build) do |question, evaluator|
-        overrides = { question: }
+        overrides = { question:, skip_injection: evaluator.skip_injection }
         overrides[:description] = nil unless evaluator.more_information
         question.answers = build_list(:election_answer, evaluator.answers, overrides)
       end
@@ -212,7 +217,7 @@ FactoryBot.define do
 
     trait :with_votes do
       after(:build) do |question, evaluator|
-        overrides = { question: }
+        overrides = { question:, skip_injection: evaluator.skip_injection }
         overrides[:description] = nil unless evaluator.more_information
         question.answers = build_list(:election_answer, evaluator.answers, :with_votes, overrides)
       end
@@ -220,15 +225,18 @@ FactoryBot.define do
   end
 
   factory :election_answer, class: "Decidim::Elections::Answer" do
+    transient do
+      skip_injection { false }
+    end
     question
-    title { generate_localized_title }
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
+    title { generate_localized_title(:election_answer_title, skip_injection:) }
+    description { generate_localized_description(:election_answer_description, skip_injection:) }
     weight { Faker::Number.number(digits: 1) }
     selected { false }
 
     trait :with_votes do
-      after(:build) do |answer|
-        create(:election_result, election: answer.question.election, question: answer.question, answer:)
+      after(:build) do |answer, evaluator|
+        create(:election_result, election: answer.question.election, question: answer.question, answer:, skip_injection: evaluator.skip_injection)
       end
     end
 
@@ -242,7 +250,8 @@ FactoryBot.define do
           election.attachments << create(
             :attachment,
             :with_image,
-            attached_to: election
+            attached_to: election,
+            skip_injection: evaluator.skip_injection
           )
         end
       end
@@ -250,39 +259,43 @@ FactoryBot.define do
   end
 
   factory :bb_closure, class: "Decidim::Elections::BulletinBoardClosure" do
+    transient do
+      skip_injection { false }
+    end
     initialize_with do
       Decidim::Elections::BulletinBoardClosure.find_or_create_by(
         decidim_elections_election_id: election.id
       )
     end
 
-    election { create(:election, :complete) }
+    election { create(:election, :complete, skip_injection:) }
 
     trait :with_results do
-      after :create do |closure|
+      after :create do |closure, evaluator|
         total_votes = closure.election.votes.count
         closure.election.questions.each do |question|
           max = total_votes
           question.answers.each do |answer|
             value = Faker::Number.between(from: 0, to: max)
-            closure.results << create(:election_result, election: closure.election, question:, answer:, value:)
+            closure.results << create(:election_result, election: closure.election, question:, answer:, value:, skip_injection: evaluator.skip_injection)
             max -= value
           end
-          closure.results << create(:election_result, :blank_ballots, election: closure.election, question:, value: max)
+          closure.results << create(:election_result, :blank_ballots, election: closure.election, question:, value: max, skip_injection: evaluator.skip_injection)
         end
-        closure.results << create(:election_result, :total_ballots, election: closure.election, value: total_votes)
+        closure.results << create(:election_result, :total_ballots, election: closure.election, value: total_votes, skip_injection: evaluator.skip_injection)
       end
     end
   end
 
   factory :election_result, class: "Decidim::Elections::Result" do
     transient do
-      election { create(:election, :tally_ended) }
+      skip_injection { false }
+      election { create(:election, :tally_ended, skip_injection:) }
     end
 
-    closurable { create :bb_closure, election: }
-    question { create :question, election: }
-    answer { create :election_answer, question: }
+    closurable { create :bb_closure, election:, skip_injection: }
+    question { create :question, election:, skip_injection: }
+    answer { create :election_answer, question:, skip_injection: }
     value { Faker::Number.number(digits: 1) }
     result_type { "valid_answers" }
 
@@ -304,6 +317,9 @@ FactoryBot.define do
   end
 
   factory :action, class: "Decidim::Elections::Action" do
+    transient do
+      skip_injection { false }
+    end
     election
     message_id { "a.message+id" }
     status { :pending }
@@ -312,22 +328,24 @@ FactoryBot.define do
 
   factory :trustee, class: "Decidim::Elections::Trustee" do
     transient do
+      skip_injection { false }
       election { nil }
     end
 
     public_key { nil }
-    user { build(:user, :confirmed, organization:) }
-    organization { create(:organization) }
+    user { build(:user, :confirmed, organization:, skip_injection:) }
+    organization { create(:organization, skip_injection:) }
 
     trait :considered do
       after(:build) do |trustee, evaluator|
-        trustee.trustees_participatory_spaces << build(:trustees_participatory_space, trustee:, election: evaluator.election, organization: evaluator.organization)
+        trustee.trustees_participatory_spaces << build(:trustees_participatory_space, trustee:, election: evaluator.election, organization: evaluator.organization,
+                                                                                      skip_injection: evaluator.skip_injection)
       end
     end
 
     trait :with_elections do
       after(:build) do |trustee, evaluator|
-        trustee.elections << build(:election, :upcoming, organization: evaluator.organization)
+        trustee.elections << build(:election, :upcoming, organization: evaluator.organization, skip_injection: evaluator.skip_injection)
       end
     end
 
@@ -340,12 +358,13 @@ FactoryBot.define do
 
   factory :trustees_participatory_space, class: "Decidim::Elections::TrusteesParticipatorySpace" do
     transient do
-      organization { election&.component&.participatory_space&.organization || create(:organization) }
+      skip_injection { false }
+      organization { election&.component&.participatory_space&.organization || create(:organization, skip_injection:) }
       election { nil }
     end
-    participatory_space { election&.component&.participatory_space || create(:participatory_process, organization:) }
+    participatory_space { election&.component&.participatory_space || create(:participatory_process, organization:, skip_injection:) }
     considered { true }
-    trustee { create(:trustee, organization:) }
+    trustee { create(:trustee, organization:, skip_injection:) }
 
     trait :trustee_ready do
       association :trustee, :with_public_key
@@ -353,7 +372,10 @@ FactoryBot.define do
   end
 
   factory :vote, class: "Decidim::Elections::Vote" do
-    election { create(:election) }
+    transient do
+      skip_injection { false }
+    end
+    election { create(:election, skip_injection:) }
     sequence(:voter_id) { |n| "voter_#{n}" }
     encrypted_vote_hash { "adf89asd0f89das7f" }
     status { "pending" }

@@ -98,7 +98,7 @@ FactoryBot.define do
             organization: participatory_process.organization,
             scope_name: :participatory_process_homepage,
             manifest_name:,
-            skip_injection:,
+            skip_injection: evaluator.skip_injection,
             scoped_resource_id: participatory_process.id
           )
         end
@@ -128,8 +128,9 @@ FactoryBot.define do
     end
 
     trait :with_participatory_processes do
-      after(:create) do |participatory_process_group|
-        create_list(:participatory_process, 2, :published, organization: participatory_process_group.organization, participatory_process_group:, skip_injection:)
+      after(:create) do |participatory_process_group, evaluator|
+        create_list(:participatory_process, 2, :published, organization: participatory_process_group.organization, participatory_process_group:,
+                                                           skip_injection: evaluator.skip_injection)
       end
     end
   end
@@ -163,14 +164,16 @@ FactoryBot.define do
     organization
 
     trait :with_active_participatory_processes do
-      after(:create) do |participatory_process_type|
-        create_list(:participatory_process, 2, :active, :published, skip_injection:, organization: participatory_process_type.organization, participatory_process_type:)
+      after(:create) do |participatory_process_type, evaluator|
+        create_list(:participatory_process, 2, :active, :published, organization: participatory_process_type.organization, participatory_process_type:,
+                                                                    skip_injection: evaluator.skip_injection)
       end
     end
 
     trait :with_past_participatory_processes do
-      after(:create) do |participatory_process_type|
-        create_list(:participatory_process, 2, :past, :published, skip_injection:, organization: participatory_process_type.organization, participatory_process_type:)
+      after(:create) do |participatory_process_type, evaluator|
+        create_list(:participatory_process, 2, :past, :published, organization: participatory_process_type.organization, participatory_process_type:,
+                                                                  skip_injection: evaluator.skip_injection)
       end
     end
   end

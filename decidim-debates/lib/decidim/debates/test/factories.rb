@@ -2,28 +2,18 @@
 
 require "decidim/components/namer"
 
-def generate_localized_debate_title
-  Decidim::Faker::Localized.localized { "<script>alert(\"TITLE\");</script> #{generate(:title)}" }
-end
-
 FactoryBot.define do
   factory :debate, class: "Decidim::Debates::Debate" do
     transient do
       skip_injection { false }
     end
 
-    title do
-      if skip_injection
-        Decidim::Faker::Localized.localized { generate(:title) }
-      else
-        Decidim::Faker::Localized.localized { "<script>alert(\"TITLE\");</script> #{generate(:title)}" }
-      end
-    end
-    description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_debate_title } }
-    information_updates { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_debate_title } }
-    instructions { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_debate_title } }
-    component { build(:debates_component) }
-    author { component.try(:organization) }
+    title { generate_localized_title(:debate_title, skip_injection:) }
+    description { generate_localized_description(:debate_description, skip_injection:) }
+    information_updates { generate_localized_description(:debate_information_updates, skip_injection:) }
+    instructions { generate_localized_description(:debate_instructions, skip_injection:) }
+    component { build(:debates_component, skip_injection:) }
+    author { component.try(:organization, skip_injection:) }
 
     trait :open_ama do
       start_time { 1.day.ago }
@@ -34,27 +24,27 @@ FactoryBot.define do
       start_time { nil }
       end_time { nil }
       author do
-        build(:user, organization: component.organization) if component
+        build(:user, organization: component.organization, skip_injection:) if component
       end
     end
 
     trait :official do
-      author { component.try(:organization) }
+      author { component.try(:organization, skip_injection:) }
     end
 
     trait :user_group_author do
       author do
-        create(:user, organization: component.organization) if component
+        create(:user, organization: component.organization, skip_injection:) if component
       end
 
       user_group do
-        create(:user_group, :verified, organization: component.organization, users: [author]) if component
+        create(:user_group, :verified, organization: component.organization, users: [author], skip_injection:) if component
       end
     end
 
     trait :closed do
       closed_at { Time.current }
-      conclusions { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_debate_title } }
+      conclusions { generate_localized_description(:debate_conclusions, skip_injection:) }
     end
 
     after(:build) do |debate|
@@ -64,9 +54,12 @@ FactoryBot.define do
   end
 
   factory :debates_component, parent: :component do
-    name { Decidim::Components::Namer.new(participatory_space.organization.available_locales, :debates).i18n_name }
+    transient do
+      skip_injection { false }
+    end
+    name { generate_component_name(participatory_space.organization.available_locales, :debates, skip_injection:) }
     manifest_name { :debates }
-    participatory_space { create(:participatory_process, :with_steps, organization:) }
+    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
     settings do
       {
         comments_enabled: true,
