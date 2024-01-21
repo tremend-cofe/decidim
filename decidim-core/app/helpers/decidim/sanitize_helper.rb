@@ -46,6 +46,10 @@ module Decidim
       decidim_sanitize_editor(html, { scrubber: Decidim::AdminInputScrubber.new }.merge(options))
     end
 
+    def sanitize_translated(text)
+      decidim_sanitize(translated_attribute(text))
+    end
+
     def escape_translated(text)
       decidim_html_escape(translated_attribute(text))
     end

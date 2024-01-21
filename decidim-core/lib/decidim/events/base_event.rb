@@ -104,9 +104,9 @@ module Decidim
         return unless resource
 
         title = if resource.respond_to?(:title)
-                  escape_translated(resource.title)
+                  decidim_sanitize(translated_attribute(resource.title))
                 elsif resource.respond_to?(:name)
-                  escape_translated(resource.name)
+                  decidim_sanitize(translated_attribute(resource.name))
                 end
 
         Decidim::ContentProcessor.render_without_format(title, links: false).html_safe

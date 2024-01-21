@@ -13,9 +13,9 @@ describe Decidim::Accountability::ResultProgressUpdatedEvent do
   let(:proposal) { create(:proposal, component: proposal_component) }
   let(:extra) { { proposal_id: proposal.id, progress: 95 } }
   let(:proposal_path) { resource_locator(proposal).path }
-  let(:proposal_title) { escape_translated(proposal.title) }
-  let(:resource_title) { escape_translated(resource.title) }
-  let(:email_subject) { "An update to #{decidim_sanitize(translated(resource.title))} progress" }
+  let(:proposal_title) { sanitize_translated(proposal.title) }
+  let(:resource_title) { sanitize_translated(resource.title) }
+  let(:email_subject) { "An update to #{sanitize_translated(resource.title)} progress" }
   let(:notification_title) { "The result <a href=\"#{resource_path}\">#{resource_title}</a>, which includes the proposal <a href=\"#{proposal_path}\">#{proposal_title}</a>, is now 95% complete." }
   let(:email_outro) { "You have received this notification because you are following \"#{proposal_title}\", and this proposal is included in the result \"#{resource_title}\". You can stop receiving notifications following the previous link." }
   let(:email_intro) { "The result \"#{resource_title}\", which includes the proposal \"#{proposal_title}\", is now 95% complete. You can see it from this page:" }
