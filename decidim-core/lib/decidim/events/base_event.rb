@@ -8,6 +8,7 @@ module Decidim
     class BaseEvent
       extend ActiveModel::Translation
       include Decidim::TranslatableAttributes
+      include Decidim::SanitizeHelper
 
       class_attribute :types
       self.types = []
@@ -103,9 +104,9 @@ module Decidim
         return unless resource
 
         title = if resource.respond_to?(:title)
-                  translated_attribute(resource.title)
+                  escape_translated(resource.title)
                 elsif resource.respond_to?(:name)
-                  translated_attribute(resource.name)
+                  escape_translated(resource.name)
                 end
 
         Decidim::ContentProcessor.render_without_format(title, links: false).html_safe

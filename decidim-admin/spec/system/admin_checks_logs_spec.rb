@@ -47,6 +47,8 @@ describe "Admin checks logs" do
     end
 
     context "with participatory space" do
+      # we are intentionally skipping injection here because we want to test the search.
+      let!(:action_logs) { create_list(:action_log, 3, organization:, skip_injection: true) }
       let(:space_title) { translated(action_logs.first.participatory_space.title) }
       let(:search_term) { space_title[0..2].downcase }
       let(:autocomplete_result) { "Participatory processes - #{space_title}" }
