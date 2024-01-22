@@ -27,7 +27,7 @@ shared_examples_for "has attachments content blocks" do
     let!(:last_document) { create(:attachment, :with_pdf, attached_to:, weight: 2) }
     let!(:first_document) { create(:attachment, :with_pdf, attached_to:, weight: 1) }
     let!(:last_image) { create(:attachment, attached_to:, weight: 2) }
-    let!(:fist_image) { create(:attachment, attached_to:, weight: 1) }
+    let!(:first_image) { create(:attachment, attached_to:, weight: 1) }
 
     before do
       visit current_path
@@ -39,7 +39,8 @@ shared_examples_for "has attachments content blocks" do
       end
 
       within "[data-content] [data-gallery]" do
-        expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
+        # expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
+        expect(strip_tags(translated(first_image.title, locale: :en))).to appear_before(strip_tags(translated(last_image.title, locale: :en)))
       end
     end
   end
@@ -86,7 +87,8 @@ shared_examples_for "has attachments tabs" do
 
       find("li [data-controls='panel-images']").click
       within "#panel-images" do
-        expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
+        # expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
+        expect(strip_tags(translated(fist_image.title, locale: :en))).to appear_before(strip_tags(translated(last_image.title, locale: :en)))
       end
     end
   end
