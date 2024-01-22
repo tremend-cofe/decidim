@@ -21,7 +21,7 @@ describe Decidim::Initiatives::ApproveMembershipRequestEvent do
   let(:author_nickname) { Decidim::UserPresenter.new(author).nickname }
   let(:membership_request) { create(:initiatives_committee_member, initiative:, state: "requested") }
   let(:resource_url) { resource_locator(initiative).url }
-  let(:resource_title) { translated(initiative.title) }
+  let(:resource_title) { sanitize_translated(initiative.title) }
   let(:email_subject) { "#{author_nickname} accepted your application to the promoter committee" }
   let(:email_intro) { "#{author_nickname} accepted your application to be part of the promoter committee for the initiative #{resource_title}." }
   let(:email_outro) { "You received this notification because you applied to this initiative: #{resource_title}" }
