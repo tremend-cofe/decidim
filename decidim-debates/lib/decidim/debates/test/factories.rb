@@ -13,7 +13,7 @@ FactoryBot.define do
     information_updates { generate_localized_description(:debate_information_updates, skip_injection:) }
     instructions { generate_localized_description(:debate_instructions, skip_injection:) }
     component { build(:debates_component, skip_injection:) }
-    author { component.try(:organization, skip_injection:) }
+    author { component.try(:organization) }
 
     trait :open_ama do
       start_time { 1.day.ago }
@@ -29,7 +29,7 @@ FactoryBot.define do
     end
 
     trait :official do
-      author { component.try(:organization, skip_injection:) }
+      author { component.try(:organization) }
     end
 
     trait :user_group_author do

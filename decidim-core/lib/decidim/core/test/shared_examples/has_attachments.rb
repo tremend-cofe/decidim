@@ -14,7 +14,7 @@ shared_examples_for "has attachments content blocks" do
 
     it "shows them" do
       within "[data-content] .documents__container" do
-        expect(page).to have_content(/#{translated(document.title, locale: :en)}/i)
+        expect(page).to have_content(translated(document.title))
       end
 
       within "[data-content] [data-gallery]" do
@@ -39,7 +39,7 @@ shared_examples_for "has attachments content blocks" do
       end
 
       within "[data-content] [data-gallery]" do
-        expect(strip_tags(translated(fist_image.title, locale: :en))).to appear_before(strip_tags(translated(last_image.title, locale: :en)))
+        expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
       end
     end
   end
@@ -86,7 +86,7 @@ shared_examples_for "has attachments tabs" do
 
       find("li [data-controls='panel-images']").click
       within "#panel-images" do
-        expect(strip_tags(translated(fist_image.title, locale: :en))).to appear_before(strip_tags(translated(last_image.title, locale: :en)))
+        expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
       end
     end
   end
