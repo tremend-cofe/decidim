@@ -10,7 +10,7 @@ describe Decidim::Initiatives::Admin::SupportThresholdReachedEvent do
 
   let(:initiative) { create(:initiative) }
   let(:participatory_space) { initiative }
-  let(:initiative_title) { decidim_html_escape(translated(initiative.title)) }
+  let(:initiative_title) { sanitize_translated(initiative.title) }
   let(:email_subject) { "Signatures threshold reached" }
   let(:email_intro) { "The initiative #{initiative_title} has reached the signatures threshold" }
   let(:email_outro) { "You have received this notification because you are an admin of the platform." }

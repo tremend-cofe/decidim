@@ -448,8 +448,8 @@ FactoryBot.define do
       user_groups { [] }
     end
 
-    title { generate_localized_title(:collaborative_draft_title, skip_injection:) }
-    body { generate_localized_description(:collaborative_draft_body, skip_injection:) }
+    title { generate_localized_title(:collaborative_draft_title, skip_injection:)["en"] }
+    body { generate_localized_description(:collaborative_draft_body, skip_injection:)["en"] }
     component { create(:proposal_component, skip_injection:) }
     address { "#{Faker::Address.street_name}, #{Faker::Address.city}" }
     state { "open" }
