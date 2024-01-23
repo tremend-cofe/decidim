@@ -9,6 +9,7 @@ module Decidim
       let(:author) { comment.author }
       let(:resource) { comment.root_commentable }
       let(:event_name) { "decidim.events.comments.comment_by_followed_user" }
+      let(:resource_title) { sanitize_translated(resource.title) }
       let(:email_subject) { "There is a new comment by #{author_name} in #{resource_title}" }
       let(:email_intro) { "#{author_name} has left a comment in #{resource_title}. You can read it in this page:" }
       let(:email_outro) { "You have received this notification because you are following #{author_name}. You can unfollow this user from their profile page." }
