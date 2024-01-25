@@ -39,7 +39,6 @@ shared_examples_for "has attachments content blocks" do
       end
 
       within "[data-content] [data-gallery]" do
-        # expect(escape_translated(fist_image.title).gsub("&quot;", "\"")).to appear_before(escape_translated(last_image.title).gsub("&quot;", "\""))
         expect(strip_tags(translated(first_image.title, locale: :en))).to appear_before(strip_tags(translated(last_image.title, locale: :en)))
       end
     end

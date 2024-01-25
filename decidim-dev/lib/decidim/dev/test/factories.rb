@@ -52,7 +52,6 @@ FactoryBot.define do
     end
     title { generate(:name) }
     component { create(:component, manifest_name: "dummy") }
-
     after :build do |resource, evaluator|
       evaluator.authors_list.each do |coauthor|
         resource.coauthorships << if coauthor.is_a?(Decidim::UserGroup)

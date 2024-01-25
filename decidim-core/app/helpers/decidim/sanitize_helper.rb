@@ -46,20 +46,20 @@ module Decidim
       decidim_sanitize_editor(html, { scrubber: Decidim::AdminInputScrubber.new }.merge(options))
     end
 
-    def sanitize_translated(text)
-      decidim_sanitize(translated_attribute(text))
-    end
-
-    def escape_translated(text)
-      decidim_html_escape(translated_attribute(text))
-    end
-
     def decidim_html_escape(text)
       ERB::Util.unwrapped_html_escape(text.to_str)
     end
 
     def decidim_url_escape(text)
       decidim_html_escape(text).sub(/^javascript:/, "")
+    end
+
+    def sanitize_translated(text)
+      decidim_sanitize(translated_attribute(text))
+    end
+
+    def escape_translated(text)
+      decidim_html_escape(translated_attribute(text))
     end
 
     private
