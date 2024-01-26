@@ -21,7 +21,7 @@ describe Decidim::Comments::UserGroupMentionedEvent do
   let(:members) { create_list(:user, 2, organization:) }
   let(:user) { create(:user, organization:, locale: "ca") }
 
-  let(:resource_title) { sanitize_translated(resource.title) }
+  let(:resource_title) { decidim_sanitize_translated(resource.title) }
 
   let(:parsed_body) { Decidim::ContentProcessor.parse("Comment mentioning some user group, @#{group.nickname}", current_organization: organization) }
   let(:parsed_ca_body) { Decidim::ContentProcessor.parse("Un commentaire pour @#{group.nickname}", current_organization: organization) }

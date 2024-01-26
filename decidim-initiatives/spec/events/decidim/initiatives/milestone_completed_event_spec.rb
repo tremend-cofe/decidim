@@ -11,7 +11,7 @@ describe Decidim::Initiatives::MilestoneCompletedEvent do
   let(:initiative) { create(:initiative) }
   let(:extra) { { percentage: 75 } }
   let(:participatory_space) { initiative }
-  let(:initiative_title) { sanitize_translated(initiative.title) }
+  let(:initiative_title) { decidim_sanitize_translated(initiative.title) }
 
   it_behaves_like "a simple event"
 

@@ -130,7 +130,7 @@ module Decidim
       end
 
       def participatory_space_title
-        sanitize_translated(participatory_space.try(:title))
+        decidim_sanitize_translated(participatory_space.try(:title))
       end
     end
   end

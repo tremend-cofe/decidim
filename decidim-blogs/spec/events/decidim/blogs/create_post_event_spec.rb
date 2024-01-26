@@ -13,12 +13,12 @@ describe Decidim::Blogs::CreatePostEvent do
   include_context "when a simple event"
   it_behaves_like "a simple event"
   it_behaves_like "a simple event email" do
-    let(:participatory_space_title) { sanitize_translated(participatory_space.title) }
-    let(:resource_title) { sanitize_translated(resource.title) }
+    let(:participatory_space_title) { decidim_sanitize_translated(participatory_space.title) }
+    let(:resource_title) { decidim_sanitize_translated(resource.title) }
   end
   it_behaves_like "a simple event notification" do
-    let(:participatory_space_title) { sanitize_translated(participatory_space.title) }
-    let(:resource_title) { sanitize_translated(resource.title) }
+    let(:participatory_space_title) { decidim_sanitize_translated(participatory_space.title) }
+    let(:resource_title) { decidim_sanitize_translated(resource.title) }
   end
 
   describe "resource_text" do

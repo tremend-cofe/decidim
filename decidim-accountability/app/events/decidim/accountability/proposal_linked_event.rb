@@ -10,7 +10,7 @@ module Decidim
       end
 
       def proposal_title
-        @proposal_title ||= sanitize_translated(proposal.title)
+        @proposal_title ||= decidim_sanitize_translated(proposal.title)
       end
 
       def proposal

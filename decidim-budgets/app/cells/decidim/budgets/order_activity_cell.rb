@@ -13,7 +13,7 @@ module Decidim
       end
 
       def resource_link_text
-        escape_translated(budget.title)
+        decidim_escape_translated(budget.title)
       end
 
       private

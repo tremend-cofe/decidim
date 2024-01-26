@@ -41,7 +41,7 @@ module Decidim
       when String
         decidim_html_escape(resource_title)
       when Hash
-        escape_translated(resource_title)
+        decidim_escape_translated(resource_title)
       end
     end
 
@@ -75,7 +75,7 @@ module Decidim
 
     # The text to show as the link to the resource.
     def resource_link_text
-      escape_translated(resource.title)
+      decidim_escape_translated(resource.title)
     end
 
     def created_at
@@ -157,7 +157,7 @@ module Decidim
 
     def participatory_space_link
       link_to(
-        escape_translated(participatory_space.title),
+        decidim_escape_translated(participatory_space.title),
         resource_locator(participatory_space).path
       )
     end

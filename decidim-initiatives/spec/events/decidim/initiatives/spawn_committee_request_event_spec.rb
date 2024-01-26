@@ -20,7 +20,7 @@ describe Decidim::Initiatives::SpawnCommitteeRequestEvent do
   let(:applicant_profile_url) { Decidim::UserPresenter.new(applicant).profile_url }
   let(:applicant_nickname) { Decidim::UserPresenter.new(applicant).nickname }
   let(:resource_url) { resource_locator(initiative).url }
-  let(:resource_title) { sanitize_translated(initiative.title) }
+  let(:resource_title) { decidim_sanitize_translated(initiative.title) }
   let(:email_subject) { "#{applicant_nickname} wants to join your initiative" }
   let(:email_intro) { "#{applicant_nickname} applied for the promoter committee of your initiative #{resource_title}. To accept or reject the application, go to the edit form of your initiative." }
   let(:email_outro) { "You received this notification because you are the author of this initiative: #{resource_title}" }
