@@ -25,7 +25,7 @@ module Decidim
         let(:gem_path) { gem == "decidim" ? root_path : "#{root_path}/#{gem}" }
 
         it "returns the correct path" do
-          expect(subject).to eq("#{gem_path}/lib/#{gem.gsub("-", "/")}.rb")
+          expect(subject).to eq("#{gem_path}/lib/#{gem.tr("-", "/")}.rb")
         end
       end
 

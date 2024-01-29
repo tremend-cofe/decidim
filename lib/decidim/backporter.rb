@@ -92,7 +92,7 @@ module Decidim
     #
     # @return [String] slugged string
     def slugify(string)
-      string.downcase.strip.gsub(" ", "-").gsub(/[^\w-]/, "")
+      string.downcase.strip.tr(" ", "-").gsub(/[^\w-]/, "")
     end
   end
 end

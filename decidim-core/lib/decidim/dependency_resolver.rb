@@ -69,7 +69,7 @@ module Decidim
       spec = lookup(spec)
       return unless spec
 
-      "#{spec.full_gem_path}/lib/#{spec.name.gsub("-", "/")}.rb"
+      "#{spec.full_gem_path}/lib/#{spec.name.tr("-", "/")}.rb"
     end
 
     # Resolves whether the module for the gem specification defines the main

@@ -14,7 +14,7 @@ module Decidim
       end
 
       def block_id
-        "#{model.scope_name}-#{model.manifest_name}".parameterize.gsub("_", "-")
+        "#{model.scope_name}-#{model.manifest_name}".parameterize.tr("_", "-")
       end
 
       private

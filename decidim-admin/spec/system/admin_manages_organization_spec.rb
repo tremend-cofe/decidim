@@ -87,14 +87,14 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys "ef", [:enter], "gh", [:backspace], [:backspace], [:backspace], [:backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>e</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>e</p>".delete("\n"))
         end
 
         it "deletes linebreaks when pressing backspace" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys "a", [:left], [:enter], [:shift, :enter], [:backspace], [:backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>a</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>a</p>".delete("\n"))
         end
 
         it "creates and deletes linebreaks with enter, shift+enter and backspace" do
@@ -102,7 +102,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter], [:shift, :enter], [:shift, :enter], "b", [:left], [:backspace], [:backspace], [:backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>abcd</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>abcd</p>".delete("\n"))
         end
       end
 
@@ -139,7 +139,7 @@ describe "Admin manages organization" do
         it "renders the correct content inside the editor" do
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq(terms_content.gsub("\n", ""))
+          )["innerHTML"]).to eq(terms_content.delete("\n"))
         end
       end
 
@@ -204,7 +204,7 @@ describe "Admin manages organization" do
         it "renders br tags inside the editor" do
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq(terms_content.gsub("\n", ""))
+          )["innerHTML"]).to eq(terms_content.delete("\n"))
         end
       end
 
@@ -287,7 +287,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter], "Here shift+enter makes line change:", [:shift, :enter], "instead of new paragraph!"
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("#{terms_content}<p>Here shift+enter makes line change:<br>instead of new paragraph!</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("#{terms_content}<p>Here shift+enter makes line change:<br>instead of new paragraph!</p>".delete("\n"))
         end
 
         it "makes smartbreak (<br>) when pressing line break button" do
@@ -296,7 +296,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys "bar"
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("#{terms_content}<p>foo<br>bar</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("#{terms_content}<p>foo<br>bar</p>".delete("\n"))
         end
 
         describe "editor history" do
@@ -315,14 +315,14 @@ describe "Admin manages organization" do
             )
             expect(find(
               "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-            )["innerHTML"]).to eq(terms_content.gsub("\n", ""))
+            )["innerHTML"]).to eq(terms_content.delete("\n"))
           end
 
           it "has redo" do
             find('div[contenteditable="true"].ProseMirror').native.send_keys [:shift, :enter], "X", [:control, "z"], [:control, :shift, "z"]
             expect(find(
               "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-            )["innerHTML"]).to eq("<p>Paragraph</p><p>Some<br>text<br>here</p><p>Another paragraph<br>X</p>".gsub("\n", ""))
+            )["innerHTML"]).to eq("<p>Paragraph</p><p>Some<br>text<br>here</p><p>Another paragraph<br>X</p>".delete("\n"))
           end
         end
       end
@@ -353,28 +353,28 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter], "List item 4"
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>List item 4</p></li></ul>".gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>List item 4</p></li></ul>".delete("\n"))
         end
 
         it "ends the list when pressing enter twice and starts new paragraph" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :enter], "Another paragraph"
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("#{terms_content}<p>Another paragraph</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("#{terms_content}<p>Another paragraph</p>".delete("\n"))
         end
 
         it "deletes empty list item when pressing backspace and starts new paragraph" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :backspace, :enter], "Another paragraph"
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("#{terms_content}<p>Another paragraph</p>".gsub("\n", ""))
+          )["innerHTML"]).to eq("#{terms_content}<p>Another paragraph</p>".delete("\n"))
         end
 
         it "deletes linebreaks (and smartbreaks) using the backspace" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :enter, :enter, :backspace, :backspace, :backspace, :backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq(terms_content.to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq(terms_content.to_s.delete("\n"))
         end
 
         it "keeps right curson position when using the backspace" do
@@ -382,14 +382,14 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :backspace, :backspace, "a"]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abc</p></li></ul>".to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abc</p></li></ul>".to_s.delete("\n"))
         end
 
         it "keeps right format when using the backspace" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :backspace, "abc", :left, :left, :left, :backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3abc</p></li></ul>".to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3abc</p></li></ul>".to_s.delete("\n"))
         end
 
         it "keeps right cursor position when using backspace after empty list item" do
@@ -397,7 +397,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :enter, :enter, :backspace, :backspace, :backspace, :backspace, :backspace, :backspace, "a"]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abcd</p></li></ul>".to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abcd</p></li></ul>".to_s.delete("\n"))
         end
 
         it "keeps right cursor position when using backspace after list item with text" do
@@ -405,7 +405,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :backspace, :backspace, :enter, :enter, :backspace, :backspace, :backspace, :backspace, "b"]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abcd</p></li></ul>".to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq("<p>Paragraph</p><ul><li><p>List item 1</p></li><li><p>List item 2</p></li><li><p>List item 3</p></li><li><p>abcd</p></li></ul>".to_s.delete("\n"))
         end
 
         it "does not delete characters below when pressing backspace" do
@@ -413,7 +413,7 @@ describe "Admin manages organization" do
           find('div[contenteditable="true"].ProseMirror').native.send_keys [:enter, :enter, :enter, :backspace, :backspace, :backspace]
           expect(find(
             "#organization-admin_terms_of_service_body-tabs-admin_terms_of_service_body-panel-0 .editor .ProseMirror"
-          )["innerHTML"]).to eq(terms_content.to_s.gsub("\n", ""))
+          )["innerHTML"]).to eq(terms_content.to_s.delete("\n"))
         end
       end
 
@@ -459,7 +459,7 @@ describe "Admin manages organization" do
             <p style="#{styles[:p]}"><strong style="#{styles[:strong]}">foo</strong><br style="styles[:br]"><a href="https://www.decidim.org/" target="_blank" style="#{styles[:a]}">link</a></p>
           HTML
 
-          cnt.gsub("\n", "")
+          cnt.delete("\n")
         end
 
         let(:clipboard_content_plain) { "testing\n\nfoo\nlink" }
@@ -471,7 +471,7 @@ describe "Admin manages organization" do
             <p><br></p>
           HTML
 
-          cnt.gsub("\n", "")
+          cnt.delete("\n")
         end
 
         it "parses the pasted content correctly with the strong element" do

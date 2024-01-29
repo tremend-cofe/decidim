@@ -52,7 +52,7 @@ module Decidim
       #
       # Returns String
       def event_name
-        ActiveSupport::Inflector.underscore(self.class.to_s).sub("/", ".serialize.").gsub("/", ".")
+        ActiveSupport::Inflector.underscore(self.class.to_s).sub("/", ".serialize.").tr("/", ".")
       end
     end
   end

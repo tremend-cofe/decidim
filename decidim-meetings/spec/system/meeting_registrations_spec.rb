@@ -265,7 +265,7 @@ describe "Meeting registrations" do
     context "and has a registration form" do
       let(:registration_form_enabled) { true }
       let(:callout_failure) { "There was a problem answering the form" }
-      let(:callout_success) { <<~EOCONTENT.strip.gsub("\n", " ") }
+      let(:callout_success) { <<~EOCONTENT.strip.tr("\n", " ") }
         You have joined the meeting successfully.
         Because you have registered for this meeting, you will be notified if there are updates on it.
       EOCONTENT

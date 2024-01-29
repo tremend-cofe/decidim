@@ -166,7 +166,7 @@ describe Decidim::HtmlTruncation do
             </div>
           </article>
         </div>
-      ).gsub(/\s{2,}/, "").gsub("\n", "")
+      ).gsub(/\s{2,}/, "").delete("\n")
     end
     let(:expected) { %(<div><article><h2>Foo</h2><div><p>Lorem <strong>ipsum <i>dolor</i> sit amet</strong>, consectetuer adipiscing elit.</p><p>Sed posuere interdum sem. Quisque ligula <em>eros ullamcorper <strong>qu#{tail}</strong></em></p></div></article></div>) }
     let(:max_length) { 120 }

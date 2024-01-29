@@ -153,7 +153,7 @@ module Decidim
     #
     # @return [String] the sanitized branch name
     def sanitize_branch(branch_name)
-      Shellwords.escape(branch_name.gsub("`", ""))
+      Shellwords.escape(branch_name.delete("`"))
     end
 
     # Exit the script execution if there are any unstaged changes

@@ -36,7 +36,7 @@ module Decidim
       def cast_value(value)
         return value unless value.is_a?(String)
 
-        value.gsub(/\r/, "")
+        value.delete("\r")
       end
     end
   end

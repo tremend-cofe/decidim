@@ -35,7 +35,7 @@ module Decidim
       escape_html_from_content(document)
 
       # Nokogiri's to_html escapes &quot; to &amp;quot; and we do not want extra &amp so we have to unescape.
-      CGI.unescape_html(document.to_html).gsub("\n", "")
+      CGI.unescape_html(document.to_html).delete("\n")
     end
 
     private

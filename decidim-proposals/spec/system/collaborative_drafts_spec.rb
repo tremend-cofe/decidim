@@ -86,7 +86,7 @@ describe "Explore Collaborative Drafts", versioning: true do
         click_link "proposals__collaborative_draft_#{collaborative_draft.id}"
       end
 
-      let(:html_body) { strip_tags(collaborative_draft.body).gsub(/\n/, " ").strip }
+      let(:html_body) { strip_tags(collaborative_draft.body).tr("\n", " ").strip }
       let(:stripped_body) { %(alert("BODY"); #{html_body}) }
 
       it "shows the title" do

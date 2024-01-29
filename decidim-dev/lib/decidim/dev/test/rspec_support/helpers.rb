@@ -144,7 +144,7 @@ module Decidim
 
       {
         filename:,
-        data_url: "data:application/octet-binary;base64,#{encoded.gsub("\n", "")}",
+        data_url: "data:application/octet-binary;base64,#{encoded.delete("\n")}",
         mime_type: mime
       }
     end

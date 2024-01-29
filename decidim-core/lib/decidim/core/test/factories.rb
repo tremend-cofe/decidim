@@ -54,11 +54,11 @@ FactoryBot.define do
   end
 
   sequence(:nickname) do |n|
-    "#{Faker::Lorem.characters(number: rand(1..10))}_#{n}".gsub("'", "_")
+    "#{Faker::Lorem.characters(number: rand(1..10))}_#{n}".tr("'", "_")
   end
 
   sequence(:hashtag_name) do |n|
-    "#{Faker::Lorem.characters(number: rand(1..10))}_#{n}".gsub("'", "_")
+    "#{Faker::Lorem.characters(number: rand(1..10))}_#{n}".tr("'", "_")
   end
 
   sequence(:email) do |n|
@@ -70,11 +70,11 @@ FactoryBot.define do
   end
 
   sequence(:slug) do |n|
-    "#{Decidim::Faker::Internet.slug(words: nil, glue: "-")}-#{n}".gsub("'", "_")
+    "#{Decidim::Faker::Internet.slug(words: nil, glue: "-")}-#{n}".tr("'", "_")
   end
 
   sequence(:scope_name) do |n|
-    "#{Faker::Lorem.sentence(word_count: 1, supplemental: true, random_words_to_add: 3)} #{n}".gsub("s", "z").gsub("S", "Z")
+    "#{Faker::Lorem.sentence(word_count: 1, supplemental: true, random_words_to_add: 3)} #{n}".tr("s", "z").tr("S", "Z")
   end
 
   sequence(:scope_code) do |n|

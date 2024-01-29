@@ -311,7 +311,7 @@ module Decidim
 
         gsub_file "config/initializers/decidim.rb",
                   /#{Regexp.escape("# config.available_locales = %w(en ca es)")}/,
-                  "config.available_locales = %w(#{options[:locales].gsub(",", " ")})"
+                  "config.available_locales = %w(#{options[:locales].tr(",", " ")})"
         gsub_file "config/initializers/decidim.rb",
                   /#{Regexp.escape("config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]")}/,
                   "# config.available_locales = Rails.application.secrets.decidim[:available_locales].presence || [:en]"

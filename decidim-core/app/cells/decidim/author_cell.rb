@@ -153,7 +153,7 @@ module Decidim
 
     def resource_i18n_scope
       @resource_i18n_scope ||= [
-        from_context.class.name.deconstantize.underscore.gsub("/", "."),
+        from_context.class.name.deconstantize.underscore.tr("/", "."),
         resource_name.pluralize,
         :show
       ].join(".")

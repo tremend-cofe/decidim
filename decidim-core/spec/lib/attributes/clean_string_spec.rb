@@ -30,7 +30,7 @@ module Decidim
         end
 
         it "returns the date" do
-          expect(subject).to eq(value.gsub(/\r/, ""))
+          expect(subject).to eq(value.delete("\r"))
         end
       end
     end
