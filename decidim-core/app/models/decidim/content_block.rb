@@ -98,7 +98,7 @@ module Decidim
             attachment.file
           end
 
-          define_method("#{name}=") do |file|
+          define_method(:"#{name}=") do |file|
             attachment.file = file
           end
         end

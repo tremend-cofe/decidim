@@ -125,7 +125,7 @@ module Decidim
       # Convenience method for settings the attributes through
       # model[:attr_name] = "foo" which is used in some places across the code.
       def []=(attribute_name, value)
-        public_send("#{attribute_name}=", value) if respond_to?("#{attribute_name}=")
+        public_send(:"#{attribute_name}=", value) if respond_to?(:"#{attribute_name}=")
       end
 
       # Convenience method used in initiatives

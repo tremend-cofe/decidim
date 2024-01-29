@@ -29,10 +29,10 @@ class PassthruValidator < ActiveModel::EachValidator
     # Create a dummy record for which the validations are actually run on
     dummy = validation_record(record)
     if dummy.respond_to?(dummy_attr) && !(value.class <= ActiveStorage::Attached)
-      dummy.public_send("#{dummy_attr}=", value)
+      dummy.public_send(:"#{dummy_attr}=", value)
       value = dummy.public_send(dummy_attr)
     elsif dummy.respond_to? :file
-      dummy.public_send("file=", value)
+      dummy.public_send(:file=, value)
       value = dummy.public_send(:file)
     end
 

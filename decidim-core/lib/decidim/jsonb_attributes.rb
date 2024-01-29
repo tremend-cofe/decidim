@@ -34,11 +34,11 @@ module Decidim
             field[f.to_s] || field[f.to_sym]
           end
 
-          define_method "#{f}=" do |value|
+          define_method :"#{f}=" do |value|
             field = public_send(name) || {}
             value_type = self.class.attribute_types[f.to_s]
             value = value_type.cast(value) if value_type
-            public_send("#{name}=", field.merge(f => super(value)))
+            public_send(:"#{name}=", field.merge(f => super(value)))
           end
         end
       end

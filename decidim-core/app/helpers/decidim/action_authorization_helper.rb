@@ -82,9 +82,9 @@ module Decidim
       html_options["onclick"] = "event.preventDefault();" if url == ""
 
       if block
-        send("#{tag}_to", url, html_options, &body)
+        send(:"#{tag}_to", url, html_options, &body)
       else
-        send("#{tag}_to", body, url, html_options)
+        send(:"#{tag}_to", body, url, html_options)
       end
     end
     # rubocop: enable Metrics/PerceivedComplexity

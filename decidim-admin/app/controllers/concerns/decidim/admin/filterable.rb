@@ -134,7 +134,7 @@ module Decidim
         end
 
         def find_dynamic_translation(filter, value)
-          send("translated_#{filter}", value) if filter.in?(dynamically_translated_filters)
+          send(:"translated_#{filter}", value) if filter.in?(dynamically_translated_filters)
         end
 
         def translated_scope_id_eq(id)

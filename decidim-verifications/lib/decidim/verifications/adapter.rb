@@ -131,15 +131,15 @@ module Decidim
       attr_reader :manifest
 
       def main_engine
-        raise MissingEngine.new(handler: name, engine: "main") unless respond_to?("decidim_#{name}")
+        raise MissingEngine.new(handler: name, engine: "main") unless respond_to?(:"decidim_#{name}")
 
-        send("decidim_#{name}")
+        send(:"decidim_#{name}")
       end
 
       def admin_engine
-        raise MissingEngine.new(handler: name, engine: "admin") unless respond_to?("decidim_admin_#{name}")
+        raise MissingEngine.new(handler: name, engine: "admin") unless respond_to?(:"decidim_admin_#{name}")
 
-        send("decidim_admin_#{name}")
+        send(:"decidim_admin_#{name}")
       end
 
       def redirect_params(params = {})

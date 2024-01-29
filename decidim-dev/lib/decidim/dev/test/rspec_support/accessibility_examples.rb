@@ -98,8 +98,8 @@ module AxeMatchers
         var options = {};
         axe.run(context, options).then(res => JSON.parse(JSON.stringify(res))).then(callback);
       JS
-      page = page.driver if page.respond_to?("driver")
-      page = page.browser if page.respond_to?("browser") && !page.browser.is_a?(::Symbol)
+      page = page.driver if page.respond_to?(:driver)
+      page = page.browser if page.respond_to?(:browser) && !page.browser.is_a?(::Symbol)
       page.execute_async_script(script)
     end
 

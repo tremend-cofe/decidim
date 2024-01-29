@@ -38,7 +38,7 @@ module Decidim
       # Returns a Hash with all the data that will be needed in Decidim::WizardStepFormCell.
       def options_for_view
         common_options.merge(
-          send("#{view}_options")
+          send(:"#{view}_options")
         )
       end
 

@@ -53,7 +53,7 @@ module Decidim
         let(:authorization_metadata) { { foo: "biz" } }
 
         before do
-          authorization.send("#{authorization_metadata_key}=", authorization_metadata)
+          authorization.send(:"#{authorization_metadata_key}=", authorization_metadata)
           authorization.save!
         end
 

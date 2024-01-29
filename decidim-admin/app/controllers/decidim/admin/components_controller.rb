@@ -178,7 +178,7 @@ module Decidim
         participatory_space = component.participatory_space
         return if participatory_space.manifest.content_blocks_scope_name.blank?
 
-        Decidim::EngineRouter.admin_proxy(participatory_space).send("edit_#{participatory_space.manifest.route_name}_landing_page_path")
+        Decidim::EngineRouter.admin_proxy(participatory_space).send(:"edit_#{participatory_space.manifest.route_name}_landing_page_path")
       end
     end
   end

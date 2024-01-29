@@ -66,7 +66,7 @@ module Decidim
       end
 
       def resource_path(action)
-        @resource_path ||= decidim_proposals.send("#{action}_collaborative_draft_path",
+        @resource_path ||= decidim_proposals.send(:"#{action}_collaborative_draft_path",
                                                   id: model.id)
       end
 

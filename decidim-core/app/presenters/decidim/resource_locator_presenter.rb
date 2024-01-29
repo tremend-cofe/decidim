@@ -56,7 +56,7 @@ module Decidim
     def show(options = {})
       options.merge!(options_for_polymorphic)
 
-      admin_route_proxy.send("#{member_route_name}_path", target, options)
+      admin_route_proxy.send(:"#{member_route_name}_path", target, options)
     end
 
     # Builds the admin edit path to the resource.
@@ -67,7 +67,7 @@ module Decidim
     def edit(options = {})
       options.merge!(options_for_polymorphic)
 
-      admin_route_proxy.send("edit_#{member_route_name}_path", target, options)
+      admin_route_proxy.send(:"edit_#{member_route_name}_path", target, options)
     end
 
     private
@@ -98,7 +98,7 @@ module Decidim
     def member_route(route_type, options)
       options.merge!(options_for_polymorphic)
 
-      route_proxy.send("#{member_route_name}_#{route_type}", target, options)
+      route_proxy.send(:"#{member_route_name}_#{route_type}", target, options)
     end
 
     # Private: Build the route to the associated collection of resources.
@@ -107,13 +107,13 @@ module Decidim
     def collection_route(route_type, options)
       options.merge!(options_for_polymorphic)
 
-      route_proxy.send("#{collection_route_name}_#{route_type}", options)
+      route_proxy.send(:"#{collection_route_name}_#{route_type}", options)
     end
 
     def admin_collection_route(route_type, options)
       options.merge!(options_for_polymorphic)
 
-      admin_route_proxy.send("#{collection_route_name}_#{route_type}", options)
+      admin_route_proxy.send(:"#{collection_route_name}_#{route_type}", options)
     end
 
     def manifest_for(record)

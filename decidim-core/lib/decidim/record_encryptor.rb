@@ -118,7 +118,7 @@ module Decidim
     # they are accessed, they will be updated according to the stored values.
     def ensure_encrypted_attributes
       self.class.encrypted_attributes.each do |attr|
-        send("#{attr}=", send(attr))
+        send(:"#{attr}=", send(attr))
       end
     end
 

@@ -31,7 +31,7 @@ module Decidim
             value[k] = v.join(",") if v.is_a?(Array)
           end
 
-          send("#{attr}=", value)
+          send(:"#{attr}=", value)
         end
 
         self.maximum_file_size = settings_hash["maximum_file_size"]

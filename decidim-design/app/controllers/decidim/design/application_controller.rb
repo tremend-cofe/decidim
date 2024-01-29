@@ -14,7 +14,7 @@ module Decidim
 
         files.map do |file|
           name = File.basename(file, ".html.erb")
-          { name:, path: send("#{path.singularize}_path", name) }
+          { name:, path: send(:"#{path.singularize}_path", name) }
         end
       end
 

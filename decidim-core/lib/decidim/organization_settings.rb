@@ -256,9 +256,9 @@ module Decidim
 
           define_singleton_method(method) do
             value = dig(*chain, key)
-            return value unless respond_to?("wrap_#{method}")
+            return value unless respond_to?(:"wrap_#{method}")
 
-            public_send("wrap_#{method}", value)
+            public_send(:"wrap_#{method}", value)
           end
         end
       end

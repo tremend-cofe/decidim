@@ -98,7 +98,7 @@ module Decidim
     end
 
     def add_attribute
-      return "add_#{attribute}" if form.object.respond_to? "add_#{attribute}"
+      return "add_#{attribute}" if form.object.respond_to? :"add_#{attribute}"
 
       attribute
     end
