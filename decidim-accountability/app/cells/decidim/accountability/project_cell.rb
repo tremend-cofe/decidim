@@ -23,7 +23,7 @@ module Decidim
       private
 
       def title
-        escape_translated result.title
+        decidim_escape_translated result.title
       end
 
       def description
