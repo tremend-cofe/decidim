@@ -3,8 +3,6 @@
 require "spec_helper"
 
 describe "Organization Areas" do
-  include Decidim::SanitizeHelper
-
   let(:admin) { create(:user, :admin, :confirmed) }
   let(:organization) { admin.organization }
 
@@ -80,7 +78,7 @@ describe "Organization Areas" do
         expect(page).to have_admin_callout("successfully")
 
         within "#areas" do
-          expect(page).not_to have_content(translated(area.name))
+          expect(page).to have_no_content(translated(area.name))
         end
       end
 

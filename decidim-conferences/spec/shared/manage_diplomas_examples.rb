@@ -21,7 +21,7 @@ shared_examples "manage diplomas" do
       dynamically_attach_file(:conference_signature, signature_path)
 
       within ".edit_conference_diploma" do
-        fill_in :conference_sign_date, with: 5.days.from_now
+        fill_in_datepicker :conference_sign_date_date, with: 5.days.from_now.strftime("%d/%m/%Y")
         fill_in :conference_signature_name, with: "Signature name"
 
         click_button "Save"
@@ -49,7 +49,7 @@ shared_examples "manage diplomas" do
         end
 
         it "can send the diplomas" do
-          expect(page).to have_selector("#send-diplomas")
+          expect(page).to have_css("#send-diplomas")
           expect(page).to have_content("Send certificates of attendance")
         end
 
@@ -77,7 +77,7 @@ shared_examples "manage diplomas" do
             click_link "Certificate of Attendance"
           end
 
-          expect(page).to have_selector("#send-diplomas.disabled")
+          expect(page).to have_css("#send-diplomas.disabled")
           expect(page).to have_content("Send certificates of attendance")
         end
       end
@@ -95,7 +95,7 @@ shared_examples "manage diplomas" do
           click_link "Certificate of Attendance"
         end
 
-        expect(page).not_to have_selector("#send-diplomas")
+        expect(page).to have_no_css("#send-diplomas")
         expect(page).to have_content("Certificate of Attendance")
       end
     end

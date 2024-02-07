@@ -4,15 +4,17 @@ require "spec_helper"
 
 describe Decidim::Initiatives::CreateInitiativeEvent do
   subject do
-    described_class.new(resource: initiative, event_name:, user:, extra: {})
+    described_class.new(resource:, event_name:, user:, extra: {})
   end
 
-  let(:organization) { initiative.organization }
-  let(:initiative) { create(:initiative) }
-  let(:initiative_author) { initiative.author }
+  include_context "when a simple event"
+
+  let(:organization) { resource.organization }
+  let(:resource) { create(:initiative) }
+  let(:initiative_author) { resource.author }
   let(:event_name) { "decidim.events.initiatives.initiative_created" }
   let(:user) { create(:user, organization:) }
-  let(:resource_path) { resource_locator(initiative).path }
+  let(:resource_path) { resource_locator(resource).path }
   let(:email_subject) { "New initiative by @#{initiative_author.nickname}" }
   let(:resource_title) { sanitize_translated(initiative.title) }
   let(:email_intro) { "#{initiative_author.name} @#{initiative_author.nickname}, who you are following, has created a new initiative, check it out and contribute:" }

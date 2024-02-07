@@ -3,8 +3,6 @@
 require "spec_helper"
 
 describe "Organization scopes" do
-  include Decidim::SanitizeHelper
-
   let(:admin) { create(:user, :admin, :confirmed) }
   let(:organization) { admin.organization }
 
@@ -76,7 +74,7 @@ describe "Organization scopes" do
         expect(page).to have_admin_callout("successfully")
 
         within "[data-content]" do
-          expect(page).not_to have_content(translated(scope.name))
+          expect(page).to have_no_content(translated(scope.name))
         end
       end
 

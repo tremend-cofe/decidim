@@ -57,8 +57,8 @@ shared_examples "manage conferences" do
       dynamically_attach_file(:conference_banner_image, image2_path)
 
       within ".new_conference" do
-        fill_in :conference_start_date, with: 1.month.ago
-        fill_in :conference_end_date, with: 1.month.ago + 3.days
+        fill_in_datepicker :conference_start_date_date, with: 1.month.ago.strftime("%d/%m/%Y")
+        fill_in_datepicker :conference_end_date_date, with: (1.month.ago + 3.days).strftime("%d/%m/%Y")
 
         find("*[type=submit]").click
       end
@@ -99,7 +99,7 @@ shared_examples "manage conferences" do
       expect(page).to have_admin_callout("successfully")
 
       within "[data-content]" do
-        expect(page).to have_selector("input[value='My new title']")
+        expect(page).to have_css("input[value='My new title']")
         expect(page).to have_css("img[src*='#{image3_filename}']")
       end
     end
@@ -212,7 +212,7 @@ shared_examples "manage conferences" do
 
     it "does not let the admin manage conferences form other organizations" do
       within "table" do
-        expect(page).not_to have_content(external_conference.title["en"])
+        expect(page).to have_no_content(external_conference.title["en"])
       end
     end
   end
@@ -231,7 +231,7 @@ shared_examples "manage conferences" do
 
       uncheck :conference_scopes_enabled
 
-      expect(page).to have_selector("select#conference_scope_id[disabled]")
+      expect(page).to have_css("select#conference_scope_id[disabled]")
 
       within ".edit_conference" do
         find("*[type=submit]").click

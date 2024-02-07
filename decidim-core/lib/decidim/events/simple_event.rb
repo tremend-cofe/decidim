@@ -11,7 +11,6 @@ module Decidim
       include Decidim::Events::EmailEvent
       include Decidim::Events::NotificationEvent
       include Decidim::ComponentPathHelper
-      include Decidim::SanitizeHelper
 
       delegate :created_at, to: :resource
 
@@ -36,13 +35,6 @@ module Decidim
       def email_subject
         I18n.t("email_subject", **i18n_options).html_safe
       end
-
-      # def email_subject_i18n_options
-      #   sanitized_values = { resource_title: resource_title }
-      #   sanitized_values[:mentioned_proposal_title] = mentioned_proposal_title if i18n_options.has_key?(:mentioned_proposal_title)
-      #   sanitized_values[:participatory_space_title] = participatory_space_title if i18n_options.has_key?(:participatory_space_title)
-      #   i18n_options.merge(sanitized_values)
-      # end
 
       def email_intro
         I18n.t("email_intro", **i18n_options).html_safe
@@ -130,7 +122,7 @@ module Decidim
       end
 
       def participatory_space_title
-        sanitize_translated(participatory_space.try(:title))
+        decidim_sanitize_translated(participatory_space.try(:title))
       end
     end
   end

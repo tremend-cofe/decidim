@@ -3,8 +3,6 @@
 require "spec_helper"
 
 describe "Admin manages assemblies" do
-  include Decidim::SanitizeHelper
-
   let(:admin) { create(:user, :admin, :confirmed) }
   let(:organization) { admin.organization }
 
@@ -76,7 +74,7 @@ describe "Admin manages assemblies" do
         expect(page).to have_admin_callout("successfully")
 
         within "#assembly-types" do
-          expect(page).not_to have_content(translated(assembly_type.title))
+          expect(page).to have_no_content(translated(assembly_type.title))
         end
       end
     end

@@ -16,7 +16,7 @@ shared_examples "manage assembly members examples" do
     it "creates a new assembly member" do
       click_link "New assembly member"
 
-      fill_in :assembly_member_designation_date, with: Time.current
+      fill_in_datepicker :assembly_member_designation_date_date, with: Time.current.strftime("%d/%m/%Y")
 
       within ".new_assembly_member" do
         fill_in(
@@ -50,7 +50,7 @@ shared_examples "manage assembly members examples" do
     it "creates a new assembly member" do
       click_link "New assembly member"
 
-      fill_in :assembly_member_designation_date, with: Time.current
+      fill_in_datepicker :assembly_member_designation_date_date, with: Time.current.strftime("%d/%m/%Y")
 
       within ".new_assembly_member" do
         select "Existing participant", from: :assembly_member_existing_user
@@ -76,7 +76,7 @@ shared_examples "manage assembly members examples" do
     it "creates a new assembly member" do
       click_link "New assembly member"
 
-      fill_in :assembly_member_designation_date, with: Time.current
+      fill_in_datepicker :assembly_member_designation_date_date, with: Time.current.strftime("%d/%m/%Y")
 
       within ".new_assembly_member" do
         select "Existing participant", from: :assembly_member_existing_user
@@ -139,7 +139,7 @@ shared_examples "manage assembly members examples" do
       expect(page).to have_admin_callout("successfully")
 
       within "#assembly_members table" do
-        expect(page).not_to have_content(assembly_member.full_name)
+        expect(page).to have_no_content(assembly_member.full_name)
       end
     end
   end
@@ -157,7 +157,7 @@ shared_examples "manage assembly members examples" do
       expect(page).to have_css(resource_selector, count: 15)
       expect(page).to have_css("[data-pages] [data-page]", count: 2)
       click_link "Next"
-      expect(page).to have_selector("[data-pages] [data-page][aria-current='page']", text: "2")
+      expect(page).to have_css("[data-pages] [data-page][aria-current='page']", text: "2")
       expect(page).to have_css(resource_selector, count: 5)
     end
   end
