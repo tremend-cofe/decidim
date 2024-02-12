@@ -6,6 +6,8 @@
 
 ### Changed
 
+Updated changelog
+
 ### Fixed
 
 ### Removed
