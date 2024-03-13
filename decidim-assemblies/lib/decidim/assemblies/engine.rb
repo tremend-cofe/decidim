@@ -25,7 +25,7 @@ module Decidim
           assembly ? "/assemblies/#{assembly.slug}/f/#{params[:component_id]}" : "/404"
         }, constraints: { assembly_id: /[0-9]+/ }
 
-        resources :assemblies, only: [:index, :show], param: :slug, path: "assemblies" do
+        resources :assemblies, only: [:index, :show], param: :assembly_slug, path: "assemblies" do
           resources :assembly_members, only: :index, path: "members"
         end
 

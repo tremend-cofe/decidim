@@ -6,11 +6,11 @@ module Decidim
   describe ResourceLocatorPresenter, type: :helper do
     let(:organization) { create(:organization, host: "1.lvh.me") }
 
-    let(:route_fragment) { "processes"}
-    let(:admin_route_fragment) { "participatory_processes"}
+    let(:route_fragment) { "assemblies" }
+    let(:admin_route_fragment) { "assemblies" }
 
     let(:participatory_space) do
-      create(:participatory_process, slug: "my-process", organization:)
+      create(:assembly, slug: "my-process", organization:)
     end
 
     let(:component) do
@@ -119,7 +119,7 @@ module Decidim
           before do
             allow(ActionMailer::Base)
               .to receive(:default_url_options)
-                    .and_return(port: 3000)
+              .and_return(port: 3000)
           end
 
           it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/my-process") }

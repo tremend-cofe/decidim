@@ -6,11 +6,11 @@ module Decidim
   describe ResourceLocatorPresenter, type: :helper do
     let(:organization) { create(:organization, host: "1.lvh.me") }
 
-    let(:route_fragment) { "processes"}
-    let(:admin_route_fragment) { "participatory_processes"}
+    let(:route_fragment) { "initiatives" }
+    let(:admin_route_fragment) { "initiatives" }
 
     let(:participatory_space) do
-      create(:participatory_process, slug: "my-process", organization:)
+      create(:initiative, organization:)
     end
 
     let(:component) do
@@ -25,7 +25,7 @@ module Decidim
       describe "#url" do
         subject { described_class.new(resource).url }
 
-        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/my-process/f/1/dummy_resources/1") }
+        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1") }
 
         context "when specific port configured" do
           before do
@@ -34,26 +34,26 @@ module Decidim
               .and_return(port: 3000)
           end
 
-          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/my-process/f/1/dummy_resources/1") }
+          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1") }
         end
       end
 
       describe "#path" do
         subject { described_class.new(resource).path }
 
-        it { is_expected.to eq("/#{route_fragment}/my-process/f/1/dummy_resources/1") }
+        it { is_expected.to eq("/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1") }
       end
 
       describe "#show" do
         subject { described_class.new(participatory_space).show }
 
-        it { is_expected.to start_with("/admin/#{admin_route_fragment}/my-process") }
+        it { is_expected.to start_with("/admin/#{admin_route_fragment}/#{participatory_space.slug}") }
       end
 
       describe "#edit" do
         subject { described_class.new(participatory_space).edit }
 
-        it { is_expected.to start_with("/admin/#{admin_route_fragment}/my-process/edit") }
+        it { is_expected.to start_with("/admin/#{admin_route_fragment}/#{participatory_space.slug}/edit") }
       end
     end
 
@@ -65,7 +65,7 @@ module Decidim
       describe "#url" do
         subject { described_class.new([resource, nested_resource]).url }
 
-        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/my-process/f/1/dummy_resources/1/nested_dummy_resources/1") }
+        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1/nested_dummy_resources/1") }
 
         context "when specific port configured" do
           before do
@@ -74,38 +74,38 @@ module Decidim
               .and_return(port: 3000)
           end
 
-          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/my-process/f/1/dummy_resources/1/nested_dummy_resources/1") }
+          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1/nested_dummy_resources/1") }
         end
       end
 
       describe "#path" do
         subject { described_class.new([resource, nested_resource]).path }
 
-        it { is_expected.to eq("/#{route_fragment}/my-process/f/1/dummy_resources/1/nested_dummy_resources/1") }
+        it { is_expected.to eq("/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1/nested_dummy_resources/1") }
       end
 
       describe "#index" do
         subject { described_class.new([resource, nested_resource]).index }
 
-        it { is_expected.to eq("/#{route_fragment}/my-process/f/1/dummy_resources/1/nested_dummy_resources") }
+        it { is_expected.to eq("/#{route_fragment}/#{participatory_space.slug}/f/1/dummy_resources/1/nested_dummy_resources") }
       end
 
       describe "#admin_index" do
         subject { described_class.new([resource, nested_resource]).admin_index }
 
-        it { is_expected.to start_with("/admin/#{admin_route_fragment}/my-process/components/1/manage/dummy_resources/1/nested_dummy_resources") }
+        it { is_expected.to start_with("/admin/#{admin_route_fragment}/#{participatory_space.slug}/components/1/manage/dummy_resources/1/nested_dummy_resources") }
       end
 
       describe "#show" do
         subject { described_class.new([resource, nested_resource]).show }
 
-        it { is_expected.to start_with("/admin/#{admin_route_fragment}/my-process/components/1/manage/dummy_resources/1/nested_dummy_resources/1") }
+        it { is_expected.to start_with("/admin/#{admin_route_fragment}/#{participatory_space.slug}/components/1/manage/dummy_resources/1/nested_dummy_resources/1") }
       end
 
       describe "#edit" do
         subject { described_class.new([resource, nested_resource]).edit }
 
-        it { is_expected.to start_with("/admin/#{admin_route_fragment}/my-process/components/1/manage/dummy_resources/1/nested_dummy_resources/1/edit") }
+        it { is_expected.to start_with("/admin/#{admin_route_fragment}/#{participatory_space.slug}/components/1/manage/dummy_resources/1/nested_dummy_resources/1/edit") }
       end
     end
 
@@ -113,35 +113,35 @@ module Decidim
       describe "#url" do
         subject { described_class.new(participatory_space).url }
 
-        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/my-process") }
+        it { is_expected.to eq("http://1.lvh.me:#{Capybara.server_port}/#{route_fragment}/#{participatory_space.slug}") }
 
         context "when specific port configured" do
           before do
             allow(ActionMailer::Base)
               .to receive(:default_url_options)
-                    .and_return(port: 3000)
+              .and_return(port: 3000)
           end
 
-          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/my-process") }
+          it { is_expected.to eq("http://1.lvh.me:3000/#{route_fragment}/#{participatory_space.slug}") }
         end
       end
 
       describe "#path" do
         subject { described_class.new(participatory_space).path }
 
-        it { is_expected.to eq("/#{route_fragment}/my-process") }
+        it { is_expected.to eq("/#{route_fragment}/#{participatory_space.slug}") }
       end
 
       describe "#show" do
         subject { described_class.new(participatory_space).show }
 
-        it { is_expected.to eq("/admin/#{admin_route_fragment}/my-process") }
+        it { is_expected.to eq("/admin/#{admin_route_fragment}/#{participatory_space.slug}") }
       end
 
       describe "#edit" do
         subject { described_class.new(participatory_space).edit }
 
-        it { is_expected.to eq("/admin/#{admin_route_fragment}/my-process/edit") }
+        it { is_expected.to eq("/admin/#{admin_route_fragment}/#{participatory_space.slug}/edit") }
       end
     end
   end

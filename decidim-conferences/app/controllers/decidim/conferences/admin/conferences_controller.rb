@@ -9,7 +9,6 @@ module Decidim
         include Decidim::Admin::ParticipatorySpaceAdminBreadcrumb
         include Concerns::ConferenceAdmin
 
-
         helper_method :current_conference, :current_participatory_space
         layout "decidim/admin/conferences"
         include Decidim::Conferences::Admin::Filterable
