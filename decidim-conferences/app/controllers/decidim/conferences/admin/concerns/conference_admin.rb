@@ -26,7 +26,7 @@ module Decidim
 
             def current_conference
               @current_conference ||= organization_conferences.find_by!(
-                slug: params[:conference_slug] || params[:slug]
+                slug: params[:conference_slug]
               )
             end
 

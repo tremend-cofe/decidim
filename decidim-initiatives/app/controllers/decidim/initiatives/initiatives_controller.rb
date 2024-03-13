@@ -88,7 +88,7 @@ module Decidim
       def update
         enforce_permission_to :update, :initiative, initiative: current_initiative
 
-        params[:id] = params[:slug]
+        params[:id] = params[:initiative_slug]
         params[:type_id] = current_initiative.type&.id
         @form = form(Decidim::Initiatives::InitiativeForm)
                 .from_params(params, initiative_type: current_initiative.type, initiative: current_initiative)
@@ -115,9 +115,9 @@ module Decidim
       alias current_initiative current_participatory_space
 
       def current_participatory_space
-        return unless params["slug"]
+        return unless params[:initiative_slug]
 
-        @current_participatory_space ||= Initiative.find(id_from_slug(params[:slug]))
+        @current_participatory_space ||= Initiative.find(id_from_slug(params[:initiative_slug]))
       end
 
       def current_participatory_space_manifest

@@ -31,7 +31,7 @@ module Decidim
         }, constraints: { process_id: /[0-9]+/ }, as: :all_metrics
 
         resources :participatory_process_groups, only: :show, path: "processes_groups"
-        resources :participatory_processes, only: [:index, :show], param: :slug, path: "processes" do
+        resources :participatory_processes, only: [:index, :show], param: :participatory_process_slug, path: "processes" do
           get "all-metrics", on: :member
         end
 

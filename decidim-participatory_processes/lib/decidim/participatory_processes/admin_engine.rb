@@ -22,7 +22,7 @@ module Decidim
           end
         end
         resources :participatory_process_types
-        resources :participatory_processes, param: :slug, except: [:show, :destroy] do
+        resources :participatory_processes, param: :participatory_process_slug, except: [:show, :destroy] do
           resource :publish, controller: "participatory_process_publications", only: [:create, :destroy]
           resources :copies, controller: "participatory_process_copies", only: [:new, :create]
 

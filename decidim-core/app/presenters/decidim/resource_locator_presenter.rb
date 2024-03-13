@@ -56,7 +56,11 @@ module Decidim
     def show(options = {})
       options.merge!(options_for_polymorphic)
 
-      admin_route_proxy.send("#{member_route_name}_path", target, options)
+      if target.is_a?(Decidim::Participable)
+        admin_route_proxy.send("#{member_route_name}_path", nil, options)
+      else
+        admin_route_proxy.send("#{member_route_name}_path", target, options)
+      end
     end
 
     # Builds the admin edit path to the resource.
@@ -67,7 +71,11 @@ module Decidim
     def edit(options = {})
       options.merge!(options_for_polymorphic)
 
-      admin_route_proxy.send("edit_#{member_route_name}_path", target, options)
+      if target.is_a?(Decidim::Participable)
+        admin_route_proxy.send("edit_#{member_route_name}_path", nil, options)
+      else
+        admin_route_proxy.send("edit_#{member_route_name}_path", target, options)
+      end
     end
 
     private
@@ -98,7 +106,11 @@ module Decidim
     def member_route(route_type, options)
       options.merge!(options_for_polymorphic)
 
-      route_proxy.send("#{member_route_name}_#{route_type}", target, options)
+      if target.is_a?(Decidim::Participable)
+        route_proxy.send("#{member_route_name}_#{route_type}", nil, options)
+      else
+        route_proxy.send("#{member_route_name}_#{route_type}", target, options)
+      end
     end
 
     # Private: Build the route to the associated collection of resources.

@@ -30,7 +30,7 @@ module Decidim
 
             def current_participatory_space
               request.env["current_participatory_space"] ||
-                organization_processes.find_by!(slug: params[:participatory_process_slug] || params[:slug])
+                organization_processes.find_by!(slug: params[:participatory_process_slug])
             end
 
             def permissions_context

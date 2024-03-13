@@ -15,7 +15,7 @@ module Decidim
       paths["lib/tasks"] = nil
 
       routes do
-        resources :conferences, param: :slug, except: [:show, :destroy] do
+        resources :conferences, param: :conference_slug, except: [:show, :destroy] do
           resource :publish, controller: "conference_publications", only: [:create, :destroy]
           resources :copies, controller: "conference_copies", only: [:new, :create]
           resources :speakers, controller: "conference_speakers"

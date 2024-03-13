@@ -7,6 +7,7 @@ module Decidim
       #
       class ParticipatoryProcessesController < Decidim::ParticipatoryProcesses::Admin::ApplicationController
         include Decidim::Admin::ParticipatorySpaceAdminContext
+        include Concerns::ParticipatoryProcessAdmin
         include Decidim::ParticipatoryProcesses::Admin::Filterable
 
         add_breadcrumb_item_from_menu :admin_participatory_process_menu, only: :show
@@ -87,16 +88,8 @@ module Decidim
           @collection ||= ParticipatoryProcessesWithUserRole.for(current_user)
         end
 
-        def current_participatory_process
-          @current_participatory_process ||= collection.where(slug: params[:slug]).or(
-            collection.where(id: params[:slug])
-          ).first
-        end
-
-        alias current_participatory_space current_participatory_process
-
         def participatory_process_params
-          { id: params[:slug] }.merge(params[:participatory_process].to_unsafe_h)
+          { id: params[:participatory_process_slug] }.merge(params[:participatory_process].to_unsafe_h)
         end
       end
     end

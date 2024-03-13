@@ -59,10 +59,10 @@ module Decidim
       end
 
       def current_participatory_space
-        return unless params["slug"]
+        return unless params[:participatory_process_slug]
 
-        @current_participatory_space ||= organization_participatory_processes.where(slug: params["slug"]).or(
-          organization_participatory_processes.where(id: params["slug"])
+        @current_participatory_space ||= organization_participatory_processes.where(slug: params[:participatory_process_slug]).or(
+          organization_participatory_processes.where(id: params[:participatory_process_slug])
         ).first!
       end
 

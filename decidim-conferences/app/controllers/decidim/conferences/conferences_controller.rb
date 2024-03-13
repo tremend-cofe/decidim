@@ -37,10 +37,10 @@ module Decidim
       private
 
       def current_participatory_space
-        return unless params[:slug]
+        return unless params[:conference_slug]
 
-        @current_participatory_space ||= OrganizationConferences.new(current_organization).query.where(slug: params[:slug]).or(
-          OrganizationConferences.new(current_organization).query.where(id: params[:slug])
+        @current_participatory_space ||= OrganizationConferences.new(current_organization).query.where(slug: params[:conference_slug]).or(
+          OrganizationConferences.new(current_organization).query.where(id: params[:conference_slug])
         ).first!
       end
 

@@ -26,7 +26,7 @@ module Decidim
           conference ? "/conferences/#{conference.slug}/f/#{params[:component_id]}" : "/404"
         }, constraints: { conference_id: /[0-9]+/ }
 
-        resources :conferences, only: [:index, :show], param: :slug, path: "conferences" do
+        resources :conferences, only: [:index, :show], param: :conference_slug, path: "conferences" do
           get :user, to: "conferences#user_diploma"
           resources :conference_speakers, only: :index, path: "speakers"
           resources :conference_program, only: :show, path: "program"

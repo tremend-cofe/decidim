@@ -6,11 +6,11 @@ module Decidim
   describe ResourceLocatorPresenter, type: :helper do
     let(:organization) { create(:organization, host: "1.lvh.me") }
 
-    let(:route_fragment) { "processes" }
-    let(:admin_route_fragment) { "participatory_processes" }
+    let(:route_fragment) { "conferences" }
+    let(:admin_route_fragment) { "conferences" }
 
     let(:participatory_space) do
-      create(:participatory_process, slug: "my-process", organization:)
+      create(:conference, slug: "my-process", organization:)
     end
 
     let(:component) do

@@ -7,6 +7,7 @@ module Decidim
       #
       class ConferencesController < Decidim::Conferences::Admin::ApplicationController
         include Decidim::Admin::ParticipatorySpaceAdminBreadcrumb
+        include Concerns::ConferenceAdmin
 
         helper_method :current_conference, :current_participatory_space
         layout "decidim/admin/conferences"
@@ -71,20 +72,12 @@ module Decidim
 
         private
 
-        def current_conference
-          @current_conference ||= collection.where(slug: params[:slug]).or(
-            collection.where(id: params[:slug])
-          ).first
-        end
-
-        alias current_participatory_space current_conference
-
         def collection
           @collection ||= OrganizationConferences.new(current_user.organization).query
         end
 
         def conference_params
-          { id: params[:slug] }.merge(params[:conference].to_unsafe_h)
+          { id: params[:conference_slug] }.merge(params[:conference].to_unsafe_h)
         end
       end
     end

@@ -41,7 +41,7 @@ module Decidim
           initiative ? "/initiatives/#{initiative.slug}/f/#{params[:component_id]}" : "/404"
         }, constraints: { initiative_id: /[0-9]+/ }
 
-        resources :initiatives, param: :slug, only: [:index, :show, :edit, :update], path: "initiatives" do
+        resources :initiatives, param: :initiative_slug, only: [:index, :show, :edit, :update], path: "initiatives" do
           resources :signatures, controller: "initiative_signatures" do
             collection do
               get :fill_personal_data

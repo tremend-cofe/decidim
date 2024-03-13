@@ -22,7 +22,7 @@ module Decidim
 
         resources :initiatives_settings, only: [:edit, :update], controller: "initiatives_settings"
 
-        resources :initiatives, only: [:index, :edit, :update], param: :slug do
+        resources :initiatives, only: [:index, :edit, :update], param: :initiative_slug do
           member do
             get :send_to_technical_validation
             post :publish
