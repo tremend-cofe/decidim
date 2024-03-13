@@ -72,7 +72,7 @@ module Decidim
       options.merge!(options_for_polymorphic)
 
       if target.is_a?(Decidim::Participable)
-        admin_route_proxy.send("edit_#{member_route_name}_path",nil, options)
+        admin_route_proxy.send("edit_#{member_route_name}_path", nil, options)
       else
         admin_route_proxy.send("edit_#{member_route_name}_path", target, options)
       end
