@@ -7,7 +7,7 @@
 
 <%
 edit_link(
-  resource_locator(current_participatory_space).edit,
+  decidim_admin_conferences.edit_conference_path(current_participatory_space),
   :update,
   :conference,
   conference: current_participatory_space
