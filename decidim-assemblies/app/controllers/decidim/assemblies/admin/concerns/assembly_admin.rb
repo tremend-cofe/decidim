@@ -25,9 +25,7 @@ module Decidim
             participatory_space_admin_layout
 
             def current_assembly
-              @current_assembly ||= organization_assemblies.find_by!(
-                slug: params[:assembly_slug] || params[:slug]
-              )
+              @current_assembly ||= organization_assemblies.find_by!(slug: params[:assembly_slug])
             end
 
             alias_method :current_participatory_space, :current_assembly

@@ -18,7 +18,7 @@ module Decidim
       routes do
         resources :assemblies_types
 
-        resources :assemblies, param: :slug, except: [:show, :destroy] do
+        resources :assemblies, param: :assembly_slug, except: [:show, :destroy] do
           resource :publish, controller: "assembly_publications", only: [:create, :destroy]
           resources :copies, controller: "assembly_copies", only: [:new, :create]
           resources :members, controller: "assembly_members"
