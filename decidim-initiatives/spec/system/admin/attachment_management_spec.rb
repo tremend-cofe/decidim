@@ -3,7 +3,7 @@
 require "spec_helper"
 require "decidim/admin/test/manage_attachments_examples"
 
-describe "initiative attachments", type: :system do
+describe "initiative attachments" do
   describe "when managed by admin" do
     include_context "when admins initiative"
 
@@ -15,7 +15,7 @@ describe "initiative attachments", type: :system do
       login_as user, scope: :user
       visit decidim_admin_initiatives.edit_initiative_path(initiative)
       within_admin_sidebar_menu do
-        click_link "Attachments"
+        click_on "Attachments"
       end
     end
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Edit initiative", type: :system do
+describe "Edit initiative" do
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :confirmed, organization:) }
   let(:initiative_title) { translated(initiative.title) }
@@ -21,13 +21,13 @@ describe "Edit initiative", type: :system do
     it "can be updated" do
       visit initiative_path
 
-      click_link("Edit", href: edit_initiative_path)
+      click_on("Edit")
 
       expect(page).to have_content "Edit Initiative"
 
       within "form.edit_initiative" do
         fill_in :initiative_title, with: new_title
-        click_button "Update"
+        click_on "Update"
       end
 
       expect(page).to have_content(new_title)
@@ -48,18 +48,18 @@ describe "Edit initiative", type: :system do
       visit initiative_path
 
       within ".main-bar" do
-        expect(page).not_to have_link("Edit")
+        expect(page).to have_no_link("Edit")
       end
     end
 
     it "does not have status field" do
-      expect(page).not_to have_xpath("//select[@id='initiative_state']")
+      expect(page).to have_no_xpath("//select[@id='initiative_state']")
     end
 
     it "allows adding attachments" do
       visit initiative_path
 
-      click_link("Edit", href: edit_initiative_path)
+      click_on("Edit")
 
       expect(page).to have_content "Edit Initiative"
 
@@ -69,7 +69,7 @@ describe "Edit initiative", type: :system do
       dynamically_attach_file(:initiative_photos, Decidim::Dev.asset("avatar.jpg"))
 
       within "form.edit_initiative" do
-        click_button "Update"
+        click_on "Update"
       end
 
       expect(initiative.reload.documents.count).to eq(1)
@@ -83,7 +83,7 @@ describe "Edit initiative", type: :system do
       it "cannot be updated" do
         visit decidim_initiatives.initiative_path(initiative)
 
-        expect(page).not_to have_content "Edit initiative"
+        expect(page).to have_no_content "Edit initiative"
 
         visit edit_initiative_path
 
@@ -115,7 +115,7 @@ describe "Edit initiative", type: :system do
     it "renders an error" do
       visit decidim_initiatives.initiative_path(initiative)
 
-      expect(page).not_to have_content("Edit initiative")
+      expect(page).to have_no_content("Edit initiative")
 
       visit edit_initiative_path
 
@@ -130,7 +130,7 @@ describe "Edit initiative", type: :system do
     before do
       visit initiative_path
 
-      click_link("Edit", href: edit_initiative_path)
+      click_on("Edit")
 
       expect(page).to have_content "Edit Initiative"
     end

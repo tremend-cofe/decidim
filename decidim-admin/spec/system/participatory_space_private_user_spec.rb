@@ -2,11 +2,11 @@
 
 require "spec_helper"
 
-describe "Admin checks pagination on participatory space private users", type: :system do
+describe "Admin checks pagination on participatory space private users" do
   let(:organization) { create(:organization) }
 
   let!(:user) { create(:user, :admin, :confirmed, organization:) }
-  let(:assembly) { create(:assembly, organization:) }
+  let(:assembly) { create(:assembly, organization:, private_space: true) }
 
   before do
     21.times do |_i|
@@ -17,7 +17,7 @@ describe "Admin checks pagination on participatory space private users", type: :
     login_as user, scope: :user
     visit decidim_admin_assemblies.edit_assembly_path(assembly)
     within_admin_sidebar_menu do
-      click_link "Private users"
+      click_on "Private users"
     end
   end
 

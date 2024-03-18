@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin views proposal details from admin", type: :system do
+describe "Admin views proposal details from admin" do
   include_context "when admin manages proposals"
   include ActionView::Helpers::TextHelper
 
@@ -38,8 +38,8 @@ describe "Admin views proposal details from admin", type: :system do
             list_item = find("li", text: author.name)
 
             within list_item do
-              expect(page).to have_selector("a", text: author.name)
-              expect(page).to have_selector(:xpath, './/a[@title="Contact"]')
+              expect(page).to have_css("a", text: author.name)
+              expect(page).to have_xpath('.//a[@title="Contact"]')
             end
           end
         end
@@ -55,7 +55,7 @@ describe "Admin views proposal details from admin", type: :system do
             list_item = find("li", text: author.name)
 
             within list_item do
-              expect(page).to have_selector("a", text: author.name)
+              expect(page).to have_css("a", text: author.name)
             end
           end
         end
@@ -69,7 +69,7 @@ describe "Admin views proposal details from admin", type: :system do
         go_to_admin_proposal_page(proposal)
 
         within ".component__show_nav-author-title" do
-          expect(page).not_to have_selector("a", text: "Official proposal")
+          expect(page).to have_no_selector("a", text: "Official proposal")
           expect(page).to have_content("Official proposal")
         end
       end
@@ -113,49 +113,62 @@ describe "Admin views proposal details from admin", type: :system do
   end
 
   describe "with endorsements" do
-    let!(:endorsements) do
-      2.times.collect do
-        create(:endorsement, resource: proposal, author: build(:user, organization:))
+    context "when there is not any endorsements" do
+      it "does not show the title" do
+        go_to_admin_proposal_page(proposal)
+
+        expect(page).to have_no_content "Endorsers"
       end
     end
 
-    it "shows the number of endorsements" do
-      go_to_admin_proposal_page(proposal)
-
-      expect(page).to have_css("[data-endorsements] [data-count]", text: "2")
-    end
-
-    it "shows the ranking by endorsements" do
-      another_proposal = create(:proposal, component:)
-      create(:endorsement, resource: another_proposal, author: build(:user, organization:))
-      go_to_admin_proposal_page(proposal)
-
-      expect(page).to have_css("[data-endorsements] [data-ranking]", text: "1 of ")
-    end
-
-    it "has a link to each endorser profile" do
-      go_to_admin_proposal_page(proposal)
-
-      within "#proposal-endorsers-list" do
-        proposal.endorsements.for_listing.each do |endorsement|
-          endorser = endorsement.normalized_author
-          expect(page).to have_selector("a", text: endorser.name)
-        end
-      end
-    end
-
-    context "with more than 5 endorsements" do
+    context "when there are endorsements" do
       let!(:endorsements) do
-        6.times.collect do
+        # We cannot use `create_list`, as it gives a "Validation failed: Resource has already been taken"
+        2.times.collect do
           create(:endorsement, resource: proposal, author: build(:user, organization:))
         end
       end
 
-      it "links to the proposal page to check the rest of endorsements" do
+      it "shows the number of endorsements" do
+        go_to_admin_proposal_page(proposal)
+
+        expect(page).to have_content "Endorsers"
+        expect(page).to have_css("[data-endorsements] [data-count]", text: "2")
+      end
+
+      it "shows the ranking by endorsements" do
+        another_proposal = create(:proposal, component:)
+        create(:endorsement, resource: another_proposal, author: build(:user, organization:))
+        go_to_admin_proposal_page(proposal)
+
+        expect(page).to have_css("[data-endorsements] [data-ranking]", text: "1 of ")
+      end
+
+      it "has a link to each endorser profile" do
         go_to_admin_proposal_page(proposal)
 
         within "#proposal-endorsers-list" do
-          expect(page).to have_selector("a", text: "and 1 more")
+          proposal.endorsements.for_listing.each do |endorsement|
+            endorser = endorsement.normalized_author
+            expect(page).to have_css("a", text: endorser.name)
+          end
+        end
+      end
+
+      context "with more than 5 endorsements" do
+        let!(:endorsements) do
+          # We cannot use `create_list`, as it gives a "Validation failed: Resource has already been taken"
+          6.times.collect do
+            create(:endorsement, resource: proposal, author: build(:user, organization:))
+          end
+        end
+
+        it "links to the proposal page to check the rest of endorsements" do
+          go_to_admin_proposal_page(proposal)
+
+          within "#proposal-endorsers-list" do
+            expect(page).to have_css("a", text: "and 1 more")
+          end
         end
       end
     end
@@ -191,28 +204,36 @@ describe "Admin views proposal details from admin", type: :system do
   end
 
   context "with related meetings" do
-    let(:meeting_component) { create(:meeting_component, participatory_space: participatory_process) }
-    let(:meeting) { create(:meeting, :published, component: meeting_component) }
-    let(:moderated_meeting) { create(:meeting, component: meeting_component) }
-    let!(:moderation) { create(:moderation, reportable: moderated_meeting) }
+    context "when there is not any meeting" do
+      it "does not show the title" do
+        go_to_admin_proposal_page(proposal)
 
-    it "lists the related meetings" do
-      proposal.link_resources(meeting, "proposals_from_meeting")
-      go_to_admin_proposal_page(proposal)
-
-      within "#related-meetings" do
-        expect(page).to have_selector("a", text: translated(meeting.title))
+        expect(page).to have_no_content "Related meetings"
       end
     end
 
-    it "hides the moderated related meeting" do
-      proposal.link_resources(moderated_meeting, "proposals_from_meeting")
-      moderation.update(hidden_at: Time.current)
+    context "when there are meetings" do
+      let(:meeting_component) { create(:meeting_component, participatory_space: participatory_process) }
+      let(:meeting) { create(:meeting, :published, component: meeting_component) }
+      let(:moderated_meeting) { create(:meeting, component: meeting_component) }
+      let!(:moderation) { create(:moderation, reportable: moderated_meeting) }
 
-      go_to_admin_proposal_page(proposal)
+      it "lists the related meetings" do
+        proposal.link_resources(meeting, "proposals_from_meeting")
+        go_to_admin_proposal_page(proposal)
 
-      within "#related-meetings" do
-        expect(page).not_to have_selector("a", text: translated(moderated_meeting.title))
+        within "#related-meetings" do
+          expect(page).to have_css("a", text: translated(meeting.title))
+        end
+      end
+
+      it "hides the moderated related meeting" do
+        proposal.link_resources(moderated_meeting, "proposals_from_meeting")
+        moderation.update(hidden_at: Time.current)
+
+        go_to_admin_proposal_page(proposal)
+
+        expect(page).to have_no_content "Related meetings"
       end
     end
   end
@@ -223,7 +244,7 @@ describe "Admin views proposal details from admin", type: :system do
       go_to_admin_proposal_page(proposal)
 
       within "#documents" do
-        expect(page).to have_selector("a", text: translated(document.title))
+        expect(page).to have_css("a", text: translated(document.title))
         expect(page).to have_content(document.file_type)
       end
     end
@@ -236,13 +257,13 @@ describe "Admin views proposal details from admin", type: :system do
       go_to_admin_proposal_page(proposal)
 
       within "#photos" do
-        expect(page).to have_selector(:xpath, "//img[@src=\"#{image.thumbnail_url}\"]")
+        expect(page).to have_xpath("//img[@src=\"#{image.thumbnail_url}\"]")
       end
     end
   end
 
   def go_to_admin_proposal_page(proposal)
-    within find("tr", text: translated(proposal.title)) do
+    within "tr", text: translated(proposal.title) do
       find("a", class: "action-icon--show-proposal").click
     end
   end

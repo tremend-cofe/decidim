@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages global moderations", type: :system do
+describe "Admin manages global moderations" do
   let!(:user) do
     create(
       :user,
@@ -62,7 +62,7 @@ describe "Admin manages global moderations", type: :system do
         visit decidim_admin.moderations_path
 
         within_admin_sidebar_menu do
-          expect(page).to have_css("span.component-counter--off", visible: :visible)
+          expect(page).to have_css("span.component-counter", visible: :visible)
           expect(page).to have_css("span", text: "0")
         end
       end
@@ -111,7 +111,7 @@ describe "Admin manages global moderations", type: :system do
 
     it "can be filtered by id" do
       search_by_text(hidden_moderation.reportable.id)
-      expect(page).to have_selector("tbody tr", count: 1)
+      expect(page).to have_css("tbody tr", count: 1)
     end
   end
 end

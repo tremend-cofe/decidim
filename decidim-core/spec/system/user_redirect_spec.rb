@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "UserRedirect", type: :system do
+describe "UserRedirect" do
   before do
     switch_to_host(organization.host)
   end
@@ -18,7 +18,7 @@ describe "UserRedirect", type: :system do
       end
 
       it "does not redirect to login page" do
-        expect(page).not_to have_content("Log in")
+        expect(page).to have_no_content("Log in")
       end
 
       it "renders a JSON with the manifest" do

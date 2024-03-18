@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages accountability", type: :system do
+describe "Admin manages accountability" do
   let(:manifest_name) { "accountability" }
 
   include_context "when managing an accountability component as an admin"
@@ -21,7 +21,7 @@ describe "Admin manages accountability", type: :system do
   describe "child results" do
     before do
       within ".table-list__actions" do
-        click_link "New result"
+        click_on "New result"
       end
     end
 
@@ -30,7 +30,7 @@ describe "Admin manages accountability", type: :system do
 
   describe "statuses" do
     before do
-      click_link "Statuses"
+      click_on "Statuses"
     end
 
     it_behaves_like "manage statuses"

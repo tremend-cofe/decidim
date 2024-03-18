@@ -5,9 +5,8 @@ require "spec_helper"
 module Decidim
   module Accountability
     module Admin
-      describe Admin::ResultsController, type: :controller do
+      describe Admin::ResultsController do
         include Decidim::ApplicationHelper
-        include Decidim::SanitizeHelper
 
         routes { Decidim::Accountability::AdminEngine.routes }
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Answer a survey", type: :system do
+describe "Answer a survey" do
   let(:manifest_name) { "surveys" }
 
   let(:title) do
@@ -62,7 +62,9 @@ describe "Answer a survey", type: :system do
       visit_component
     end
 
-    it "shows a modal dialog" do
+    it_behaves_like "accessible page"
+
+    it "shows a page" do
       expect(page).to have_content("Authorization required")
     end
   end

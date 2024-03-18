@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Space admin manages global moderations", type: :system do
+describe "Space admin manages global moderations" do
   let!(:user) do
     create(
       :process_admin,
@@ -36,7 +36,7 @@ describe "Space admin manages global moderations", type: :system do
 
     it "has the main navigation empty" do
       within ".layout-nav" do
-        expect(page).not_to have_selector("li a")
+        expect(page).to have_no_css("li a")
       end
     end
 
@@ -92,7 +92,7 @@ describe "Space admin manages global moderations", type: :system do
       within "[data-content]" do
         expect(page).to have_content("Reported content")
 
-        expect(page).not_to have_selector("table.table-list tbody tr")
+        expect(page).to have_no_css("table.table-list tbody tr")
       end
     end
   end

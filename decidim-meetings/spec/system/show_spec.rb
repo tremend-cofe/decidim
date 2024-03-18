@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "show", type: :system do
+describe "show" do
   include_context "with a component"
   let(:manifest_name) { "meetings" }
 
@@ -10,7 +10,7 @@ describe "show", type: :system do
 
   before do
     visit_component
-    click_link meeting.title[I18n.locale.to_s]
+    click_on meeting.title[I18n.locale.to_s]
   end
 
   context "when shows the meeting component" do

@@ -64,9 +64,12 @@
       [type="tel"],
       [type="time"],
       [type="url"],
-      [type="color"],
-      textarea {
+      [type="color"] {
         @apply shadow-none bg-background-2 text-md h-[40px];
+      }
+
+      textarea {
+        @apply shadow-none bg-background-2 text-md;
       }
 
       .editor-container .editor-input .ProseMirror {
@@ -98,7 +101,7 @@
   }
 
   &-sticky {
-    @apply w-full fixed left-0 bottom-0 bg-gray-2 border-t border-white;
+    @apply w-full fixed left-0 bottom-0 bg-gray-2 border-t border-white z-[4];
 
     &-container {
       @apply px-8 py-4 flex gap-x-4 justify-end;

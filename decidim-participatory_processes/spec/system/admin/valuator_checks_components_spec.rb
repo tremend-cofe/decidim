@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Valuator checks components", type: :system do
+describe "Valuator checks components" do
   let(:manifest_name) { "proposals" }
   let!(:assigned_proposal) { create(:proposal, component: current_component) }
   let(:participatory_process) { create(:participatory_process, :with_steps, organization:) }
@@ -28,12 +28,12 @@ describe "Valuator checks components", type: :system do
   context "when listing components in the space components page" do
     it "can only see the proposals component" do
       within ".process-title-content" do
-        click_link "Components"
+        click_on "Components"
       end
 
       within ".table-list" do
         expect(page).to have_content(translated(current_component.name))
-        expect(page).not_to have_content(translated(another_component.name))
+        expect(page).to have_no_content(translated(another_component.name))
       end
     end
   end

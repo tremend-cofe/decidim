@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages newsletter templates", type: :system do
+describe "Admin manages newsletter templates" do
   let(:organization) { create(:organization) }
   let(:user) { create(:user, :admin, :confirmed, name: "Sarah Kerrigan", organization:) }
 
@@ -29,7 +29,7 @@ describe "Admin manages newsletter templates", type: :system do
       find(".button.new").click
 
       within "#basic_only_text" do
-        click_link "Preview"
+        click_on "Preview"
       end
 
       expect(page).to have_content("Preview template: Basic (only text)")
@@ -45,10 +45,10 @@ describe "Admin manages newsletter templates", type: :system do
       find(".button.new").click
 
       within "#basic_only_text" do
-        click_link "Preview"
+        click_on "Preview"
       end
 
-      click_link "Use this template"
+      click_on "Use this template"
 
       expect(page).to have_content("New newsletter")
     end
