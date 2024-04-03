@@ -23,11 +23,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_app:
-    uses: ./.github/workflows/build_app.yml
-    secrets: inherit
-    name: Build test application
-
   main:
     strategy:
       fail-fast: false
@@ -36,7 +31,6 @@ jobs:
           - bundle exec parallel_test --type rspec --pattern spec/ --exclude-pattern spec/system
           - bundle exec parallel_test --type rspec --pattern spec/system --exclude-pattern spec/system/admin
           - bundle exec parallel_test --type rspec --pattern spec/system/admin
-    needs: build_app
     name: Tests
     uses: ./.github/workflows/test_app.yml
     secrets: inherit
