@@ -9,6 +9,7 @@ RSpec.configure do |config|
     Dir.chdir(Rails.root) { Webpacker.compile }
   rescue Errno::ENOENT
     node_modules_contents = `ls #{Rails.root.join("node_modules")}`
+    root_folder_contents = `ls #{Rails.root}`
 
     message = <<~ERROR
       There was an error during the Webpacker compilation
@@ -20,6 +21,8 @@ RSpec.configure do |config|
       Node modules packages: #{`npm list`}
       #{"=" * 80}
       Node modules contents: #{node_modules_contents}
+      #{"=" * 80}
+      Project dir contents: #{root_folder_contents}
       #{"=" * 80}
     ERROR
 
