@@ -105,9 +105,9 @@ jobs:
           RAILS_ENV: "test"
       - run: |
           sudo Xvfb -ac $DISPLAY -screen 0 1920x1084x24 > /dev/null 2>&1 & # optional
-          ls -lah
+          ls -lah ../spec/decidim_dummy_app/
           bundle install
-          ls -lah 
+          ls -lah ../spec/decidim_dummy_app/
           ${{ inputs.test_command }}
         name: RSpec
         working-directory: ${{ inputs.working-directory }}
