@@ -92,22 +92,22 @@ jobs:
         shell: "bash"
       - run: |
           bundle install
+          ls -lah
           bundle exec rails assets:precompile
-        name: Precompile assets
-        working-directory: ./spec/decidim_dummy_app/
+          ls -lah
+          bundle exec rake parallel:create parallel:load_schema
+          ls -lah
+        name: Parallel tests
         shell: "bash"
+        working-directory: ./spec/decidim_dummy_app/
         env:
           NODE_ENV: "test"
           RAILS_ENV: "test"
       - run: |
-          bundle install
-          bundle exec rake parallel:create parallel:load_schema
-        name: Parallel tests
-        shell: "bash"
-        working-directory: ./spec/decidim_dummy_app/
-      - run: |
           sudo Xvfb -ac $DISPLAY -screen 0 1920x1084x24 > /dev/null 2>&1 & # optional
+          ls -lah
           bundle install
+          ls -lah 
           ${{ inputs.test_command }}
         name: RSpec
         working-directory: ${{ inputs.working-directory }}
