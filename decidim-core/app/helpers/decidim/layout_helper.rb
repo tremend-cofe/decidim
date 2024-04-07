@@ -169,6 +169,10 @@ module Decidim
                                           end
     end
 
+    def current_organization_name
+      current_organization.name
+    end
+
     private
 
     def empty_organization_description?

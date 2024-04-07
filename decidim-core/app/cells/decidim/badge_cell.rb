@@ -46,7 +46,7 @@ module Decidim
           t "decidim.gamification.reached_top"
         end
       else
-        badge.description(controller.current_organization.name)
+        badge.description(current_organization_name)
       end
     end
 

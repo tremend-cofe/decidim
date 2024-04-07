@@ -13,7 +13,7 @@
       <%= f.collection_radio_buttons :reason, [
           [:spam, t("decidim.shared.flag_user_modal.spam")],
           [:offensive, t("decidim.shared.flag_user_modal.offensive")],
-          [:does_not_belong, t("decidim.shared.flag_user_modal.does_not_belong", organization_name: current_organization.name)]
+          [:does_not_belong, t("decidim.shared.flag_user_modal.does_not_belong", organization_name: current_organization_name)]
       ], :first, :last do |builder| %>
         <%= builder.label { builder.radio_button + builder.text } %>
       <% end %>
