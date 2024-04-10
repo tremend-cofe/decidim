@@ -42,7 +42,7 @@ module Decidim
                             desc: "Use a specific branch from GitHub's version"
 
       class_option :repository, type: :string,
-                                default: "https://github.com/decidim/decidim.git",
+                                default: "https://github.com/tremend-cofe/decidim.git",
                                 desc: "Use a specific GIT repository (valid in conjunction with --edge or --branch)"
 
       class_option :recreate_db, type: :boolean,
@@ -98,6 +98,10 @@ module Decidim
         []
       end
 
+      def package_json
+        template "package.json"
+      end
+
       def database_yml
         template "database.yml.erb", "config/database.yml", force: true
       end
@@ -137,6 +141,10 @@ module Decidim
 
       def node_version
         copy_file ".node-version", ".node-version"
+      end
+
+      def remove_gemfile
+        remove_file "Gemfile" if options[:skip_gemfile]
       end
 
       def gemfile
@@ -422,7 +430,7 @@ module Decidim
       end
 
       def repository
-        @repository ||= options[:repository] || "https://github.com/decidim/decidim.git"
+        @repository ||= options[:repository] || "https://github.com/tremend-cofe/decidim.git"
       end
 
       def app_name
@@ -447,7 +455,7 @@ module Decidim
         root = if options[:path]
                  expanded_path
                elsif branch.present?
-                 "https://raw.githubusercontent.com/decidim/decidim/#{branch}/decidim-generators"
+                 "https://raw.githubusercontent.com/tremend-cofe/decidim/#{branch}/decidim-generators"
                else
                  root_path
                end

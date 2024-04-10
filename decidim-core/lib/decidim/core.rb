@@ -561,6 +561,25 @@ module Decidim
     {}
   end
 
+  # Internal helper method to detect if an executable is available on OS.
+  # this function aims to be cross platform. Please check: https://stackoverflow.com/a/5471032
+  def self.which(cmd)
+    exts = ENV["PATHEXT"] ? ENV["PATHEXT"].split(";") : [""]
+    ENV["PATH"].split(File::PATH_SEPARATOR).each do |path|
+      exts.each do |ext|
+        exe = File.join(path, "#{cmd}#{ext}")
+        return exe if File.executable?(exe) && !File.directory?(exe)
+      end
+    end
+    nil
+  end
+
+  # This configuration allows you to set a custom encryptor since the older versions of Rails is Using SHA1, yet
+  # Rails 7 is using SHA256. You may encounter issues on the encrypted attributes from the database.
+  config_accessor :key_generator_hash_digest_class do
+    nil
+  end
+
   # Public: Registers a global engine. This method is intended to be used
   # by component engines that also offer unscoped functionality
   #
@@ -823,7 +842,7 @@ module Decidim
   end
 
   def self.register_assets_path(path)
-    Rails.autoloaders.main.ignore(path) if Rails.configuration.autoloader == :zeitwerk
+    Rails.autoloaders.main.ignore(path)
   end
 
   # Checks if a particular decidim gem is installed and needed by this

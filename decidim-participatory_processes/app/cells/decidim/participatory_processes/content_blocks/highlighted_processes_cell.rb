@@ -36,7 +36,7 @@ module Decidim
                                          OrganizationPublishedParticipatoryProcesses.new(current_organization, current_user) |
                                          HighlightedParticipatoryProcesses.new |
                                          FilteredParticipatoryProcesses.new("active")
-                                       ).query.with_attached_hero_image.includes([:organization, :hero_image_attachment]).limit(highlighted_processes_max_results)
+                                       ).query.with_attached_hero_image.includes([:organization]).limit(highlighted_processes_max_results)
                                      end
         end
 

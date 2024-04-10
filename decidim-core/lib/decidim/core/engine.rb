@@ -232,6 +232,19 @@ module Decidim
         end
       end
 
+      # Rails 7 uses VIPS as default processor, and this may add up to 140 MB on a docker image.
+      # Please refer to:
+      # https://github.com/rails/rails/blob/7-0-stable/activestorage/CHANGELOG.md#rails-700alpha1-september-15-2021
+      # https://github.com/libvips/ruby-vips/issues/219
+      # https://github.com/libvips/ruby-vips/issues/219#issuecomment-1006370293
+      initializer "decidim_core.active_storage" do |app|
+        app.config.active_storage.variant_processor = :mini_magick unless Decidim.which("vips")
+      end
+
+      initializer "decidim_core.active_support" do |app|
+        app.config.active_support.key_generator_hash_digest_class = Decidim.key_generator_hash_digest_class if Decidim.key_generator_hash_digest_class.present?
+      end
+
       initializer "decidim_core.action_mailer" do |app|
         app.config.action_mailer.deliver_later_queue_name = :mailers
       end
@@ -297,8 +310,8 @@ module Decidim
         end
       end
 
-      initializer "decidim_core.i18n_exceptions" do
-        ActionView::Base.raise_on_missing_translations = true unless Rails.env.production?
+      initializer "decidim_core.i18n_exceptions" do |app|
+        app.config.i18n.raise_on_missing_translations = true unless Rails.env.production?
       end
 
       initializer "decidim_core.geocoding", after: :load_config_initializers do
