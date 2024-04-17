@@ -118,6 +118,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: ${{ github.run_id }}-coverage
+          name: ${{ github.job_id }}-coverage
           path: ./coverage
           if-no-files-found: ignore
