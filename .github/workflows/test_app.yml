@@ -115,3 +115,9 @@ jobs:
           name: screenshots
           path: ./spec/decidim_dummy_app/tmp/screenshots
           if-no-files-found: ignore
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: ${{ github.job_id }}-coverage
+          path: ./coverage
+          if-no-files-found: ignore
