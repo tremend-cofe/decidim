@@ -185,7 +185,7 @@ module Decidim
     end
 
     def direct_upload_url
-      Rails.application.class.routes.url_helpers.rails_direct_uploads_path
+      Decidim::Core::Engine.routes.url_helpers.direct_upload_path
     end
 
     def upload_validations_url

@@ -196,6 +196,7 @@ Decidim::Core::Engine.routes.draw do
   end
 
   resources :upload_validations, only: [:create]
+  resource :direct_upload, only: [:create]
 
   resources :last_activities, only: [:index]
 

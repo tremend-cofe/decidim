@@ -1,5 +1,12 @@
 import { DirectUpload } from "@rails/activestorage";
 
+class DecidimDirectUpload extends DirectUpload {
+  // eslint-disable-next-line max-params
+  constructor(file, url, delegate, customHeaders = {}) {
+    super(file, url, delegate, customHeaders);
+  }
+}
+
 export class Uploader {
   constructor(modal, options) {
     this.modal = modal;
@@ -10,8 +17,25 @@ export class Uploader {
     if (modal.options.maxFileSize && options.file.size > modal.options.maxFileSize) {
       this.errors = [modal.locales.file_size_too_large]
     } else {
-      this.upload = new DirectUpload(options.file, options.url, this);
+      let url = `${options.url}?${this.getParams(null)}`;
+      this.upload = new DecidimDirectUpload(options.file, url, this);
     }
+  }
+
+  getParams(blobId) {
+    if (blobId) {
+      return new URLSearchParams({
+        resourceClass: this.modal.options.resourceClass,
+        property: this.getProperty(),
+        blob: blobId,
+        formClass: this.modal.options.formObjectClass
+      });
+    }
+    return new URLSearchParams({
+      resourceClass: this.modal.options.resourceClass,
+      property: this.getProperty(),
+      formClass: this.modal.options.formObjectClass
+    });
   }
 
   validate(blobId) {
@@ -27,19 +51,9 @@ export class Uploader {
     }
 
     if (!this.validationSent) {
-      let property = this.modal.options.addAttribute;
-      if (this.modal.options.titled) {
-        property = "file"
-      }
-
       let url = this.modal.input.dataset.uploadValidationsUrl;
 
-      const params = new URLSearchParams({
-        resourceClass: this.modal.options.resourceClass,
-        property: property,
-        blob: blobId,
-        formClass: this.modal.options.formObjectClass
-      });
+      const params = this.getParams(blobId);
 
       return fetch(`${url}?${params}`, {
         method: "POST",
@@ -63,4 +77,13 @@ export class Uploader {
   directUploadWillStoreFileWithXHR(request) {
     request.upload.addEventListener("progress", ({ loaded, total }) => this.modal.setProgressBar(this.options.attachmentName, Math.floor(loaded / total * 100)));
   }
+
+  getProperty() {
+    let property = this.modal.options.addAttribute;
+    if (this.modal.options.titled) {
+      property = "file"
+    }
+    return property;
+  }
+
 }
