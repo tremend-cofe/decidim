@@ -15,10 +15,10 @@ class Decidim::ContentBlocks::HeroComponent < Decidim::ContentBlocks::BaseCompon
   def translated_welcome_text = translated_attribute(settings.welcome_text)
 
   def cta_button = render(CtaButtonComponent.new)
-
+  
   def welcome_text
     if translated_welcome_text.blank?
-      t("decidim.pages.home.hero.welcome", organization: current_organization_name)
+      t("decidim.pages.home.hero.welcome", organization: organization_name(organization.name))
     else
       decidim_sanitize_admin translated_welcome_text
     end

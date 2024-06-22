@@ -11,7 +11,7 @@ module Decidim
 
       attr_reader :content_block
 
-      delegate :settings, :images_container, to: :content_block
+      delegate :settings, :images_container, :organization, to: :content_block
     end
   end
 end

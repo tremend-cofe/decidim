@@ -223,6 +223,7 @@ module Decidim
 
       initializer "decidim_core.action_view" do |app|
         app.config.view_component.component_parent_class = "Decidim::ContentBlocks::BaseComponent"
+
         app.config.view_component.instrumentation_enabled = true
         app.config.view_component.use_deprecated_instrumentation_name = false
         app.config.view_component.generate.preview = true
@@ -234,7 +235,7 @@ module Decidim
         app.config.generators.test_framework = :rspec
 
         app.config.view_component.preview_paths << "#{Decidim::Core::Engine.root}/spec/components/previews"
-        app.config.i18n.load_path += Dir[Decidim::Core::Engine.root.join("app/components/decidim/**/*.yml")]
+        app.config.view_component.preview_controller = "Decidim::Design::ViewComponentsController"
       end
 
       initializer "decidim_core.patch_webpacker", before: "shakapacker.version_checker" do
