@@ -29,6 +29,10 @@ module Decidim
       @manifest ||= Decidim.content_blocks.for(scope_name).find { |manifest| manifest.name.to_s == manifest_name }
     end
 
+    def component
+      manifest.component.constantize.new(self)
+    end
+
     # Public: Uses the `SettingsManifest` class to generate a settings schema
     # and fill it with the content blocks current settings. This eases the
     # access to those settings values.

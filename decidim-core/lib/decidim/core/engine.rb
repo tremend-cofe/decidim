@@ -47,6 +47,8 @@ require "decidim/middleware/static_dispatcher"
 require "decidim/middleware/current_organization"
 require "decidim/webpacker"
 
+require "view_component"
+
 module Decidim
   module Core
     # Decidim's core Rails Engine.
@@ -217,6 +219,22 @@ module Decidim
         Decidim.icons.register(name: "youtube-line", icon: "youtube-line", category: "social icon", description: "", engine: :core)
         Decidim.icons.register(name: "github-fill", icon: "github-fill", category: "social icon", description: "", engine: :core)
         Decidim.icons.register(name: "facebook-circle-line", icon: "facebook-circle-line", category: "social icon", description: "", engine: :core)
+      end
+
+      initializer "decidim_core.action_view" do |app|
+        app.config.view_component.component_parent_class = "Decidim::ContentBlocks::BaseComponent"
+        app.config.view_component.instrumentation_enabled = true
+        app.config.view_component.use_deprecated_instrumentation_name = false
+        app.config.view_component.generate.preview = true
+        app.config.view_component.generate.locale = false
+        app.config.view_component.generate.sidecar = true
+        app.config.view_component.generate.distinct_locale_files = true
+
+        app.config.view_component.show_previews_source = true
+        app.config.generators.test_framework = :rspec
+
+        app.config.view_component.preview_paths << "#{Decidim::Core::Engine.root}/spec/components/previews"
+        app.config.i18n.load_path += Dir[Decidim::Core::Engine.root.join("app/components/decidim/**/*.yml")]
       end
 
       initializer "decidim_core.patch_webpacker", before: "shakapacker.version_checker" do
