@@ -64,6 +64,7 @@ search:
     <%= "- #{path}/app/services\n" %>
     <%= "- #{path}/app/views\n" %>
     <%= "- #{path}/app/cells\n" %>
+    <%= "- #{path}/app/components\n" %>
     <% end -%>
 
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
