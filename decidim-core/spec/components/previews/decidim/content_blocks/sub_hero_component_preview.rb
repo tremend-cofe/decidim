@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Decidim::ContentBlocks::FooterSubHeroComponentPreview < ViewComponent::Preview
+class Decidim::ContentBlocks::SubHeroComponentPreview < ViewComponent::Preview
   def default
     # example content block object
     content_block = Decidim::ContentBlock.new(
-      manifest_name: "footer_sub_hero",
+      manifest_name: "sub_hero",
       scope_name: "homepage",
       organization:
     )
@@ -18,7 +18,7 @@ class Decidim::ContentBlocks::FooterSubHeroComponentPreview < ViewComponent::Pre
   def organization
     Decidim::Organization.new(
       users_registration_mode: "enabled",
-      name: { en: "My test organization" }
+      description: { en: "My super long description My super long description My super long description My super long description " }
     )
   end
 end

@@ -7,7 +7,7 @@ class Decidim::ContentBlocks::HeroComponentPreview < ViewComponent::Preview
       manifest_name: "hero",
       scope_name: "homepage",
       settings: {
-        "welcome_text_en": "This is the welcome text for Hero"
+        welcome_text_en: "This is the welcome text for Hero"
       }
     )
 
