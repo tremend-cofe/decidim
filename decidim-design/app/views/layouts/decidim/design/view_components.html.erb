@@ -22,7 +22,7 @@
           <ul>
             <% group.last.each do |preview| %>
               <li>
-                <%= link_to main_app.preview_view_component_path(preview.preview_name)  do %>
+                <%= link_to main_app.preview_view_component_path("#{preview.preview_name}/#{preview.examples.first}")  do %>
                   <span><%= preview.name.demodulize.titleize.delete_suffix("Component Preview") %></span>
                 <% end %>
               </li>
