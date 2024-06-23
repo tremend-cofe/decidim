@@ -29,7 +29,7 @@ RSpec.describe Decidim::ContentBlocks::FooterSubHeroComponent, type: :component 
     end
   end
 
-  context "When organization settings prevent registration" do
+  context "when organization settings prevent registration" do
     let(:users_registration_mode) { "disabled" }
 
     it "hides the register button" do

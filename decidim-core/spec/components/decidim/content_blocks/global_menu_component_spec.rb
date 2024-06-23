@@ -11,7 +11,6 @@ RSpec.describe Decidim::ContentBlocks::GlobalMenuComponent, type: :component do
   controller Decidim::PagesController
 
   it "displays the menu" do
-
     Decidim::MenuRegistry.register :home_content_block_menu do |menu|
       menu.add_item :processes, "Processes", "/foo"
       menu.add_item :assemblies, "Assemblies", "/bar"

@@ -10,7 +10,7 @@
 <body class="relative text-black text-md form-defaults">
 
 <%
-  groups = ViewComponent::Preview.all.sort_by { |s| s.name }.group_by{|s| s.name.deconstantize }
+  groups = ViewComponent::Preview.all.sort_by(&:name).group_by { |s| s.name.deconstantize }
 %>
 <div class="design__layout">
   <aside>
