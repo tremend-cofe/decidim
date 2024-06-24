@@ -89,6 +89,10 @@ module Decidim
         Decidim::Assemblies::ContentBlocks::RegistryManager.register!
       end
 
+      initializer "decidim_assemblies.action_view" do |app|
+        app.config.view_component.preview_paths << "#{Decidim::Assemblies::Engine.root}/spec/components/previews"
+      end
+
       initializer "decidim_assemblies.register_metrics" do
         Decidim.metrics_registry.register(:assemblies) do |metric_registry|
           metric_registry.manager_class = "Decidim::Assemblies::Metrics::AssembliesMetricManage"

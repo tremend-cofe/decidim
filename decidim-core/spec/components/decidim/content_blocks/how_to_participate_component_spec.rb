@@ -12,6 +12,7 @@ RSpec.describe Decidim::ContentBlocks::HowToParticipateComponent, type: :compone
 
   it "displays the content" do
     render_inline(subject)
+    expect(page).to have_css("[id^=how_to_participate]", visible: :all)
 
     expect(page).to have_content("How do I take part in a process?")
     expect(page).to have_content("Find out where and when you can participate in public meetings.")
@@ -19,5 +20,4 @@ RSpec.describe Decidim::ContentBlocks::HowToParticipateComponent, type: :compone
     expect(page).to have_content("Make proposals, support existing ones and promote the changes you want to see.")
     expect(page).to have_content("More info about #{translated(organization.name)}")
   end
-
 end

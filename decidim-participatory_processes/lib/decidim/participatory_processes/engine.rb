@@ -82,6 +82,10 @@ module Decidim
         end
       end
 
+      initializer "decidim_assemblies.action_view" do |app|
+        app.config.view_component.preview_paths << "#{Decidim::ParticipatoryProcesses::Engine.root}/spec/components/previews"
+      end
+
       initializer "decidim_participatory_processes.register_metrics" do
         Decidim.metrics_registry.register(:participatory_processes) do |metric_registry|
           metric_registry.manager_class = "Decidim::ParticipatoryProcesses::Metrics::ParticipatoryProcessesMetricManage"

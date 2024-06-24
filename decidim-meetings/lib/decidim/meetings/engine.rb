@@ -83,6 +83,10 @@ module Decidim
         end
       end
 
+      initializer "decidim_assemblies.action_view" do |app|
+        app.config.view_component.preview_paths << "#{Decidim::Meetings::Engine.root}/spec/components/previews"
+      end
+
       initializer "decidim_meetings.view_hooks" do
         Decidim.view_hooks.register(:participatory_space_highlighted_elements, priority: Decidim::ViewHooks::HIGH_PRIORITY) do |view_context|
           view_context.cell("decidim/meetings/highlighted_meetings", view_context.current_participatory_space)
