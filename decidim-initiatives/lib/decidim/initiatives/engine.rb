@@ -97,6 +97,10 @@ module Decidim
         Decidim::Initiatives::ContentBlocks::RegistryManager.register!
       end
 
+      initializer "decidim_assemblies.action_view" do |app|
+        app.config.view_component.preview_paths << "#{Decidim::Initiatives::Engine.root}/spec/components/previews"
+      end
+
       initializer "decidim_initiatives.add_cells_view_paths" do
         Cell::ViewModel.view_paths << File.expand_path("#{Decidim::Initiatives::Engine.root}/app/cells")
         Cell::ViewModel.view_paths << File.expand_path("#{Decidim::Initiatives::Engine.root}/app/views") # for partials

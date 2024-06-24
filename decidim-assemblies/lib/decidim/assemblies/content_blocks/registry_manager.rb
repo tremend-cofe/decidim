@@ -9,6 +9,7 @@ module Decidim
             content_block.cell = "decidim/assemblies/content_blocks/highlighted_assemblies"
             content_block.public_name_key = "decidim.assemblies.content_blocks.highlighted_assemblies.name"
             content_block.settings_form_cell = "decidim/assemblies/content_blocks/highlighted_assemblies_settings_form"
+            content_block.component = "Decidim::Assemblies::ContentBlocks::HighlightedAssembliesComponent"
 
             content_block.settings do |settings|
               settings.attribute :max_results, type: :integer, default: 6

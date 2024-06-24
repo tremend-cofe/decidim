@@ -66,6 +66,10 @@ module Decidim
         Cell::ViewModel.view_paths << File.expand_path("#{Decidim::Conferences::Engine.root}/app/views") # for partials
       end
 
+      initializer "decidim_assemblies.action_view" do |app|
+        app.config.view_component.preview_paths << "#{Decidim::Conferences::Engine.root}/spec/components/previews"
+      end
+
       initializer "decidim_conferences.stats" do
         Decidim.stats.register :conferences_count, priority: StatsRegistry::HIGH_PRIORITY do |organization, _start_at, _end_at|
           Decidim::Conference.where(organization:).public_spaces.count
