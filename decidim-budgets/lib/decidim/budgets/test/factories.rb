@@ -14,7 +14,7 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :budgets, skip_injection:) }
     manifest_name { :budgets }
-    participatory_space { create(:participatory_process, :with_steps, skip_injection:, organization:) }
+    participatory_space { association(:participatory_process, :with_steps, skip_injection:, organization:) }
 
     trait :with_geocoding_enabled do
       settings do
@@ -119,7 +119,7 @@ FactoryBot.define do
     title { generate_localized_title(:budget_title, skip_injection:) }
     description { generate_localized_description(:budget_description, skip_injection:) }
     total_budget { 100_000_000 }
-    component { create(:budgets_component, skip_injection:) }
+    component { association(:budgets_component, skip_injection:) }
 
     trait :with_projects do
       transient do
@@ -142,7 +142,7 @@ FactoryBot.define do
     latitude { Faker::Address.latitude }
     longitude { Faker::Address.longitude }
     budget_amount { Faker::Number.number(digits: 8) }
-    budget { create(:budget, skip_injection:) }
+    budget { association(:budget, skip_injection:) }
 
     trait :selected do
       selected_at { Time.current }
@@ -163,8 +163,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    budget { create(:budget, skip_injection:) }
-    user { create(:user, organization: component.organization, skip_injection:) }
+    budget { association(:budget, skip_injection:) }
+    user { association(:user, organization: component.organization, skip_injection:) }
 
     trait :with_projects do
       transient do
@@ -184,6 +184,6 @@ FactoryBot.define do
       skip_injection { false }
     end
     order
-    project { create(:project, budget: order.budget, skip_injection:) }
+    project { association(:project, budget: order.budget, skip_injection:) }
   end
 end

@@ -23,7 +23,7 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :proposals) }
     manifest_name { :proposals }
-    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
+    participatory_space { association(:participatory_process, :with_steps, organization:, skip_injection:) }
 
     after :create do |proposal_component|
       Decidim::Proposals.create_default_states!(proposal_component, nil, with_traceability: false)
@@ -268,7 +268,7 @@ FactoryBot.define do
     token { :not_answered }
     title { generate_state_title(:not_answered, skip_injection:) }
     announcement_title { generate_localized_title(:announcement_title, skip_injection:) }
-    component { build(:proposal_component) }
+    component { association(:proposal_component) }
     bg_color { Faker::Color.hex_color(:light) }
     text_color { Faker::Color.hex_color(:dark) }
 
@@ -304,7 +304,7 @@ FactoryBot.define do
 
     title { generate_localized_title(:proposal_title, skip_injection:) }
     body { generate_localized_description(:proposal_body, skip_injection:) }
-    component { create(:proposal_component, skip_injection:) }
+    component { association(:proposal_component, skip_injection:) }
     published_at { Time.current }
     address { "#{Faker::Address.street_name}, #{Faker::Address.city}" }
     latitude { Faker::Address.latitude }
@@ -479,17 +479,17 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    proposal { build(:proposal, skip_injection:) }
-    author { build(:user, organization: proposal.organization, skip_injection:) }
+    proposal { association(:proposal, skip_injection:) }
+    author { association(:user, organization: proposal.organization, skip_injection:) }
   end
 
   factory :proposal_amendment, class: "Decidim::Amendment" do
     transient do
       skip_injection { false }
     end
-    amendable { build(:proposal, skip_injection:) }
-    emendation { build(:proposal, component: amendable.component, skip_injection:) }
-    amender { build(:user, organization: amendable.component.participatory_space.organization, skip_injection:) }
+    amendable { association(:proposal, skip_injection:) }
+    emendation { association(:proposal, component: amendable.component, skip_injection:) }
+    amender { association(:user, organization: amendable.component.participatory_space.organization, skip_injection:) }
     state { Decidim::Amendment::STATES.keys.sample }
   end
 
@@ -504,8 +504,8 @@ FactoryBot.define do
         "<script>alert(\"proposal_note_body\");</script> #{generate(:title)}"
       end
     end
-    proposal { build(:proposal, skip_injection:) }
-    author { build(:user, organization: proposal.organization, skip_injection:) }
+    proposal { association(:proposal, skip_injection:) }
+    author { association(:user, organization: proposal.organization, skip_injection:) }
   end
 
   factory :collaborative_draft, class: "Decidim::Proposals::CollaborativeDraft" do
@@ -518,7 +518,7 @@ FactoryBot.define do
 
     title { generate_localized_title(:collaborative_draft_title, skip_injection:)["en"] }
     body { generate_localized_description(:collaborative_draft_body, skip_injection:)["en"] }
-    component { create(:proposal_component, skip_injection:) }
+    component { association(:proposal_component, skip_injection:) }
     address { "#{Faker::Address.street_name}, #{Faker::Address.city}" }
     state { "open" }
 
@@ -561,7 +561,7 @@ FactoryBot.define do
 
     title { generate_localized_title(:participatory_text_title, skip_injection:) }
     description { generate_localized_description(:participatory_text_description, skip_injection:) }
-    component { create(:proposal_component, skip_injection:) }
+    component { association(:proposal_component, skip_injection:) }
   end
 
   factory :valuation_assignment, class: "Decidim::Proposals::ValuationAssignment" do

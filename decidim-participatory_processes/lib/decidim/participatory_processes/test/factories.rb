@@ -84,7 +84,7 @@ FactoryBot.define do
 
     trait :with_scope do
       scopes_enabled { true }
-      scope { create :scope, organization:, skip_injection: }
+      scope { association(:scope, organization:, skip_injection:) }
     end
 
     trait :with_content_blocks do
@@ -181,7 +181,7 @@ FactoryBot.define do
   factory :process_admin, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process, skip_injection:) }
+      participatory_process { association(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -198,7 +198,7 @@ FactoryBot.define do
   factory :process_collaborator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process, skip_injection:) }
+      participatory_process { association(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -215,7 +215,7 @@ FactoryBot.define do
   factory :process_moderator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process, skip_injection:) }
+      participatory_process { association(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -232,7 +232,7 @@ FactoryBot.define do
   factory :process_valuator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      participatory_process { create(:participatory_process, skip_injection:) }
+      participatory_process { association(:participatory_process, skip_injection:) }
     end
 
     organization { participatory_process.organization }
@@ -251,7 +251,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    participatory_process { create :participatory_process, organization: user.organization, skip_injection: }
+    participatory_process { association(:participatory_process, organization: user.organization, skip_injection:) }
     role { "admin" }
   end
 end

@@ -16,7 +16,7 @@ FactoryBot.define do
     description { generate_localized_description(:debate_description, skip_injection:) }
     information_updates { generate_localized_description(:debate_information_updates, skip_injection:) }
     instructions { generate_localized_description(:debate_instructions, skip_injection:) }
-    component { build(:debates_component, skip_injection:) }
+    component { association(:debates_component, skip_injection:) }
     author { component.try(:organization) }
 
     trait :open_ama do
@@ -63,7 +63,7 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :debates, skip_injection:) }
     manifest_name { :debates }
-    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
+    participatory_space { association(:participatory_process, :with_steps, organization:, skip_injection:) }
     settings do
       {
         comments_enabled: true,

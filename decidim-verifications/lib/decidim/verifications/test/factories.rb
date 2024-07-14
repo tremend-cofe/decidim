@@ -16,8 +16,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    current_user { create(:user, skip_injection:) }
-    managed_user { create(:user, managed: true, organization: current_user.organization, skip_injection:) }
+    current_user { association(:user, skip_injection:) }
+    managed_user { association(:user, managed: true, organization: current_user.organization, skip_injection:) }
     unique_id { "12345678X" }
     times { 1 }
   end

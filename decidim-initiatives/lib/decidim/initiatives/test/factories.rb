@@ -106,12 +106,12 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    type { create(:initiatives_type, skip_injection:) }
-    scope { create(:scope, organization: type.organization, skip_injection:) }
+    type { association(:initiatives_type, skip_injection:) }
+    scope { association(:scope, organization: type.organization, skip_injection:) }
     supports_required { 1000 }
 
     trait :with_user_extra_fields_collection do
-      type { create(:initiatives_type, :with_user_extra_fields_collection, skip_injection:) }
+      type { association(:initiatives_type, :with_user_extra_fields_collection, skip_injection:) }
     end
   end
 
@@ -123,7 +123,7 @@ FactoryBot.define do
     title { generate_localized_title(:initiative_title, skip_injection:) }
     description { generate_localized_description(:initiative_description, skip_injection:) }
     organization
-    author { create(:user, :confirmed, organization:, skip_injection:) }
+    author { association(:user, :confirmed, organization:, skip_injection:) }
     published_at { Time.current }
     state { "published" }
     signature_type { "online" }
@@ -131,8 +131,8 @@ FactoryBot.define do
     signature_end_date { Date.current + 120.days }
 
     scoped_type do
-      create(:initiatives_type_scope, skip_injection:,
-                                      type: create(:initiatives_type, organization:, signature_type:, skip_injection:))
+      association(:initiatives_type_scope, skip_injection:,
+                                           type: association(:initiatives_type, organization:, signature_type:, skip_injection:))
     end
 
     after(:create) do |initiative, evaluator|
@@ -208,13 +208,13 @@ FactoryBot.define do
 
     trait :with_user_extra_fields_collection do
       scoped_type do
-        create(:initiatives_type_scope, skip_injection:,
-                                        type: create(:initiatives_type, :with_user_extra_fields_collection, organization:, skip_injection:))
+        association(:initiatives_type_scope, skip_injection:,
+                                             type: association(:initiatives_type, :with_user_extra_fields_collection, organization:, skip_injection:))
       end
     end
 
     trait :with_area do
-      area { create(:area, organization:, skip_injection:) }
+      area { association(:area, organization:, skip_injection:) }
     end
 
     trait :with_documents do
@@ -256,8 +256,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    initiative { create(:initiative, skip_injection:) }
-    author { create(:user, :confirmed, organization: initiative.organization, skip_injection:) }
+    initiative { association(:initiative, skip_injection:) }
+    author { association(:user, :confirmed, organization: initiative.organization, skip_injection:) }
     hash_id { SecureRandom.uuid }
     scope { initiative.scope }
     after(:create) do |vote|
@@ -269,9 +269,9 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    initiative { create(:initiative, skip_injection:) }
-    author { create(:user, :confirmed, organization: initiative.organization, skip_injection:) }
-    decidim_user_group_id { create(:user_group, skip_injection:).id }
+    initiative { association(:initiative, skip_injection:) }
+    author { association(:user, :confirmed, organization: initiative.organization, skip_injection:) }
+    decidim_user_group_id { association(:user_group, skip_injection:).id }
     after(:create) do |support, evaluator|
       create(:user_group_membership, user: support.author, user_group: Decidim::UserGroup.find(support.decidim_user_group_id), skip_injection: evaluator.skip_injection)
     end
@@ -281,8 +281,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    initiative { create(:initiative, skip_injection:) }
-    user { create(:user, :confirmed, organization: initiative.organization, skip_injection:) }
+    initiative { association(:initiative, skip_injection:) }
+    user { association(:user, :confirmed, organization: initiative.organization, skip_injection:) }
     state { "accepted" }
 
     trait :accepted do

@@ -19,9 +19,9 @@ FactoryBot.define do
       user_groups { [] }
     end
     title { generate_localized_title(:dummy_resource_title, skip_injection:) }
-    component { create(:dummy_component, skip_injection:) }
-    author { create(:user, :confirmed, organization: component.organization, skip_injection:) }
-    scope { create(:scope, organization: component.organization, skip_injection:) }
+    component { association(:dummy_component, skip_injection:) }
+    author { association(:user, :confirmed, organization: component.organization, skip_injection:) }
+    scope { association(:scope, organization: component.organization, skip_injection:) }
 
     trait :published do
       published_at { Time.current }
@@ -48,7 +48,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     title { generate(:name) }
-    dummy_resource { create(:dummy_resource) }
+    dummy_resource { association(:dummy_resource) }
   end
 
   factory :coauthorable_dummy_resource, class: "Decidim::Dev::CoauthorableDummyResource" do
@@ -57,7 +57,7 @@ FactoryBot.define do
       authors_list { [create(:user, organization: component.organization, skip_injection:)] }
     end
     title { generate(:name) }
-    component { create(:component, manifest_name: "dummy") }
+    component { association(:component, manifest_name: "dummy") }
 
     after :build do |resource, evaluator|
       evaluator.authors_list.each do |coauthor|

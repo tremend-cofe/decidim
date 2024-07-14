@@ -56,14 +56,14 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    conference { create :conference, organization: user.organization, skip_injection: }
+    conference { association(:conference, organization: user.organization, skip_injection:) }
     role { "admin" }
   end
 
   factory :conference_admin, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
+      conference { association(:conference, skip_injection:) }
     end
 
     organization { conference.organization }
@@ -81,7 +81,7 @@ FactoryBot.define do
   factory :conference_moderator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
+      conference { association(:conference, skip_injection:) }
     end
 
     organization { conference.organization }
@@ -99,7 +99,7 @@ FactoryBot.define do
   factory :conference_collaborator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
+      conference { association(:conference, skip_injection:) }
     end
 
     organization { conference.organization }
@@ -117,7 +117,7 @@ FactoryBot.define do
   factory :conference_valuator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
+      conference { association(:conference, skip_injection:) }
     end
 
     organization { conference.organization }
@@ -136,7 +136,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    conference { create(:conference, skip_injection:) }
+    conference { association(:conference, skip_injection:) }
 
     full_name { Faker::Name.name }
     position { Decidim::Faker::Localized.word }
@@ -150,12 +150,12 @@ FactoryBot.define do
     end
 
     trait :with_user do
-      user { create(:user, organization: conference.organization, skip_injection:) }
+      user { association(:user, organization: conference.organization, skip_injection:) }
     end
 
     trait :with_meeting do
       transient do
-        meetings_component { create(:meetings_component, participatory_space: conference.participatory_space, skip_injection:) }
+        meetings_component { association(:meetings_component, participatory_space: conference.participatory_space, skip_injection:) }
       end
 
       after :build do |conference_speaker, evaluator|
@@ -174,28 +174,28 @@ FactoryBot.define do
   factory :conference_speaker_conference_meeting, class: "Decidim::ConferenceSpeakerConferenceMeeting" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
-      meetings_component { create(:meetings_component, skip_injection:, participatory_space: conference.participatory_space) }
+      conference { association(:conference, skip_injection:) }
+      meetings_component { association(:meetings_component, skip_injection:, participatory_space: conference.participatory_space) }
     end
 
-    conference_meeting { create(:conference_meeting, :published, conference:, skip_injection:, component: meetings_component) }
-    conference_speaker { create(:conference_speaker, conference:, skip_injection:) }
+    conference_meeting { association(:conference_meeting, :published, conference:, skip_injection:, component: meetings_component) }
+    conference_speaker { association(:conference_speaker, conference:, skip_injection:) }
   end
 
   factory :conference_meeting_registration_type, class: "Decidim::Conferences::ConferenceMeetingRegistrationType" do
     transient do
       skip_injection { false }
-      conference { create(:conference, skip_injection:) }
+      conference { association(:conference, skip_injection:) }
     end
 
     conference_meeting
-    registration_type { build(:registration_type, conference:, skip_injection:) }
+    registration_type { association(:registration_type, conference:, skip_injection:) }
   end
 
   factory :conference_meeting, parent: :meeting, class: "Decidim::ConferenceMeeting" do
     transient do
       skip_injection { false }
-      conference { create(:conference) }
+      conference { association(:conference) }
     end
 
     after :build do |conference_meeting, evaluator|

@@ -12,14 +12,14 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :surveys, skip_injection:) }
     manifest_name { :surveys }
-    participatory_space { create(:participatory_process, :with_steps, skip_injection:) }
+    participatory_space { association(:participatory_process, :with_steps, skip_injection:) }
   end
 
   factory :survey, class: "Decidim::Surveys::Survey" do
     transient do
       skip_injection { false }
     end
-    questionnaire { build(:questionnaire, :with_questions, skip_injection:) }
-    component { build(:surveys_component, skip_injection:) }
+    questionnaire { association(:questionnaire, :with_questions, skip_injection:) }
+    component { association(:surveys_component, skip_injection:) }
   end
 end
