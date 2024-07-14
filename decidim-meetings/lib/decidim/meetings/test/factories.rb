@@ -12,7 +12,7 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :meetings, skip_injection:) }
     manifest_name { :meetings }
-    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
+    participatory_space { association(:participatory_process, :with_steps, organization:, skip_injection:) }
 
     trait :with_creation_enabled do
       settings do
@@ -39,12 +39,12 @@ FactoryBot.define do
     end_time { start_time.advance(hours: 2) }
     private_meeting { false }
     transparent { true }
-    questionnaire { build(:questionnaire) }
+    questionnaire { association(:questionnaire) }
     registration_form_enabled { true }
     registration_terms { generate_localized_description(:meeting_registration_terms, skip_injection:) }
     registration_type { :on_this_platform }
     type_of_meeting { :in_person }
-    component { build(:meeting_component) }
+    component { association(:meeting_component) }
     iframe_access_level { :all }
     iframe_embed_type { :none }
 
@@ -213,7 +213,7 @@ FactoryBot.define do
     position { 0 }
 
     trait :with_parent do
-      parent { create(:agenda_item, agenda:, skip_injection:) }
+      parent { association(:agenda_item, agenda:, skip_injection:) }
     end
 
     trait :with_children do
@@ -263,7 +263,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    questionnaire_for { build(:poll, skip_injection:) }
+    questionnaire_for { association(:poll, skip_injection:) }
   end
 
   factory :meetings_poll_question, class: "Decidim::Meetings::Question" do
@@ -299,15 +299,15 @@ FactoryBot.define do
       skip_injection { false }
     end
     questionnaire factory: :meetings_poll_questionnaire
-    question { create(:meetings_poll_question, questionnaire:, skip_injection:) }
-    user { create(:user, organization: questionnaire.questionnaire_for.organization, skip_injection:) }
+    question { association(:meetings_poll_question, questionnaire:, skip_injection:) }
+    user { association(:user, organization: questionnaire.questionnaire_for.organization, skip_injection:) }
   end
 
   factory :meetings_poll_answer_option, class: "Decidim::Meetings::AnswerOption" do
     transient do
       skip_injection { false }
     end
-    question { create(:meetings_poll_question, skip_injection:) }
+    question { association(:meetings_poll_question, skip_injection:) }
     body { generate_localized_title }
   end
 
@@ -316,6 +316,6 @@ FactoryBot.define do
       skip_injection { false }
     end
     answer factory: :meetings_poll_answer
-    answer_option { create(:meetings_poll_answer_option, question: answer.question, skip_injection:) }
+    answer_option { association(:meetings_poll_answer_option, question: answer.question, skip_injection:) }
   end
 end

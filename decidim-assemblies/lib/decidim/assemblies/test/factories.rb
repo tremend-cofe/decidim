@@ -58,7 +58,7 @@ FactoryBot.define do
     announcement { generate_localized_title(:assembly_announcement, skip_injection:) }
 
     trait :with_type do
-      assembly_type { create :assemblies_type, organization:, skip_injection: }
+      assembly_type { association(:assemblies_type, organization:, skip_injection:) }
     end
 
     trait :promoted do
@@ -74,7 +74,7 @@ FactoryBot.define do
     end
 
     trait :with_parent do
-      parent { create :assembly, organization:, skip_injection: }
+      parent { association(:assembly, organization:, skip_injection:) }
     end
 
     trait :public do
@@ -116,14 +116,14 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    assembly { create :assembly, organization: user.organization, skip_injection: }
+    assembly { association(:assembly, organization: user.organization, skip_injection:) }
     role { "admin" }
   end
 
   factory :assembly_admin, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      assembly { create(:assembly) }
+      assembly { association(:assembly) }
     end
 
     organization { assembly.organization }
@@ -141,7 +141,7 @@ FactoryBot.define do
   factory :assembly_moderator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      assembly { create(:assembly) }
+      assembly { association(:assembly) }
     end
 
     organization { assembly.organization }
@@ -159,7 +159,7 @@ FactoryBot.define do
   factory :assembly_collaborator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      assembly { create(:assembly) }
+      assembly { association(:assembly) }
     end
 
     organization { assembly.organization }
@@ -177,7 +177,7 @@ FactoryBot.define do
   factory :assembly_valuator, parent: :user, class: "Decidim::User" do
     transient do
       skip_injection { false }
-      assembly { create(:assembly) }
+      assembly { association(:assembly) }
     end
 
     organization { assembly.organization }
@@ -196,7 +196,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    assembly { create(:assembly, skip_injection:) }
+    assembly { association(:assembly, skip_injection:) }
 
     full_name { Faker::Name.name }
     gender { Faker::Lorem.word }
@@ -210,7 +210,7 @@ FactoryBot.define do
     end
 
     trait :with_user do
-      user { create(:user, organization: assembly.organization, skip_injection:) }
+      user { association(:user, organization: assembly.organization, skip_injection:) }
     end
   end
 end

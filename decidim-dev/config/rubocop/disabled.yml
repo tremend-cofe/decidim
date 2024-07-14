@@ -31,9 +31,6 @@ RSpecRails/NegationBeValid:
 RSpec/MetadataStyle:
   Enabled: false
 
-FactoryBot/FactoryAssociationWithStrategy:
-  Enabled: false
-
 RSpec/RemoveConst:
   Enabled: false
 

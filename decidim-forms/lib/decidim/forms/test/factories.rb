@@ -11,7 +11,7 @@ FactoryBot.define do
     title { generate_localized_title(:questionnaire_title, skip_injection:) }
     description { generate_localized_description(:questionnaire_description, skip_injection:) }
     tos { generate_localized_title(:questionnaire_tos, skip_injection:) }
-    questionnaire_for { build(:participatory_process, skip_injection:) }
+    questionnaire_for { association(:participatory_process, skip_injection:) }
     salt { SecureRandom.hex(32) }
 
     trait :with_questions do
@@ -118,13 +118,13 @@ FactoryBot.define do
 
     trait :with_answer_options do
       answer_options do
-        Array.new(3).collect { build(:answer_option, skip_injection:) }
+        Array.new(3).collect { association(:answer_option, skip_injection:) }
       end
     end
 
     trait :conditioned do
       display_conditions do
-        Array.new(3).collect { build(:display_condition, skip_injection:) }
+        Array.new(3).collect { association(:display_condition, skip_injection:) }
       end
     end
 
@@ -143,8 +143,8 @@ FactoryBot.define do
     end
     body { "hola" }
     questionnaire
-    question { create(:questionnaire_question, questionnaire:, skip_injection:) }
-    user { create(:user, organization: questionnaire.questionnaire_for.organization, skip_injection:) }
+    question { association(:questionnaire_question, questionnaire:, skip_injection:) }
+    user { association(:user, organization: questionnaire.questionnaire_for.organization, skip_injection:) }
     session_token { Digest::MD5.hexdigest(user.id.to_s) }
 
     trait :with_attachments do
@@ -159,7 +159,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    question { create(:questionnaire_question, skip_injection:) }
+    question { association(:questionnaire_question, skip_injection:) }
     body { generate_localized_title }
     free_text { false }
 
@@ -177,15 +177,15 @@ FactoryBot.define do
       skip_injection { false }
     end
     answer
-    answer_option { create(:answer_option, question: answer.question, skip_injection:) }
-    matrix_row { create(:question_matrix_row, question: answer.question, skip_injection:) }
+    answer_option { association(:answer_option, question: answer.question, skip_injection:) }
+    matrix_row { association(:question_matrix_row, question: answer.question, skip_injection:) }
   end
 
   factory :question_matrix_row, class: "Decidim::Forms::QuestionMatrixRow" do
     transient do
       skip_injection { false }
     end
-    question { create(:questionnaire_question, skip_injection:) }
+    question { association(:questionnaire_question, skip_injection:) }
     body { generate_localized_title }
     position { 0 }
   end
@@ -194,14 +194,14 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    condition_question { create(:questionnaire_question, skip_injection:) }
-    question { create(:questionnaire_question, position: 1, skip_injection:) }
+    condition_question { association(:questionnaire_question, skip_injection:) }
+    question { association(:questionnaire_question, position: 1, skip_injection:) }
     condition_type { :answered }
     mandatory { true }
 
     trait :equal do
       condition_type { :equal }
-      answer_option { create(:answer_option, question: condition_question, skip_injection:) }
+      answer_option { association(:answer_option, question: condition_question, skip_injection:) }
     end
 
     trait :match do

@@ -13,7 +13,7 @@ FactoryBot.define do
 
     name { generate_component_name(participatory_space.organization.available_locales, :blogs, skip_injection:) }
     manifest_name { :blogs }
-    participatory_space { create(:participatory_process, :with_steps, skip_injection:, organization:) }
+    participatory_space { association(:participatory_process, :with_steps, skip_injection:, organization:) }
   end
 
   factory :post, class: "Decidim::Blogs::Post" do
@@ -23,8 +23,8 @@ FactoryBot.define do
 
     title { generate_localized_title(:blog_title, skip_injection:) }
     body { generate_localized_description(:blog_body, skip_injection:) }
-    component { build(:post_component, skip_injection:) }
-    author { build(:user, :confirmed, skip_injection:, organization: component.organization) }
+    component { association(:post_component, skip_injection:) }
+    author { association(:user, :confirmed, skip_injection:, organization: component.organization) }
 
     trait :with_endorsements do
       after :create do |post, evaluator|

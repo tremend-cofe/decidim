@@ -12,15 +12,15 @@ FactoryBot.define do
     end
     name { generate_component_name(participatory_space.organization.available_locales, :sortitions, skip_injection:) }
     manifest_name { :sortitions }
-    participatory_space { create(:participatory_process, :with_steps, organization:, skip_injection:) }
+    participatory_space { association(:participatory_process, :with_steps, organization:, skip_injection:) }
   end
 
   factory :sortition, class: "Decidim::Sortitions::Sortition" do
     transient do
       skip_injection { false }
     end
-    component { create(:sortition_component, skip_injection:) }
-    decidim_proposals_component { create(:proposal_component, organization: component.organization, skip_injection:) }
+    component { association(:sortition_component, skip_injection:) }
+    decidim_proposals_component { association(:proposal_component, organization: component.organization, skip_injection:) }
 
     title { generate_localized_title(:sortition_title, skip_injection:) }
     author do
@@ -38,7 +38,7 @@ FactoryBot.define do
     trait :cancelled do
       cancelled_on { Time.now.utc }
       cancel_reason { generate_localized_description(:sortition_cancel_reason, skip_injection:) }
-      cancelled_by_user { create(:user, :admin, organization: component.organization, skip_injection:) if component }
+      cancelled_by_user { association(:user, :admin, organization: component.organization, skip_injection:) if component }
     end
   end
 end

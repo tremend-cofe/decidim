@@ -12,7 +12,7 @@ FactoryBot.define do
     name { generate_localized_title(:template_name, skip_injection:) }
     description { generate_localized_title(:template_description, skip_injection:) }
     target { "generic-template" }
-    templatable { build(:dummy_resource, skip_injection:) }
+    templatable { association(:dummy_resource, skip_injection:) }
 
     trait :user_block do
       templatable { organization }

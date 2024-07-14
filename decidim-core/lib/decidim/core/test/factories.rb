@@ -101,7 +101,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    parent { build(:category, skip_injection:) }
+    parent { association(:category, skip_injection:) }
 
     participatory_space { parent.participatory_space }
   end
@@ -261,7 +261,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    privatable_to { create(:participatory_process, organization: user.organization, skip_injection:) }
+    privatable_to { association(:participatory_process, organization: user.organization, skip_injection:) }
   end
 
   factory :assembly_private_user, class: "Decidim::ParticipatorySpacePrivateUser" do
@@ -269,7 +269,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     user
-    privatable_to { create(:assembly, organization: user.organization, skip_injection:) }
+    privatable_to { association(:assembly, organization: user.organization, skip_injection:) }
   end
 
   factory :user_group, class: "Decidim::UserGroup" do
@@ -337,7 +337,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    user { create(:user, :confirmed, organization: user_group.organization, skip_injection:) }
+    user { association(:user, :confirmed, organization: user_group.organization, skip_injection:) }
     role { :creator }
     user_group
   end
@@ -373,20 +373,20 @@ FactoryBot.define do
   factory :authorization_transfer, class: "Decidim::AuthorizationTransfer" do
     transient do
       skip_injection { false }
-      organization { create(:organization, skip_injection:) }
+      organization { association(:organization, skip_injection:) }
     end
 
-    user { create(:user, :confirmed, organization:, skip_injection:) }
-    source_user { create(:user, :confirmed, :deleted, organization: user.try(:organization) || organization, skip_injection:) }
+    user { association(:user, :confirmed, organization:, skip_injection:) }
+    source_user { association(:user, :confirmed, :deleted, organization: user.try(:organization) || organization, skip_injection:) }
     authorization do
-      create(
+      association(
         :authorization,
         user: source_user || create(:user, :confirmed, :deleted, organization: user.try(:organization) || organization, skip_injection:)
       )
     end
 
     trait :transferred do
-      authorization { create(:authorization, user:, skip_injection:) }
+      authorization { association(:authorization, user:, skip_injection:) }
     end
   end
 
@@ -396,8 +396,8 @@ FactoryBot.define do
       organization { resource.try(:organization) || create(:organization, skip_injection:) }
     end
 
-    transfer { create(:authorization_transfer, organization:, skip_injection:) }
-    resource { create(:dummy_resource, skip_injection:) }
+    transfer { association(:authorization_transfer, organization:, skip_injection:) }
+    resource { association(:dummy_resource, skip_injection:) }
   end
 
   factory :static_page, class: "Decidim::StaticPage" do
@@ -407,7 +407,7 @@ FactoryBot.define do
     slug { generate(:slug) }
     title { generate_localized_title(:static_page_title, skip_injection:) }
     content { generate_localized_description(:static_page_content, skip_injection:) }
-    organization { build(:organization, skip_injection:) }
+    organization { association(:organization, skip_injection:) }
     allow_public_access { false }
 
     trait :default do
@@ -459,7 +459,7 @@ FactoryBot.define do
     title { generate_localized_title(:attachment_title, skip_injection:) }
     description { generate_localized_title(:attachment_description, skip_injection:) }
     weight { Faker::Number.number(digits: 1) }
-    attached_to { build(:participatory_process, skip_injection:) }
+    attached_to { association(:participatory_process, skip_injection:) }
     content_type { "image/jpeg" }
     file { Decidim::Dev.test_file("city.jpeg", "image/jpeg") } # Keep after attached_to
     file_size { 108_908 }
@@ -483,11 +483,11 @@ FactoryBot.define do
   factory :component, class: "Decidim::Component" do
     transient do
       skip_injection { false }
-      organization { create(:organization, skip_injection:) }
+      organization { association(:organization, skip_injection:) }
     end
 
     name { generate_localized_title(:component_name, skip_injection:) }
-    participatory_space { create(:participatory_process, organization:, skip_injection:) }
+    participatory_space { association(:participatory_process, organization:, skip_injection:) }
     manifest_name { "dummy" }
     published_at { Time.current }
     settings do
@@ -595,7 +595,7 @@ FactoryBot.define do
     end
     name { Decidim::Faker::Localized.literal(generate(:scope_name)) }
     code { generate(:scope_code) }
-    scope_type { create(:scope_type, organization:, skip_injection:) }
+    scope_type { association(:scope_type, organization:, skip_injection:) }
     organization { parent ? parent.organization : build(:organization, skip_injection:) }
   end
 
@@ -603,7 +603,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    parent { build(:scope, skip_injection:) }
+    parent { association(:scope, skip_injection:) }
 
     before(:create) do |object|
       object.parent.save unless object.parent.persisted?
@@ -631,11 +631,11 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    coauthorable { create(:dummy_resource, skip_injection:) }
+    coauthorable { association(:dummy_resource, skip_injection:) }
     transient do
       organization { coauthorable.component.participatory_space.organization }
     end
-    author { create(:user, :confirmed, organization:, skip_injection:) }
+    author { association(:user, :confirmed, organization:, skip_injection:) }
   end
 
   factory :resource_link, class: "Decidim::ResourceLink" do
@@ -643,8 +643,8 @@ FactoryBot.define do
       skip_injection { false }
     end
     name { generate(:slug) }
-    to { build(:dummy_resource, skip_injection:) }
-    from { build(:dummy_resource, component: to.component, skip_injection:) }
+    to { association(:dummy_resource, skip_injection:) }
+    from { association(:dummy_resource, component: to.component, skip_injection:) }
   end
 
   factory :newsletter, class: "Decidim::Newsletter" do
@@ -653,7 +653,7 @@ FactoryBot.define do
       body { generate_localized_description(:newsletter_body, skip_injection:) }
     end
 
-    author { build(:user, :confirmed, organization:, skip_injection:) }
+    author { association(:user, :confirmed, organization:, skip_injection:) }
     organization
 
     subject { generate_localized_title }
@@ -679,7 +679,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    reportable { build(:dummy_resource, skip_injection:) }
+    reportable { association(:dummy_resource, skip_injection:) }
     participatory_space { reportable.component.participatory_space }
 
     trait :hidden do
@@ -692,7 +692,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     moderation
-    user { build(:user, organization: moderation.reportable.organization, skip_injection:) }
+    user { association(:user, organization: moderation.reportable.organization, skip_injection:) }
     reason { "spam" }
   end
 
@@ -700,8 +700,8 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    admin { build(:user, :admin, skip_injection:) }
-    user { build(:user, :managed, organization: admin.organization, skip_injection:) }
+    admin { association(:user, :admin, skip_injection:) }
+    user { association(:user, :managed, organization: admin.organization, skip_injection:) }
     started_at { 10.minutes.ago }
   end
 
@@ -710,12 +710,12 @@ FactoryBot.define do
       skip_injection { false }
     end
     user do
-      build(
+      association(
         :user,
         organization: followable.try(:organization) || build(:organization, skip_injection:)
       )
     end
-    followable { build(:dummy_resource, skip_injection:) }
+    followable { association(:dummy_resource, skip_injection:) }
   end
 
   factory :notification, class: "Decidim::Notification" do
@@ -723,12 +723,12 @@ FactoryBot.define do
       skip_injection { false }
     end
     user do
-      build(
+      association(
         :user,
         organization: resource.try(:organization) || build(:organization, skip_injection:)
       )
     end
-    resource { build(:dummy_resource, skip_injection:) }
+    resource { association(:dummy_resource, skip_injection:) }
     event_name { resource.class.name.underscore.tr("/", ".") }
     event_class { "Decidim::Dev::DummyResourceEvent" }
     extra do
@@ -743,7 +743,7 @@ FactoryBot.define do
       skip_injection { false }
     end
 
-    originator { build(:user, skip_injection:) }
+    originator { association(:user, skip_injection:) }
     interlocutors { [build(:user, skip_injection:)] }
     body { Faker::Lorem.sentence }
     user
@@ -773,8 +773,8 @@ FactoryBot.define do
       skip_injection { false }
     end
 
-    recipient { build(:user, skip_injection:) }
-    conversation { create(:conversation, skip_injection:) }
+    recipient { association(:user, skip_injection:) }
+    conversation { association(:conversation, skip_injection:) }
     message { generate_localized_description(:push_notification_message_message, skip_injection:) }
 
     skip_create
@@ -789,9 +789,9 @@ FactoryBot.define do
 
     organization { user.organization }
     user
-    participatory_space { build(:participatory_process, organization:, skip_injection:) }
-    component { build(:component, participatory_space:, skip_injection:) }
-    resource { build(:dummy_resource, component:, skip_injection:) }
+    participatory_space { association(:participatory_process, organization:, skip_injection:) }
+    component { association(:component, participatory_space:, skip_injection:) }
+    resource { association(:dummy_resource, component:, skip_injection:) }
     action { "create" }
     visibility { "admin-only" }
     extra do
@@ -834,7 +834,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     resource_owner_id { create(:user, organization: application.organization, skip_injection:).id }
-    application { build(:oauth_application, skip_injection:) }
+    application { association(:oauth_application, skip_injection:) }
     token { SecureRandom.hex(32) }
     expires_in { 1.month.from_now }
     created_at { Time.current }
@@ -845,7 +845,7 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    resource { build(:dummy_resource, skip_injection:) }
+    resource { association(:dummy_resource, skip_injection:) }
     resource_id { resource.id }
     resource_type { resource.class.name }
     organization { resource.component.organization }
@@ -889,17 +889,17 @@ FactoryBot.define do
     metric_type { "random_metric" }
     cumulative { 2 }
     quantity { 1 }
-    category { create(:category) }
-    participatory_space { create(:participatory_process, organization:, skip_injection:) }
-    related_object { create(:component, participatory_space:, skip_injection:) }
+    category { association(:category) }
+    participatory_space { association(:participatory_process, organization:, skip_injection:) }
+    related_object { association(:component, participatory_space:, skip_injection:) }
   end
 
   factory :amendment, class: "Decidim::Amendment" do
     transient do
       skip_injection { false }
     end
-    amendable { build(:dummy_resource, skip_injection:) }
-    emendation { build(:dummy_resource, skip_injection:) }
+    amendable { association(:dummy_resource, skip_injection:) }
+    emendation { association(:dummy_resource, skip_injection:) }
     amender { emendation.try(:creator_author) || emendation.try(:author) }
     state { "evaluating" }
 
@@ -915,22 +915,22 @@ FactoryBot.define do
       skip_injection { false }
     end
     reason { "spam" }
-    moderation { create(:user_moderation, user:, skip_injection:) }
-    user { build(:user) }
+    moderation { association(:user_moderation, user:, skip_injection:) }
+    user { association(:user) }
   end
 
   factory :user_moderation, class: "Decidim::UserModeration" do
     transient do
       skip_injection { false }
     end
-    user { build(:user) }
+    user { association(:user) }
   end
 
   factory :endorsement, class: "Decidim::Endorsement" do
     transient do
       skip_injection { false }
     end
-    resource { build(:dummy_resource, skip_injection:) }
+    resource { association(:dummy_resource, skip_injection:) }
     author { resource.try(:creator_author) || resource.try(:author) || build(:user, organization: resource.organization, skip_injection:) }
   end
 
@@ -938,17 +938,17 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    resource { build(:dummy_resource, skip_injection:) }
-    author { build(:user, organization: resource.organization, skip_injection:) }
-    user_group { create(:user_group, verified_at: Time.current, organization: resource.organization, users: [author], skip_injection:) }
+    resource { association(:dummy_resource, skip_injection:) }
+    author { association(:user, organization: resource.organization, skip_injection:) }
+    user_group { association(:user_group, verified_at: Time.current, organization: resource.organization, users: [author], skip_injection:) }
   end
 
   factory :share_token, class: "Decidim::ShareToken" do
     transient do
       skip_injection { false }
     end
-    token_for { build(:component, skip_injection:) }
-    user { build(:user, organization: token_for.organization, skip_injection:) }
+    token_for { association(:component, skip_injection:) }
+    user { association(:user, organization: token_for.organization, skip_injection:) }
 
     before(:create) do |object|
       object.organization ||= object.token_for.organization
@@ -969,7 +969,7 @@ FactoryBot.define do
       skip_injection { false }
     end
     organization
-    author { create(:user, :admin, :confirmed, organization:, skip_injection:) }
+    author { association(:user, :admin, :confirmed, organization:, skip_injection:) }
     file { Decidim::Dev.test_file("city.jpeg", "image/jpeg") }
   end
 
@@ -977,16 +977,16 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    user { build(:user, skip_injection:) }
-    component { build(:dummy_component, organization: user.organization, skip_injection:) }
+    user { association(:user, skip_injection:) }
+    component { association(:dummy_component, organization: user.organization, skip_injection:) }
   end
 
   factory :reminder_record, class: "Decidim::ReminderRecord" do
     transient do
       skip_injection { false }
     end
-    reminder { create(:reminder, skip_injection:) }
-    remindable { build(:dummy_resource, skip_injection:) }
+    reminder { association(:reminder, skip_injection:) }
+    remindable { association(:dummy_resource, skip_injection:) }
 
     Decidim::ReminderRecord::STATES.keys.each do |defined_state|
       trait defined_state do
@@ -999,14 +999,14 @@ FactoryBot.define do
     transient do
       skip_injection { false }
     end
-    reminder { create(:reminder, skip_injection:) }
+    reminder { association(:reminder, skip_injection:) }
   end
 
   factory :short_link, class: "Decidim::ShortLink" do
     transient do
       skip_injection { false }
     end
-    target { create(:component, manifest_name: "dummy", skip_injection:) }
+    target { association(:component, manifest_name: "dummy", skip_injection:) }
     route_name { nil }
     params { {} }
 
