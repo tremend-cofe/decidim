@@ -1,0 +1,70 @@
+<% add_decidim_page_title(strip_tags(yield(:heading).lines.last).strip) if content_for?(:heading) %>
+<% add_decidim_page_title("Decidim Design Guide") %>
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= decidim_page_title %></title>
+  <%= render partial: "layouts/decidim/design/head" %>
+</head>
+
+<body class="relative text-black text-md form-defaults">
+
+<%
+  groups = ViewComponent::Preview.all.sort_by(&:name).group_by { |s| s.name.deconstantize }
+%>
+<div class="design__layout">
+  <aside>
+    <ul class="design__navigation">
+      <% groups.each do |group| %>
+        <li>
+          <span><%= group.first.titleize.delete_prefix("Decidim/") %></span>
+
+          <ul>
+            <% group.last.each do |preview| %>
+              <li>
+                <%= link_to main_app.preview_view_component_path("#{preview.preview_name}/#{preview.examples.first}")  do %>
+                  <span><%= preview.name.demodulize.titleize.delete_suffix("Component Preview") %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+
+        </li>
+      <% end %>
+    </ul>
+  </aside>
+
+  <main>
+    <% if content_for?(:heading) %>
+      <section class="design__heading__section">
+        <h1 class="design__heading__5xl">
+          <%= yield :heading %>
+        </h1>
+
+        <% if content_for?(:description) %>
+          <div class="design__heading__description">
+            <%= yield :description %>
+          </div>
+        <% end %>
+      </section>
+    <% end %>
+
+    <%= yield %>
+  </main>
+
+<!--  <aside>-->
+<!--    <div class="design__navigation__right">-->
+      <%# if content_for?(:right_aside) %>
+        <%#= yield :right_aside %>
+      <%# else %>
+<!--        <nav>-->
+<!--          <strong>On this page</strong>-->
+          <%#= yield :toc %>
+<!--        </nav>-->
+      <%# end %>
+<!--    </div>-->
+<!--  </aside>-->
+</div>
+
+</body>
+</html>
