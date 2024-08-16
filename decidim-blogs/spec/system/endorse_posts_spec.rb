@@ -7,7 +7,7 @@ describe "endorse posts" do
   let(:manifest_name) { "blogs" }
   let(:organization) { create(:organization) }
   let(:author) { create(:user, :confirmed, name: "Tester", organization:) }
-  let!(:post) { create(:post, component:, title: { en: "Blog post title" }) }
+  let!(:post) { create(:post, :published, component:, title: { en: "Blog post title" }) }
 
   before do
     sign_in author
