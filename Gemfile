@@ -2,7 +2,8 @@
 
 source "https://rubygems.org"
 
-ruby RUBY_VERSION
+# ruby RUBY_VERSION
+ruby "3.4.0.preview1"
 
 gem "decidim", path: "."
 gem "decidim-conferences", path: "."
