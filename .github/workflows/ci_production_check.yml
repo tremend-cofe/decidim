@@ -12,7 +12,7 @@ on:
 env:
   CI: "false"
   SIMPLECOV: "false"
-  RUBY_VERSION: 3.3.4
+  RUBY_VERSION: 3.4.0-preview1
   NODE_VERSION: 18.17.1
   NODE_ENV: "production"
   RAILS_ENV: production
