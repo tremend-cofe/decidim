@@ -158,9 +158,6 @@ Decidim.configure do |config|
   # Currency unit
   config.currency_unit = Rails.application.secrets.decidim[:currency_unit] if Rails.application.secrets.decidim[:currency_unit].present?
 
-  # Workaround to enable SVG assets cors
-  config.cors_enabled = Rails.application.secrets.decidim[:cors_enabled].present?
-
   # Defines the quality of image uploads after processing. Image uploads are
   # processed by Decidim, this value helps reduce the size of the files.
   config.image_uploader_quality = Rails.application.secrets.decidim[:image_uploader_quality].to_i
