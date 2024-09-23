@@ -96,7 +96,7 @@ PATH
       request_store (~> 1.5.0)
       rubyXL (~> 3.4)
       rubyzip (~> 2.0)
-      shakapacker (~> 7.2.0)
+      shakapacker (~> 7.2.3)
       valid_email2 (~> 4.0)
       web-push (~> 3.0)
       wisper (~> 2.0)
