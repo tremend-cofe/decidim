@@ -6,25 +6,7 @@ module Decidim
     include RichTextEditorHelper
 
     TOTAL_STEPS = 2
-
-    # Renders the state of an emendation
-    #
-    # Returns Html callout.
-    def emendation_announcement_for(emendation)
-      return unless emendation.emendation?
-
-      cell("decidim/amendable/announcement", emendation)
-    end
-
-    # Returns Html action button card to AMEND an amendable resource
-    def amend_button_for(amendable)
-      return unless amendments_enabled? && amendable.amendable?
-      return unless current_component.current_settings.amendment_creation_enabled
-      return unless can_participate_in_private_space?
-
-      cell("decidim/amendable/amend_button_card", amendable)
-    end
-
+    
     # Checks if the user can participate in a participatory space
     # based on its settings related with Decidim::HasPrivateUsers.
     def can_participate_in_private_space?
@@ -37,23 +19,8 @@ module Decidim
     def emendation_actions_for(emendation)
       return unless amendments_enabled? && can_react_to_emendation?(emendation)
 
-      action_button_card_for(emendation)
-    end
-
-    # Returns Html action button cards to ACCEPT/REJECT or to PROMOTE an emendation
-    def action_button_card_for(emendation)
-      return accept_and_reject_buttons_for(emendation) if allowed_to_accept_and_reject?(emendation)
-      return promote_button_for(emendation) if allowed_to_promote?(emendation)
-    end
-
-    # Renders the buttons to ACCEPT/REJECT an emendation
-    def accept_and_reject_buttons_for(emendation)
-      cell("decidim/amendable/emendation_actions", emendation)
-    end
-
-    # Renders the button to PROMOTE an emendation
-    def promote_button_for(emendation)
-      cell("decidim/amendable/promote_button_card", emendation)
+      return cell("decidim/amendable/emendation_actions", emendation) if allowed_to_accept_and_reject?(emendation)
+      return cell("decidim/amendable/promote_button_card", emendation) if allowed_to_promote?(emendation)
     end
 
     def amendments_enabled?
