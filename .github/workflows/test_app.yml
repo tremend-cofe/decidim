@@ -128,7 +128,7 @@ jobs:
           sudo Xvfb -ac $DISPLAY -screen 0 1920x1084x24 > /dev/null 2>&1 & # optional
           ${{ inputs.test_command }}
         name: RSpec Retry
-        if: failure() && github.run_attempt < 2
+        if: failure()
         working-directory: ${{ inputs.working-directory }}
       - uses: codecov/codecov-action@v4
         name: Upload coverage
