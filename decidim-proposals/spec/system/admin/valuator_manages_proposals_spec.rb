@@ -45,7 +45,7 @@ describe "Valuator manages proposals" do
     end
 
     it "cannot unassign others" do
-      expect(page).to have_no_content("Unassign from valuator")
+      expect(page).not_to have_content("Unassign from valuator")
     end
   end
 
