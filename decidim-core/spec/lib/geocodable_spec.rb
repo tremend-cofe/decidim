@@ -29,11 +29,8 @@ module Decidim
     let(:latitude) { 40.1234 }
     let(:longitude) { 2.1234 }
 
-    before do
-      stub_geocoding(address, [latitude, longitude])
-    end
-
     it "calls the Decidim geocoding utility and geocodes the resource" do
+      stub_geocoding(address, [latitude, longitude])
       subject.geocode
       expect(subject.latitude).to eq(latitude)
       expect(subject.longitude).to eq(longitude)
@@ -54,6 +51,7 @@ module Decidim
       let(:longitude) { Float::NAN }
 
       it "calls the Decidim geocoding utility and try to geocode the resource, but the result is [NaN,NaN]" do
+        stub_geocoding(address, [latitude, longitude])
         subject.geocode
         expect(subject.latitude).to be_nan
         expect(subject.longitude).to be_nan
